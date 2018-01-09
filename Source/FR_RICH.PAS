@@ -148,6 +148,8 @@ begin
   Rich2.Lines.SaveToStream(st);
   st.Position := 0;
   Rich1.Lines.LoadFromStream(st);
+  if Rich1 = SRichEdit then
+    Rich1.Lines.Add(''); //to avoid the "eating" of the last character
   st.Free;
 end;
 
@@ -221,13 +223,29 @@ begin
 
     LowDy := 0;
     HighDY := 1000000;
-    while HighDy - LowDy > 1 do
+
+    rc := Rect(0, 0, Round(DX * 1440 / LogX), Round(HighDY * 1440.0 / LogY));
+    rcPage := rc;
+    chrg.cpMax := -1;
+    chrg.cpMin := 0;
+    MaxLen := SRichEdit.Perform(EM_FORMATRANGE, 0, Integer(@Range));
+    if MaxLen < SRichEdit.GetTextLen - 2 then begin
+      //for some reason in some cases the last index is not properly returned
+      rc := Rect(0, 0, Round(DX * 1440 / LogX), Round((HighDY div 4)* 3 * 1440.0 / LogY));
+      rcPage := rc;
+      NewDY := SRichEdit.Perform(EM_FORMATRANGE, 0, Integer(@Range));
+      if NewDY <> MaxLen then
+        MaxLen := SRichEdit.GetTextLen
+      else
+        Inc(MaxLen,2);
+    end;
+    Dec(MaxLen,2);//2 is #D#A added to avoid eating of last char
+    while HighDy - LowDy > 8 do //no tiene ningún sentido seguir si ya pasé el mínimo
     begin
-      NewDY := LowDy + (HighDy - LowDy) div 2;
+      NewDY := (LowDy + HighDy) div 2;//LowDy + (HighDy - LowDy) div 2;
       rc := Rect(0, 0, Round(DX * 1440 / LogX), Round(NewDY * 1440.0 / LogY));
       rcPage := rc;
       LastChar := CharFrom;
-      MaxLen := SRichEdit.GetTextLen;
       chrg.cpMax := -1;
       repeat
         chrg.cpMin := LastChar;
@@ -243,7 +261,12 @@ begin
     ReleaseDC(0, hdc);
   end;
   SRichEdit.Perform(EM_FORMATRANGE, 0, 0);
-  if HighDy < 2 then HighDy := 8;
+  if HighDy < MinHeight then begin
+    (* check is not a calculation issue when just one line left *)
+    SRichEdit.Lines.Add('.');
+    HighDy := DoCalcHeight div 2;
+    SRichEdit.Lines.Delete(SRichEdit.Lines.Count-1);
+  end;
   Result := HighDy;
 end;
 

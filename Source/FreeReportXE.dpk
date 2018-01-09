@@ -1,0 +1,90 @@
+// Package file for Delphi 10
+
+package FreeReportXE;
+
+{$R *.res}
+{$R 'FR_reg.dcr'}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'FreeReport 2.40 Components'}
+{$IMPLICITBUILD OFF}
+
+requires
+  DESIGNIDE,
+  dbrtl,
+  Tee,
+  FreeReportXEd;
+
+contains
+  Fr_reg in 'Fr_reg.pas',
+  barcode in 'barcode.pas',
+  FR_Class in 'FR_Class.pas',
+  fr_const in 'fr_const.pas',
+  fr_prntr in 'fr_prntr.pas',
+  fr_pars in 'fr_pars.pas',
+  FR_ABOUT in 'FR_ABOUT.PAS',
+  fr_barc in 'fr_barc.pas',
+  FR_BNDED in 'FR_BNDED.PAS',
+  FR_BTYP in 'FR_BTYP.PAS',
+  FR_CHBOX in 'FR_CHBOX.PAS',
+  fr_color in 'fr_color.pas',
+  fr_dbrel in 'fr_dbrel.pas',
+  FR_DBSET in 'FR_DBSET.PAS',
+  FR_DESGN in 'FR_DESGN.PAS',
+  fr_dopt in 'fr_dopt.pas',
+  FR_DSET in 'FR_DSET.PAS',
+  FR_DSOPT in 'FR_DSOPT.PAS',
+  FR_EDIT in 'FR_EDIT.PAS',
+  fr_e_txt in 'fr_e_txt.pas',
+  fr_e_rtf in 'fr_e_rtf.pas',
+  fr_e_csv in 'fr_e_csv.pas',
+  fr_e_htm in 'fr_e_htm.pas',
+  fr_ev_ed in 'fr_ev_ed.pas',
+  fr_flds in 'fr_flds.pas',
+  fr_fmted in 'fr_fmted.pas',
+  fr_gedit in 'fr_gedit.pas',
+  fr_grped in 'fr_grped.pas',
+  fr_hilit in 'fr_hilit.pas',
+  fr_iflds in 'fr_iflds.pas',
+  fr_insp in 'fr_insp.pas',
+  fr_intrp in 'fr_intrp.pas',
+  fr_newrp in 'fr_newrp.pas',
+  fr_ole in 'fr_ole.pas',
+  fr_pgopt in 'fr_pgopt.pas',
+  fr_prdlg in 'fr_prdlg.pas',
+  fr_progr in 'fr_progr.pas',
+  FR_RICH in 'FR_RICH.PAS',
+  fr_rrect in 'fr_rrect.pas',
+  fr_shape in 'fr_shape.pas',
+  fr_srch in 'fr_srch.pas',
+  fr_templ in 'fr_templ.pas',
+  fr_utils in 'fr_utils.pas',
+  fr_var in 'fr_var.pas',
+  fr_vared in 'fr_vared.pas',
+  fr_vbnd in 'fr_vbnd.pas',
+  fr_view in 'fr_view.pas',
+  FR_CHART in 'FR_CHART.PAS' { frChartForm };
+
+end.

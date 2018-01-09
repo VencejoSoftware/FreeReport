@@ -27,7 +27,7 @@ uses
 type
   TfrBookmark =
 {$IFDEF IBO} type string;
-{$ELSE} type TBookmark;
+{$ELSE} TBookmark;
 {$ENDIF}
 
   TfrTDataSet =
@@ -85,26 +85,34 @@ end;
 
 function frGetBookmark(DataSet: TfrTDataSet): TfrBookmark;
 begin
+  if DataSet.IsEmpty then
 {$IFDEF IBO}
-  Result := DataSet.Bookmark;
+    result := ''
+  else
+    Result := DataSet.Bookmark;
 {$ELSE}
-  Result := DataSet.GetBookmark;
+    result := nil
+  else
+    Result := TfrBookmark(DataSet.GetBookmark);
 {$ENDIF}
 end;
 
 procedure frGotoBookmark(DataSet: TfrTDataSet; Bookmark: TfrBookmark);
 begin
+  if DataSet.IsEmpty then
+    exit;
 {$IFDEF IBO}
   DataSet.Bookmark := Bookmark;
 {$ELSE}
-  DataSet.GotoBookmark(BookMark);
+  DataSet.GotoBookmark(TBytes(BookMark));
 {$ENDIF}
 end;
 
 procedure frFreeBookmark(DataSet: TfrTDataSet; Bookmark: TfrBookmark);
 begin
 {$IFNDEF IBO}
-  DataSet.FreeBookmark(BookMark);
+  if Assigned(Bookmark) then
+    DataSet.FreeBookmark(TBytes(BookMark));
 {$ENDIF}
 end;
 
@@ -120,7 +128,7 @@ begin
     dbiCompareBookmarks(DataSet.Handle, b1, b2, n);
     Result := n = 0;
  {$ELSE}
-    Result := DataSet.CompareBookmarks(b1, b2) = 0;
+    Result := DataSet.CompareBookmarks(TBytes(b1), TBytes(b2)) = 0;
  {$ENDIF}
 {$ENDIF}
 end;

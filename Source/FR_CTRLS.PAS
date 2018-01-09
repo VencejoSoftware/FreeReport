@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{              Tool controls              }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ Tool controls }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_Ctrls;
 
@@ -15,7 +11,7 @@ interface
 {$I FR.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Types, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Menus, Buttons;
 
 type
@@ -23,7 +19,7 @@ type
 
   TfrSpeedButton = class(TGraphicControl)
   private
-    FGroupIndex: Integer;
+    FGroupIndex: Cardinal;
     FGlyph: Pointer;
     FDown: Boolean;
     FFlat: Boolean;
@@ -44,7 +40,7 @@ type
     procedure SetDown(Value: Boolean);
     procedure SetFlat(Value: Boolean);
     procedure SetAllowAllUp(Value: Boolean);
-    procedure SetGroupIndex(Value: Integer);
+    procedure SetGroupIndex(Value: Cardinal);
     procedure SetLayout(Value: TButtonLayout);
     procedure SetInactiveGrayed(Value: Boolean);
     procedure UpdateTracking;
@@ -64,30 +60,27 @@ type
     FState: TfrButtonState;
     function GetPalette: HPALETTE; override;
     procedure Loaded; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
-    procedure DrawGlyph(Canvas:TCanvas; X,Y:Integer; Enabled:Boolean);
+    procedure DrawGlyph(Canvas: TCanvas; X, Y: Integer; Enabled: Boolean);
   published
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
+    property GroupIndex: Cardinal read FGroupIndex write SetGroupIndex default 0;
     property Down: Boolean read FDown write SetDown default False;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Caption;
     property Enabled;
     property Font;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
-    property GrayedInactive: Boolean read FInactiveGrayed write SetInactiveGrayed
-      default True;
+    property GrayedInactive: Boolean read FInactiveGrayed write SetInactiveGrayed default True;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
-    property Margin: Integer read FMargin write SetMargin default -1;
+    property Margin: Integer read FMargin write SetMargin default - 1;
     property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
     property ParentFont;
     property ParentShowHint;
@@ -120,7 +113,7 @@ type
 
   TfrTBPanel = class(TPanel)
   protected
-    procedure SetParent(AParent:TWinControl); override;
+    procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
@@ -128,7 +121,7 @@ type
 
   TfrTBButton = class(TfrSpeedButton)
   protected
-    procedure SetParent(AParent:TWinControl); override;
+    procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -138,7 +131,8 @@ type
 
 implementation
 
-uses CommCtrl, FR_Dock, Printers;
+uses
+  CommCtrl, FR_Dock, Printers;
 
 type
   TGlyphList = class(TImageList)
@@ -173,7 +167,7 @@ type
   private
     FOriginal: TBitmap;
     FGlyphList: TGlyphList;
-    FIndexs: array[TfrButtonState] of Integer;
+    FIndexs: array [TfrButtonState] of Integer;
     FTransparentColor: TColor;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
@@ -183,20 +177,16 @@ type
     procedure Invalidate;
     function MapColor(Color: TColor): TColor;
     function CreateButtonGlyph(State: TfrButtonState): Integer;
-    procedure DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer;
-      State: TfrButtonState; Transparent: Boolean);
-    procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
-      TextBounds: TRect; State: TfrButtonState);
-    procedure CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
-      const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-      var GlyphPos: TPoint; var TextBounds: TRect);
+    procedure DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer; State: TfrButtonState; Transparent: Boolean);
+    procedure DrawButtonText(Canvas: TCanvas; const Caption: string; TextBounds: TRect; State: TfrButtonState);
+    procedure CalcButtonLayout(Canvas: TCanvas; const Client: TRect; const Caption: string; Layout: TButtonLayout;
+      Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
   public
     constructor Create;
     destructor Destroy; override;
     { return the text rectangle }
-    function Draw(Canvas: TCanvas; const Client: TRect;
-      const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-      State: TfrButtonState; Transparent: Boolean): TRect;
+    function Draw(Canvas: TCanvas; const Client: TRect; const Caption: string; Layout: TButtonLayout;
+      Margin, Spacing: Integer; State: TfrButtonState; Transparent: Boolean): TRect;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -235,6 +225,7 @@ begin
 end;
 
 {$IFDEF Delphi2}
+
 function TGlyphList.Add(Image, Mask: TBitmap): Integer;
 begin
   Result := AllocateIndex;
@@ -247,32 +238,35 @@ var
   TempIndex: Integer;
   Image, Mask: TBitmap;
 begin
-  if HandleAllocated then begin
+  if HandleAllocated then
+  begin
     TempIndex := inherited AddMasked(NewImage, MaskColor);
-    if TempIndex <> -1 then
-    try
-      Image := TBitmap.Create;
-      Mask := TBitmap.Create;
+    if TempIndex <> - 1 then
       try
-        with Image do begin
-          Height := Self.Height;
-          Width := Self.Width;
+        Image := TBitmap.Create;
+        Mask := TBitmap.Create;
+        try
+          with Image do
+          begin
+            Height := Self.Height;
+            Width := Self.Width;
+          end;
+          with Mask do
+          begin
+            Monochrome := True; { fix }
+            Height := Self.Height;
+            Width := Self.Width;
+          end;
+          ImageList_Draw(Handle, TempIndex, Image.Canvas.Handle, 0, 0, ILD_NORMAL);
+          ImageList_Draw(Handle, TempIndex, Mask.Canvas.Handle, 0, 0, ILD_MASK);
+          ImageList_Replace(Handle, Index, Image.Handle, Mask.Handle);
+        finally
+          Image.Free;
+          Mask.Free;
         end;
-        with Mask do begin
-          Monochrome := True; { fix }
-          Height := Self.Height;
-          Width := Self.Width;
-        end;
-        ImageList_Draw(Handle, TempIndex, Image.Canvas.Handle, 0, 0, ILD_NORMAL);
-        ImageList_Draw(Handle, TempIndex, Mask.Canvas.Handle, 0, 0, ILD_MASK);
-        ImageList_Replace(Handle, Index, Image.Handle, Mask.Handle);
       finally
-        Image.Free;
-        Mask.Free;
-      end;
-    finally
-      inherited Delete(TempIndex);
-    end
+        inherited Delete(TempIndex);
+      end
   end;
   Change;
 end;
@@ -309,7 +303,8 @@ begin
   begin
     Result := GlyphLists[I];
     with Result do
-      if (AWidth = Width) and (AHeight = Height) then Exit;
+      if (AWidth = Width) and (AHeight = Height) then
+        Exit;
   end;
   Result := TGlyphList.CreateSize(AWidth, AHeight);
   GlyphLists.Add(Result);
@@ -317,7 +312,8 @@ end;
 
 procedure TGlyphCache.ReturnList(List: TGlyphList);
 begin
-  if List = nil then Exit;
+  if List = nil then
+    Exit;
   if List.Count = 0 then
   begin
     GlyphLists.Remove(List);
@@ -330,13 +326,11 @@ begin
   Result := GlyphLists.Count = 0;
 end;
 
-
 var
   GlyphCache: TGlyphCache = nil;
   Pattern: TBitmap = nil;
   ButtonCount: Integer = 0;
   CacheBitmap: TBitmap = nil;
-
 
 procedure CreateBrushPattern;
 var
@@ -352,11 +346,12 @@ begin
     FillRect(Rect(0, 0, Pattern.Width, Pattern.Height));
     for Y := 0 to 7 do
       for X := 0 to 7 do
-        if (Y mod 2) = (X mod 2) then  { toggles between even/odd pixles }
-          Pixels[X, Y] := clWhite;     { on even/odd rows }
+        if (Y mod 2) = (X mod 2) then { toggles between even/odd pixles }
+          Pixels[X, Y] := clWhite;    { on even/odd rows }
   end;
   CacheBitmap := TBitmap.Create;
-  CacheBitmap.Width := 100; CacheBitmap.Height := 100;
+  CacheBitmap.Width := 100;
+  CacheBitmap.Height := 100;
 end;
 
 { TButtonGlyph }
@@ -371,8 +366,9 @@ begin
   FTransparentColor := clOlive;
   FNumGlyphs := 1;
   for I := Low(I) to High(I) do
-    FIndexs[I] := -1;
-  if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+    FIndexs[I] := - 1;
+  if GlyphCache = nil then
+    GlyphCache := TGlyphCache.Create;
 end;
 
 destructor TButtonGlyph.Destroy;
@@ -393,8 +389,9 @@ var
 begin
   for I := Low(I) to High(I) do
   begin
-    if FIndexs[I] <> -1 then FGlyphList.Delete(FIndexs[I]);
-    FIndexs[I] := -1;
+    if FIndexs[I] <> - 1 then
+      FGlyphList.Delete(FIndexs[I]);
+    FIndexs[I] := - 1;
   end;
   GlyphCache.ReturnList(FGlyphList);
   FGlyphList := nil;
@@ -406,7 +403,8 @@ begin
   begin
     FTransparentColor := FOriginal.TransparentColor;
     Invalidate;
-    if Assigned(FOnChange) then FOnChange(Self);
+    if Assigned(FOnChange) then
+      FOnChange(Self);
   end;
 end;
 
@@ -422,7 +420,8 @@ begin
     if Value.Width mod Value.Height = 0 then
     begin
       Glyphs := Value.Width div Value.Height;
-      if Glyphs > 4 then Glyphs := 1;
+      if Glyphs > 4 then
+        Glyphs := 1;
       SetNumGlyphs(Glyphs);
     end;
   end;
@@ -441,12 +440,13 @@ function TButtonGlyph.MapColor(Color: TColor): TColor;
 var
   Index: Byte;
 begin
-  if (Color = FTransparentColor) or (ColorToRGB(Color) =
-    ColorToRGB(clBtnFace)) then Result := Color
-  else begin
+  if (Color = FTransparentColor) or (ColorToRGB(Color) = ColorToRGB(clBtnFace)) then
+    Result := Color
+  else
+  begin
     Color := ColorToRGB(Color);
-    Index := Byte(Longint(Word(GetRValue(Color)) * 77 +
-      Word(GetGValue(Color)) * 150 + Word(GetBValue(Color)) * 29) shr 8);
+    Index := Byte(Longint(Word(GetRValue(Color)) * 77 + Word(GetGValue(Color)) * 150 + Word(GetBValue(Color)) *
+      29) shr 8);
     Result := RGB(Index, Index, Index);
   end;
 end;
@@ -461,15 +461,19 @@ var
   I: TfrButtonState;
   DestDC: HDC;
 begin
-  if (State = fbsDown) and (NumGlyphs < 3) then State := fbsUp;
+  if (State = fbsDown) and (NumGlyphs < 3) then
+    State := fbsUp;
   Result := FIndexs[State];
-  if Result <> -1 then Exit;
-  if (FOriginal.Width or FOriginal.Height) = 0 then Exit;
+  if Result <> - 1 then
+    Exit;
+  if (FOriginal.Width or FOriginal.Height) = 0 then
+    Exit;
   IWidth := FOriginal.Width div FNumGlyphs;
   IHeight := FOriginal.Height;
   if FGlyphList = nil then
   begin
-    if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+    if GlyphCache = nil then
+      GlyphCache := TGlyphCache.Create;
     FGlyphList := GlyphCache.GetList(IWidth, IHeight);
   end;
   TmpImage := TBitmap.Create;
@@ -480,7 +484,8 @@ begin
     TmpImage.Canvas.Brush.Color := clBtnFace;
     TmpImage.Palette := CopyPalette(FOriginal.Palette);
     I := State;
-    if Ord(I) >= NumGlyphs then I := fbsUp;
+    if Ord(I) >= NumGlyphs then
+      I := fbsUp;
     ORect := Rect(Ord(I) * IWidth, 0, (Ord(I) + 1) * IWidth, IHeight);
     case State of
       fbsUp, fbsDown, fbsExclusive:
@@ -509,45 +514,41 @@ begin
             DDB.HandleType := bmDDB;
 {$ENDIF}
             if NumGlyphs > 1 then
-            with TmpImage.Canvas do
-            begin    { Change white & gray to clBtnHighlight and clBtnShadow }
-              CopyRect(IRect, DDB.Canvas, ORect);
-              MonoBmp.Monochrome := True;
-              MonoBmp.Width := IWidth;
-              MonoBmp.Height := IHeight;
+              with TmpImage.Canvas do
+              begin { Change white & gray to clBtnHighlight and clBtnShadow }
+                CopyRect(IRect, DDB.Canvas, ORect);
+                MonoBmp.Monochrome := True;
+                MonoBmp.Width := IWidth;
+                MonoBmp.Height := IHeight;
 
               { Convert white to clBtnHighlight }
-              DDB.Canvas.Brush.Color := clWhite;
-              MonoBmp.Canvas.CopyRect(IRect, DDB.Canvas, ORect);
-              Brush.Color := clBtnHighlight;
-              DestDC := Handle;
-              SetTextColor(DestDC, clBlack);
-              SetBkColor(DestDC, clWhite);
-              BitBlt(DestDC, 0, 0, IWidth, IHeight,
-                     MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                DDB.Canvas.Brush.Color := clWhite;
+                MonoBmp.Canvas.CopyRect(IRect, DDB.Canvas, ORect);
+                Brush.Color := clBtnHighlight;
+                DestDC := Handle;
+                SetTextColor(DestDC, clBlack);
+                SetBkColor(DestDC, clWhite);
+                BitBlt(DestDC, 0, 0, IWidth, IHeight, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
 
               { Convert gray to clBtnShadow }
-              DDB.Canvas.Brush.Color := clGray;
-              MonoBmp.Canvas.CopyRect(IRect, DDB.Canvas, ORect);
-              Brush.Color := clBtnShadow;
-              DestDC := Handle;
-              SetTextColor(DestDC, clBlack);
-              SetBkColor(DestDC, clWhite);
-              BitBlt(DestDC, 0, 0, IWidth, IHeight,
-                     MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                DDB.Canvas.Brush.Color := clGray;
+                MonoBmp.Canvas.CopyRect(IRect, DDB.Canvas, ORect);
+                Brush.Color := clBtnShadow;
+                DestDC := Handle;
+                SetTextColor(DestDC, clBlack);
+                SetBkColor(DestDC, clWhite);
+                BitBlt(DestDC, 0, 0, IWidth, IHeight, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
 
               { Convert transparent color to clBtnFace }
-              DDB.Canvas.Brush.Color := ColorToRGB(FTransparentColor);
-              MonoBmp.Canvas.CopyRect(IRect, DDB.Canvas, ORect);
-              Brush.Color := clBtnFace;
-              DestDC := Handle;
-              SetTextColor(DestDC, clBlack);
-              SetBkColor(DestDC, clWhite);
-              BitBlt(DestDC, 0, 0, IWidth, IHeight,
-                     MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-            end
-            else
-            begin
+                DDB.Canvas.Brush.Color := ColorToRGB(FTransparentColor);
+                MonoBmp.Canvas.CopyRect(IRect, DDB.Canvas, ORect);
+                Brush.Color := clBtnFace;
+                DestDC := Handle;
+                SetTextColor(DestDC, clBlack);
+                SetBkColor(DestDC, clWhite);
+                BitBlt(DestDC, 0, 0, IWidth, IHeight, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+              end
+            else begin
               { Create a disabled version }
               with MonoBmp do
               begin
@@ -572,13 +573,11 @@ begin
                 Brush.Color := clBtnHighlight;
                 SetTextColor(Handle, clBlack);
                 SetBkColor(Handle, clWhite);
-                BitBlt(Handle, 1, 1, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                BitBlt(Handle, 1, 1, IWidth, IHeight, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
                 Brush.Color := clBtnShadow;
                 SetTextColor(Handle, clBlack);
                 SetBkColor(Handle, clWhite);
-                BitBlt(Handle, 0, 0, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                BitBlt(Handle, 0, 0, IWidth, IHeight, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
               end;
             end;
           finally
@@ -599,24 +598,22 @@ begin
   FOriginal.Dormant;
 end;
 
-procedure TButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer;
-  State: TfrButtonState; Transparent: Boolean);
+procedure TButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer; State: TfrButtonState; Transparent: Boolean);
 var
   Index: Integer;
 begin
-  if FOriginal = nil then Exit;
-  if (FOriginal.Width = 0) or (FOriginal.Height = 0) then Exit;
+  if FOriginal = nil then
+    Exit;
+  if (FOriginal.Width = 0) or (FOriginal.Height = 0) then
+    Exit;
   Index := CreateButtonGlyph(State);
   if Transparent then
-    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
-      clNone, clNone, ILD_Transparent)
+    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0, clNone, clNone, ILD_Transparent)
   else
-    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
-      ColorToRGB(clBtnFace), clNone, ILD_Normal);
+    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0, ColorToRGB(clBtnFace), clNone, ILD_NORMAL);
 end;
 
-procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
-  TextBounds: TRect; State: TfrButtonState);
+procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string; TextBounds: TRect; State: TfrButtonState);
 begin
   with Canvas do
   begin
@@ -626,54 +623,48 @@ begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clWhite;
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, 0);
-      OffsetRect(TextBounds, -1, -1);
+      OffsetRect(TextBounds, - 1, - 1);
       Font.Color := clDkGray;
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, 0);
-    end else
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+    end
+    else
+      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
 
-procedure TButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
-  const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-  var GlyphPos: TPoint; var TextBounds: TRect);
+procedure TButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect; const Caption: string;
+  Layout: TButtonLayout; Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
 var
   TextPos: TPoint;
   ClientSize, GlyphSize, TextSize: TPoint;
   TotalSize: TPoint;
 begin
   { calculate the item sizes }
-  ClientSize := Point(Client.Right - Client.Left, Client.Bottom -
-    Client.Top);
+  ClientSize := Point(Client.Right - Client.Left, Client.Bottom - Client.Top);
 
   if FOriginal <> nil then
-    GlyphSize := Point(FOriginal.Width div FNumGlyphs, FOriginal.Height) else
+    GlyphSize := Point(FOriginal.Width div FNumGlyphs, FOriginal.Height)
+  else
     GlyphSize := Point(0, 0);
 
   if Length(Caption) > 0 then
   begin
     TextBounds := Rect(0, 0, Client.Right - Client.Left, 0);
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextBounds, DT_CALCRECT);
-    TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
-      TextBounds.Top);
-  end
-  else
-  begin
+    TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom - TextBounds.Top);
+  end else begin
     TextBounds := Rect(0, 0, 0, 0);
-    TextSize := Point(0,0);
+    TextSize := Point(0, 0);
   end;
 
   { If the layout has the glyph on the right or the left, then both the
     text and the glyph are centered vertically.  If the glyph is on the top
-    or the bottom, then both the text and the glyph are centered horizontally.}
+    or the bottom, then both the text and the glyph are centered horizontally. }
   if Layout in [blGlyphLeft, blGlyphRight] then
   begin
     GlyphPos.Y := (ClientSize.Y - GlyphSize.Y + 1) div 2;
     TextPos.Y := (ClientSize.Y - TextSize.Y + 1) div 2;
-  end
-  else
-  begin
+  end else begin
     GlyphPos.X := (ClientSize.X - GlyphSize.X + 1) div 2;
     TextPos.X := (ClientSize.X - TextSize.X + 1) div 2;
   end;
@@ -683,9 +674,9 @@ begin
     Spacing := 0;
 
   { adjust Margin and Spacing }
-  if Margin = -1 then
+  if Margin = - 1 then
   begin
-    if Spacing = -1 then
+    if Spacing = - 1 then
     begin
       TotalSize := Point(GlyphSize.X + TextSize.X, GlyphSize.Y + TextSize.Y);
       if Layout in [blGlyphLeft, blGlyphRight] then
@@ -693,23 +684,17 @@ begin
       else
         Margin := (ClientSize.Y - TotalSize.Y) div 3;
       Spacing := Margin;
-    end
-    else
-    begin
-      TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y +
-        Spacing + TextSize.Y);
+    end else begin
+      TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y + Spacing + TextSize.Y);
       if Layout in [blGlyphLeft, blGlyphRight] then
         Margin := (ClientSize.X - TotalSize.X + 1) div 2
       else
         Margin := (ClientSize.Y - TotalSize.Y + 1) div 2;
     end;
-  end
-  else
-  begin
-    if Spacing = -1 then
+  end else begin
+    if Spacing = - 1 then
     begin
-      TotalSize := Point(ClientSize.X - (Margin + GlyphSize.X), ClientSize.Y -
-        (Margin + GlyphSize.Y));
+      TotalSize := Point(ClientSize.X - (Margin + GlyphSize.X), ClientSize.Y - (Margin + GlyphSize.Y));
       if Layout in [blGlyphLeft, blGlyphRight] then
         Spacing := (TotalSize.X - TextSize.X) div 2
       else
@@ -746,21 +731,17 @@ begin
   OffsetRect(TextBounds, TextPos.X + Client.Left, TextPos.Y + Client.Top);
 end;
 
-function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
-  const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
-  State: TfrButtonState; Transparent: Boolean): TRect;
+function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect; const Caption: string; Layout: TButtonLayout;
+  Margin, Spacing: Integer; State: TfrButtonState; Transparent: Boolean): TRect;
 var
   GlyphPos: TPoint;
 begin
-  CalcButtonLayout(Canvas, Client, Caption, Layout, Margin, Spacing,
-    GlyphPos, Result);
+  CalcButtonLayout(Canvas, Client, Caption, Layout, Margin, Spacing, GlyphPos, Result);
   DrawButtonGlyph(Canvas, GlyphPos.X, GlyphPos.Y, State, Transparent);
   DrawButtonText(Canvas, Caption, Result, State);
 end;
 
-
 { TfrSpeedButton }
-
 
 constructor TfrSpeedButton.Create(AOwner: TComponent);
 begin
@@ -771,7 +752,7 @@ begin
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
   ParentFont := True;
   FLayout := blGlyphLeft;
-  FMargin := -1;
+  FMargin := - 1;
   FSpacing := 4;
   FInactiveGrayed := True;
   Inc(ButtonCount);
@@ -796,7 +777,8 @@ var
 begin
   inherited Loaded;
   if Enabled then
-    State := fbsInactive else
+    State := fbsInactive
+  else
     State := fbsDisabled;
   TButtonGlyph(FGlyph).CreateButtonGlyph(State);
 end;
@@ -808,7 +790,8 @@ var
   AState: TfrButtonState;
   Transparent: Boolean;
 begin
-  if Pattern = nil then CreateBrushPattern;
+  if Pattern = nil then
+    CreateBrushPattern;
   AState := FState;
   if FInactiveGrayed and Enabled then
     if FFlat and not FMouseInControl and not (csDesigning in ComponentState) then
@@ -817,14 +800,15 @@ begin
   begin
     FState := fbsDisabled;
     FDragging := False;
-  end
-  else if FState = fbsDisabled then
+  end else if FState = fbsDisabled then
     if FDown and (GroupIndex <> 0) then
-      FState := fbsExclusive else
+      FState := fbsExclusive
+    else
       FState := fbsUp;
 
   if (Width > 100) or (Height > 100) then
-    CacheCanvas := Canvas else
+    CacheCanvas := Canvas
+  else
     CacheCanvas := CacheBitmap.Canvas;
   CacheCanvas.Font := Font;
 
@@ -837,12 +821,12 @@ begin
       OffsetRect(PaintRect, 1, 1);
   end
   else
-    PaintRect := DrawButtonFace(CacheCanvas, Rect(0, 0, Width, Height), 1, bsNew,
-      False, FState in [fbsDown, fbsExclusive], False);
+    PaintRect := DrawButtonFace(CacheCanvas, Rect(0, 0, Width, Height), 1, bsNew, False,
+      FState in [fbsDown, fbsExclusive], False);
 
   if FFlat then
-    Transparent := Enabled and (((FState = fbsExclusive) or
-       ((AState = fbsExclusive) and (FState = fbsInactive))) and not FMouseInControl)
+    Transparent := Enabled and (((FState = fbsExclusive) or ((AState = fbsExclusive) and (FState = fbsInactive))) and
+      not FMouseInControl)
   else
     Transparent := FState = fbsExclusive;
   if Transparent then
@@ -851,15 +835,15 @@ begin
     CacheCanvas.FillRect(PaintRect);
   end;
 
-  TButtonGlyph(FGlyph).Draw(CacheCanvas, PaintRect, Caption, FLayout, FMargin,
-    FSpacing, FState, Transparent);
+  TButtonGlyph(FGlyph).Draw(CacheCanvas, PaintRect, Caption, FLayout, FMargin, FSpacing, FState, Transparent);
 
   if FFlat and Enabled then
   begin
     PaintRect := Rect(0, 0, Width, Height);
     if FMouseInControl or (AState = fbsExclusive) then
       if AState in [fbsDown, fbsExclusive] then
-        Frame3D(CacheCanvas, PaintRect, clBtnShadow, clBtnHighlight, 1) else
+        Frame3D(CacheCanvas, PaintRect, clBtnShadow, clBtnHighlight, 1)
+      else
         Frame3D(CacheCanvas, PaintRect, clBtnHighlight, clBtnShadow, 1);
   end;
 
@@ -883,8 +867,7 @@ begin
   end;
 end;
 
-procedure TfrSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TfrSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button = mbLeft) and Enabled then
@@ -905,10 +888,15 @@ begin
   inherited MouseMove(Shift, X, Y);
   if FDragging then
   begin
-    if not FDown then NewState := fbsUp
-    else NewState := fbsExclusive;
+    if not FDown then
+      NewState := fbsUp
+    else
+      NewState := fbsExclusive;
     if (X >= 0) and (X < ClientWidth) and (Y >= 0) and (Y <= ClientHeight) then
-      if FDown then NewState := fbsExclusive else NewState := fbsDown;
+      if FDown then
+        NewState := fbsExclusive
+      else
+        NewState := fbsDown;
     if NewState <> FState then
     begin
       FState := NewState;
@@ -917,8 +905,7 @@ begin
   end;
 end;
 
-procedure TfrSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TfrSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   DoClick: Boolean;
 begin
@@ -932,18 +919,20 @@ begin
       { Redraw face in-case mouse is captured }
       FState := fbsUp;
       FMouseInControl := False;
-      if not (FState in [fbsExclusive, fbsDown]) then Repaint;
-    end
-    else
-      if DoClick then SetDown(not FDown)
-      else
-      begin
-        if FDown then FState := fbsExclusive;
+      if not (FState in [fbsExclusive, fbsDown]) then
         Repaint;
-      end;
+    end else if DoClick then
+      SetDown(not FDown)
+    else
+    begin
+      if FDown then
+        FState := fbsExclusive;
+      Repaint;
+    end;
     UpdateTracking;
     Invalidate;
-    if DoClick then Click;
+    if DoClick then
+      Click;
   end;
 end;
 
@@ -952,9 +941,9 @@ begin
   inherited Click;
 end;
 
-procedure TfrSpeedButton.DrawGlyph(Canvas:TCanvas; X,Y:Integer; Enabled:Boolean);
+procedure TfrSpeedButton.DrawGlyph(Canvas: TCanvas; X, Y: Integer; Enabled: Boolean);
 const
-  NewState: array[Boolean] of TfrButtonState = (fbsDisabled, fbsUp);
+  NewState: array [Boolean] of TfrButtonState = (fbsDisabled, fbsUp);
 begin
   TButtonGlyph(FGlyph).DrawButtonGlyph(Canvas, X, Y, NewState[Enabled], False);
 end;
@@ -977,8 +966,11 @@ end;
 
 procedure TfrSpeedButton.SetNumGlyphs(Value: TNumGlyphs);
 begin
-  if Value < 0 then Value := 1
-  else if Value > 4 then Value := 4;
+  if Value < 0 then
+    Value := 1
+  else
+    if Value > 4 then
+      Value := 4;
   if Value <> TButtonGlyph(FGlyph).NumGlyphs then
   begin
     TButtonGlyph(FGlyph).NumGlyphs := Value;
@@ -1007,15 +999,20 @@ end;
 
 procedure TfrSpeedButton.SetDown(Value: Boolean);
 begin
-  if FGroupIndex = 0 then Value := False;
+  if FGroupIndex = 0 then
+    Value := False;
   if Value <> FDown then
   begin
-    if FDown and (not FAllowAllUp) then Exit;
+    if FDown and (not FAllowAllUp) then
+      Exit;
     FDown := Value;
-    if Value then FState := fbsExclusive
-    else FState := fbsUp;
+    if Value then
+      FState := fbsExclusive
+    else
+      FState := fbsUp;
     Invalidate;
-    if Value then UpdateExclusive;
+    if Value then
+      UpdateExclusive;
   end;
 end;
 
@@ -1028,7 +1025,7 @@ begin
   end;
 end;
 
-procedure TfrSpeedButton.SetGroupIndex(Value: Integer);
+procedure TfrSpeedButton.SetGroupIndex(Value: Cardinal);
 begin
   if FGroupIndex <> Value then
   begin
@@ -1058,12 +1055,13 @@ end;
 procedure TfrSpeedButton.WMLButtonDblClk(var Message: TWMLButtonDown);
 begin
   inherited;
-  if FDown then DblClick;
+  if FDown then
+    DblClick;
 end;
 
 procedure TfrSpeedButton.CMEnabledChanged(var Message: TMessage);
 const
-  NewState: array[Boolean] of TfrButtonState = (fbsDisabled, fbsUp);
+  NewState: array [Boolean] of TfrButtonState = (fbsDisabled, fbsUp);
 begin
   TButtonGlyph(FGlyph).CreateButtonGlyph(NewState[Enabled]);
   UpdateTracking;
@@ -1097,7 +1095,8 @@ begin
     begin
       Click;
       Result := 1;
-    end else
+    end
+    else
       inherited;
 end;
 
@@ -1121,7 +1120,8 @@ begin
   inherited;
   if FFlat and (not FMouseInControl) and Enabled then
   begin
-    if Assigned(FOnMouseEnter) then FOnMouseEnter(Self);
+    if Assigned(FOnMouseEnter) then
+      FOnMouseEnter(Self);
     FMouseInControl := True;
     Invalidate;
   end;
@@ -1132,7 +1132,8 @@ begin
   inherited;
   if FFlat and FMouseInControl and Enabled then
   begin
-    if Assigned(FOnMouseLeave) then FOnMouseLeave(Self);
+    if Assigned(FOnMouseLeave) then
+      FOnMouseLeave(Self);
     FMouseInControl := False;
     Invalidate;
   end;
@@ -1145,7 +1146,7 @@ end;
 
 procedure TfrSpeedButton.SetMargin(Value: Integer);
 begin
-  if (Value <> FMargin) and (Value >= -1) then
+  if (Value <> FMargin) and (Value >= - 1) then
   begin
     FMargin := Value;
     Invalidate;
@@ -1163,19 +1164,20 @@ end;
 
 procedure TfrSpeedButton.SetInactiveGrayed(Value: Boolean);
 begin
-  if Value <> FInactiveGrayed then begin
+  if Value <> FInactiveGrayed then
+  begin
     FInactiveGrayed := Value;
     Invalidate;
   end;
 end;
 
-
 { TTBSeparator }
 
-function GetAlign(al:TAlign): TAlign;
+function GetAlign(al: TAlign): TAlign;
 begin
   if al in [alLeft, alRight] then
-    Result := alTop else
+    Result := alTop
+  else
     Result := alLeft;
 end;
 
@@ -1188,7 +1190,7 @@ begin
   FDrawBevel := True;
 end;
 
-procedure TfrTBSeparator.SetParent(AParent:TWinControl);
+procedure TfrTBSeparator.SetParent(AParent: TWinControl);
 begin
   inherited;
   if not (csDestroying in ComponentState) and (AParent <> nil) then
@@ -1211,26 +1213,26 @@ begin
     Rectangle(0, 0, Width, Height);
     Pen.Style := psSolid;
     if FDrawBevel then
-    case Align of
-      alLeft, alRight:
-      begin
-        Pen.Color := clBtnShadow;
-        MoveTo(Width div 2 - 1, 2);
-        LineTo(Width div 2 - 1, Height - 2);
-        Pen.Color := clBtnHighlight;
-        MoveTo(Width div 2, 2);
-        LineTo(Width div 2, Height - 2);
+      case Align of
+        alLeft, alRight:
+          begin
+            Pen.Color := clBtnShadow;
+            MoveTo(Width div 2 - 1, 2);
+            LineTo(Width div 2 - 1, Height - 2);
+            Pen.Color := clBtnHighlight;
+            MoveTo(Width div 2, 2);
+            LineTo(Width div 2, Height - 2);
+          end;
+        alTop, alBottom:
+          begin
+            Pen.Color := clBtnShadow;
+            MoveTo(2, Height div 2 - 1);
+            LineTo(Width - 2, Height div 2 - 1);
+            Pen.Color := clBtnHighlight;
+            MoveTo(2, Height div 2);
+            LineTo(Width - 2, Height div 2);
+          end;
       end;
-      alTop, alBottom:
-      begin
-        Pen.Color := clBtnShadow;
-        MoveTo(2, Height div 2 - 1);
-        LineTo(Width - 2, Height div 2 - 1);
-        Pen.Color := clBtnHighlight;
-        MoveTo(2, Height div 2);
-        LineTo(Width - 2, Height div 2);
-      end;
-    end;
     if csDesigning in ComponentState then
     begin
       Brush.Style := bsClear;
@@ -1249,7 +1251,7 @@ begin
   Height := 8;
 end;
 
-procedure TfrTBPanel.SetParent(AParent:TWinControl);
+procedure TfrTBPanel.SetParent(AParent: TWinControl);
 begin
   inherited;
   if not (csDestroying in ComponentState) and (AParent <> nil) then
@@ -1281,14 +1283,11 @@ begin
   Flat := True;
 end;
 
-procedure TfrTBButton.SetParent(AParent:TWinControl);
+procedure TfrTBButton.SetParent(AParent: TWinControl);
 begin
   inherited;
   if not (csDestroying in ComponentState) and (AParent <> nil) then
     Align := GetAlign(AParent.Parent.Align);
 end;
 
-
-
 end.
-

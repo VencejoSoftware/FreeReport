@@ -1,12 +1,11 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{            RTF export filter            }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ }
+{ FastReport v2.3 }
+{ RTF export filter }
+{ }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ }
+{ ***************************************** }
 
 unit FR_E_RTF;
 
@@ -19,7 +18,7 @@ uses
   FR_Class, FR_E_TXT;
 
 type
-  TfrRTFExport = class(TComponent) // fake component
+  TfrRTFExport = class(TComponent)// fake component
   end;
 
   TfrRTFExportFilter = class(TfrTextExportFilter)
@@ -35,10 +34,10 @@ type
     procedure OnData(x, y: Integer; View: TfrView); override;
   end;
 
-
 implementation
 
-uses FR_Const;
+uses
+  FR_Const;
 
 constructor TfrRTFExportFilter.Create(AStream: TStream);
 var
@@ -80,9 +79,7 @@ begin
   for i := 0 to ColorTable.Count - 1 do
   begin
     c := StrToInt(ColorTable[i]);
-    s1 := '\red' + IntToStr(GetRValue(c)) +
-          '\green' + IntToStr(GetGValue(c)) +
-          '\blue' + IntToStr(GetBValue(c)) + ';';
+    s1 := '\red' + IntToStr(GetRValue(c)) + '\green' + IntToStr(GetGValue(c)) + '\blue' + IntToStr(GetBValue(c)) + ';';
     if Length(s + s1) < 255 then
       s := s + s1
     else
@@ -110,16 +107,19 @@ var
   p: PfrTextRec;
   s0, s, s1: String;
   fSize, fStyle, fColor: Integer;
-  fName: String;
+  fName: ShortString;
   Str: TStream;
-  bArr: Array[0..1023] of Byte;
+  bArr: Array [0 .. 1023] of Byte;
 
   function GetFontStyle(f: Integer): String;
   begin
     Result := '';
-    if (f and $1) <> 0 then Result := '\i';
-    if (f and $2) <> 0 then Result := Result + '\b';
-    if (f and $4) <> 0 then Result := Result + '\u';
+    if (f and $1) <> 0 then
+      Result := '\i';
+    if (f and $2) <> 0 then
+      Result := Result + '\b';
+    if (f and $4) <> 0 then
+      Result := Result + '\u';
   end;
 
   function GetFontColor(f: String): String;
@@ -127,7 +127,7 @@ var
     i: Integer;
   begin
     i := ColorTable.IndexOf(f);
-    if i <> -1 then
+    if i <> - 1 then
       Result := IntToStr(i + 1)
     else
     begin
@@ -141,7 +141,7 @@ var
     i: Integer;
   begin
     i := FontTable.IndexOf(f);
-    if i <> -1 then
+    if i <> - 1 then
       Result := IntToStr(i)
     else
     begin
@@ -165,12 +165,9 @@ begin
     Str.Read(y, 4);
     Str.Read(dx, 4);
     Str.Read(dy, 4);
-    s := '\pard\phmrg\posx' + IntToStr(Round(x / 1.3 * 20)) +
-         '\posy' + IntToStr(y * 20) +
-         '\absh' + IntToStr(dy * 20) +
-         '\absw' + IntToStr(dx * 20) +
-         '{\pict\wmetafile8\picw' + IntToStr(Round(dx * 26.46875)) +
-         '\pich' + IntToStr(Round(dy * 26.46875)) + ' \picbmp\picbpp4' + #13#10;
+    s := '\pard\phmrg\posx' + IntToStr(Round(x / 1.3 * 20)) + '\posy' + IntToStr(y * 20) + '\absh' + IntToStr(dy * 20) +
+      '\absw' + IntToStr(dx * 20) + '{\pict\wmetafile8\picw' + IntToStr(Round(dx * 26.46875)) + '\pich' +
+      IntToStr(Round(dy * 26.46875)) + ' \picbmp\picbpp4' + #13#10;
     TempStream.Write(s[1], Length(s));
 // shit begins
     Str.Read(dx, 4);
@@ -179,17 +176,15 @@ begin
     Str.Read(n, 4);
     n := n div 2 + 7;
     s0 := IntToHex(n + $24, 8);
-    s := '010009000003' + Copy(s0, 7, 2) + Copy(s0, 5, 2) +
-         Copy(s0, 3, 2) + Copy(s0, 1, 2) + '0000';
+    s := '010009000003' + Copy(s0, 7, 2) + Copy(s0, 5, 2) + Copy(s0, 3, 2) + Copy(s0, 1, 2) + '0000';
     s0 := IntToHex(n, 8);
     s1 := Copy(s0, 7, 2) + Copy(s0, 5, 2) + Copy(s0, 3, 2) + Copy(s0, 1, 2);
     s := s + s1 + '0000050000000b0200000000050000000c02';
     s0 := IntToHex(dy, 4);
     s := s + Copy(s0, 3, 2) + Copy(s0, 1, 2);
     s0 := IntToHex(dx, 4);
-    s := s + Copy(s0, 3, 2) + Copy(s0, 1, 2) +
-         '05000000090200000000050000000102ffffff000400000007010300' + s1 +
-         '430f2000cc000000';
+    s := s + Copy(s0, 3, 2) + Copy(s0, 1, 2) + '05000000090200000000050000000102ffffff000400000007010300' + s1 +
+      '430f2000cc000000';
     s0 := IntToHex(dy, 4);
     s := s + Copy(s0, 3, 2) + Copy(s0, 1, 2);
     s0 := IntToHex(dx, 4);
@@ -202,7 +197,8 @@ begin
 // shit ends
 
     Str.Read(bArr[0], 8);
-    n1 := 0; s := '';
+    n1 := 0;
+    s := '';
     repeat
       n := Str.Read(bArr[0], 1024);
       for j := 0 to n - 1 do
@@ -229,23 +225,28 @@ begin
   n := Lines.Count - 1;
   while n >= 0 do
   begin
-    if Lines[n] <> nil then break;
+    if Lines[n] <> nil then
+      break;
     Dec(n);
   end;
 
   for i := 0 to n do
   begin
     p := PfrTextRec(Lines[i]);
-    s0 := '\pard'; s := '';
-    fSize := -1; fStyle := -1; fColor := -1; fName := '';
+    s0 := '\pard';
+    s := '';
+    fSize := - 1;
+    fStyle := - 1;
+    fColor := - 1;
+    fName := '';
     while p <> nil do
     begin
-      s0 := s0 + '\tx' + IntToStr(Round(p^.X / 1.3 * 20));
+      s0 := s0 + '\tx' + IntToStr(Round(p^.x / 1.3 * 20));
       s1 := '';
       if p^.FontColor = clWhite then
         p^.FontColor := clBlack;
       if fName <> p^.FontName then
-        s1 := '\f' + GetFontName(p^.FontName);
+        s1 := '\f' + GetFontName(String(p^.FontName));
       if fSize <> p^.FontSize then
         s1 := s1 + '\fs' + IntToStr(p^.FontSize * 2);
       if fStyle <> p^.FontStyle then
@@ -253,10 +254,12 @@ begin
       if fColor <> p^.FontColor then
         s1 := s1 + '\cf' + GetFontColor(IntToStr(p^.FontColor));
 
-      s := s + '\tab' + s1 + ' ' + p^.Text;
+      s := s + '\tab' + s1 + ' ' + String(p^.Text);
 
-      fSize := p^.FontSize; fStyle := p^.FontStyle;
-      fColor := p^.FontColor; fName := p^.FontName;
+      fSize := p^.FontSize;
+      fStyle := p^.FontStyle;
+      fColor := p^.FontColor;
+      fName := p^.FontName;
       p := p^.Next;
     end;
     s := s0 + '{' + s + '\par}' + #13#10;
@@ -288,8 +291,8 @@ begin
   end;
 end;
 
-
 initialization
-  frRegisterExportFilter(TfrRTFExportFilter, LoadStr(SRTFFile) + ' (*.rtf)', '*.rtf');
+
+frRegisterExportFilter(TfrRTFExportFilter, LoadStr(SRTFFile) + ' (*.rtf)', '*.rtf');
 
 end.

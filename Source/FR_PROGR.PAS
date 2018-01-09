@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{             Progress dialog             }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ Progress dialog }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_progr;
 
@@ -57,16 +53,18 @@ function TfrProgressForm.Show_Modal(Doc: TfrReport): Word;
 begin
   FDoc := Doc;
 {$IFDEF Delphi9}
-  Timer := TTimer.Create(nil);
-  Timer.Interval := 200;
-  Timer.OnTimer := CMBeforeModal;
-  Timer.Enabled := True;
+  try
+    Timer := TTimer.Create(nil);
+    Timer.Interval := 200;
+    Timer.OnTimer := CMBeforeModal;
+    Timer.Enabled := True;
+    Result := ShowModal;
+  finally
+    Timer.Free;
+  end;
 {$ELSE}
   PostMessage(Handle, CM_BeforeModal, 0, 0);
-{$ENDIF}
   Result := ShowModal;
-{$IFDEF Delphi9}
-  Timer.Free;
 {$ENDIF}
 end;
 
@@ -77,6 +75,7 @@ begin
 end;
 
 {$IFDEF Delphi9}
+
 procedure TfrProgressForm.CMBeforeModal(Sender: TObject);
 begin
   Timer.Enabled := False;
@@ -84,9 +83,11 @@ begin
     FOnBeforeModal(Self);
 end;
 {$ELSE}
+
 procedure TfrProgressForm.CMBeforeModal(var Message: TMessage);
 begin
-  if Assigned(FOnBeforeModal) then FOnBeforeModal(Self);
+  if Assigned(FOnBeforeModal) then
+    FOnBeforeModal(Self);
 end;
 {$ENDIF}
 
@@ -96,4 +97,3 @@ begin
 end;
 
 end.
-

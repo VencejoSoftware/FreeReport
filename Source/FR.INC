@@ -66,6 +66,16 @@
   {$WARN UNSAFE_CODE OFF}
 {$ENDIF}
 
+{$IFDEF VER210} // Delphi 2010
+  {$DEFINE Delphi4}
+  {$DEFINE Delphi5}
+  {$DEFINE Delphi6}
+  {$DEFINE Delphi7}
+  {$DEFINE Delphi9}
+  {$DEFINE Delphi10}
+  {$WARN UNSAFE_CODE OFF}
+{$ENDIF}
+
 {$IFDEF VER93}       // Borland C++ Builder 1.0
   {$DEFINE Delphi2}
 {$ENDIF}
@@ -106,9 +116,9 @@
 //-------------------------Additional components----------------------------
 
 //------------------- TeeChart component ----------------------------
-{$IFNDEF Delphi2}
+//{$IFNDEF Delphi2}
   {$DEFINE TeeChart}
-{$ENDIF}
+//{$ENDIF}
 
 // TeeChart component is usually not shipped with Delphi 2.
 // But if you have it, uncomment the following line:
@@ -118,7 +128,7 @@
 // JPEG images - only available in Delphi 3 and above.
 // If you want to show jpeg images in "Picture" object, uncomment
 // the following line:
-//{$DEFINE JPEG}
+{$DEFINE JPEG}
 
 //------------------- RX Rich 2.0 -----------------------------------
 // RX RichEdit 2.0. You should install RX Library (2.60 or above) first.
@@ -131,7 +141,7 @@
 
 //------------------- Interbase Express (IBX) components ------------
 // Allows using Interbase DB's in data manager with no BDE required.
-//{$DEFINE IBX}
+{$DEFINE IBX}
 
 //------------------- ActiveX Data Objects (ADO) components ---------
 // Allows using any DB's in data manager with no BDE required.

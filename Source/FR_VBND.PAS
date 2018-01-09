@@ -1,12 +1,11 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{     Select Band datasource dialog       }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ }
+{ FastReport v2.3 }
+{ Select Band datasource dialog }
+{ }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ }
+{ ***************************************** }
 
 unit FR_VBnd;
 
@@ -49,7 +48,8 @@ implementation
 
 {$R *.DFM}
 
-uses FR_DSet, FR_Const, FR_Utils;
+uses
+  FR_DSet, FR_Const, FR_Utils;
 
 procedure TfrVBandEditorForm.ShowEditor(t: TfrView);
 var
@@ -67,27 +67,27 @@ begin
     b := True;
 
   with frDesigner.Page do
-  for i := 0 to Objects.Count - 1 do
-  begin
-    t1 := Objects[i];
-    if (t1.Typ = gtBand) and not (TfrBandView(t1).BandType in
-      [btReportTitle..btPageFooter, btOverlay, btCrossHeader..btCrossFooter]) then
+    for i := 0 to Objects.Count - 1 do
     begin
-      LB1.Items.Add(t1.Name + ': ' + frBandNames[t1.FrameTyp]);
-      n := Pos(AnsiUpperCase(t1.Name) + '=', AnsiUpperCase(s));
-      if n <> 0 then
+      t1 := Objects[i];
+      if (t1.Typ = gtBand) and not (TfrBandView(t1).BandType in [btReportTitle .. btPageFooter, btOverlay,
+        btCrossHeader .. btCrossFooter]) then
       begin
-        n := n + Length(t1.Name) + 1;
-        j := n;
-        while s[j] <> ';' do Inc(j);
-        List[t1.Name] := Copy(s, n, j - n);
-      end
-      else
-        if b then
-          List[t1.Name] := s else
+        LB1.Items.Add(t1.Name + ': ' + frBandNames[t1.FrameTyp]);
+        n := Pos(AnsiUpperCase(t1.Name) + '=', AnsiUpperCase(s));
+        if n <> 0 then
+        begin
+          n := n + Length(t1.Name) + 1;
+          j := n;
+          while s[j] <> ';' do
+            Inc(j);
+          List[t1.Name] := Copy(s, n, j - n);
+        end else if b then
+          List[t1.Name] := s
+        else
           List[t1.Name] := '0';
+      end;
     end;
-  end;
   if LB1.Items.Count = 0 then
   begin
     List.Free;
@@ -104,7 +104,7 @@ begin
     s := '';
     for i := 0 to List.Count - 1 do
       s := s + List.Name[i] + '=' + List.Value[i] + ';';
-    Band.DataSet := s;
+    Band.Dataset := s;
   end;
   List.Free;
 end;
@@ -139,15 +139,13 @@ begin
   s := LB1.Items[LB1.ItemIndex];
   s := Copy(s, 1, Pos(':', s) - 1);
   s := List[s];
-  if (s <> '') and (s[1] in ['1'..'9']) then
+  if (s <> '') and CharInSet(s[1], ['1' .. '9']) then
   begin
     i := 1;
     Edit1.Text := s;
-  end
-  else
-  begin
+  end else begin
     i := CB1.Items.IndexOf(s);
-    if i = -1 then
+    if i = - 1 then
       i := CB1.Items.IndexOf(LoadStr(SNotAssigned));
   end;
   CB1.ItemIndex := i;
@@ -161,9 +159,9 @@ begin
   s := LB1.Items[LB1.ItemIndex];
   s := Copy(s, 1, Pos(':', s) - 1);
   if CB1.ItemIndex = 1 then
-    List[s] := Edit1.Text else
+    List[s] := Edit1.Text
+  else
     List[s] := CB1.Items[CB1.ItemIndex];
 end;
 
 end.
-

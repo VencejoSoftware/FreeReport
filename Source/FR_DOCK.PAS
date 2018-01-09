@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{              Tool controls              }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ Tool controls }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_Dock;
 
@@ -15,7 +11,7 @@ interface
 {$I FR.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Types, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, FR_Ctrls;
 
 type
@@ -38,11 +34,9 @@ type
 
   TfrDragBox = class(TGraphicControl)
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
@@ -64,13 +58,10 @@ type
     function GetVisible: Boolean;
     procedure SetVisible(Value: Boolean);
     procedure DockTo(Dock: TfrDock; X, Y: Integer);
-    procedure FloatTo(X,Y: Integer);
-    procedure DoMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
-    procedure DoMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FloatTo(X, Y: Integer);
+    procedure DoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure DoMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure DoMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoResize(Sender: TObject);
     procedure WMWindowPosChanged(var Message: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
     function GetFloatWindow: TForm;
@@ -100,11 +91,9 @@ type
     FDown: Boolean;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
     ToolBar: TfrToolBar;
     procedure Capture;
@@ -114,72 +103,72 @@ var
   RegRootKey: String;
 
 const
-  rsToolBar             = 'ToolBar\';
-  rsForm                = 'Form\';
-  rsWidth               = 'Width';
-  rsHeight              = 'Height';
-  rsTop                 = 'Top';
-  rsLeft                = 'Left';
-  rsFloat               = 'isFloat';
-  rsVisible             = 'isVisible';
-  rsX                   = 'XPosition';
-  rsY                   = 'YPosition';
-  rsDockName            = 'DockName';
+  rsToolBar = 'ToolBar\';
+  rsForm = 'Form\';
+  rsWidth = 'Width';
+  rsHeight = 'Height';
+  rsTop = 'Top';
+  rsLeft = 'Left';
+  rsFloat = 'isFloat';
+  rsVisible = 'isVisible';
+  rsX = 'XPosition';
+  rsY = 'YPosition';
+  rsDockName = 'DockName';
 
 procedure SaveToolbarPosition(t: TfrToolBar);
 procedure RestoreToolbarPosition(t: TfrToolBar);
 procedure SaveFormPosition(f: TForm);
 procedure RestoreFormPosition(f: TForm);
 
-
 implementation
 
 {$R *.DFM}
 
-uses Registry;
+uses
+  Registry;
 
 var
   FloatingToolBars: TList;
 
-
 procedure AddToToolbarList(t: TfrToolBar);
 begin
-  if FloatingToolbars.IndexOf(t) <> -1 then
-    FloatingToolbars.Add(t);
+  if FloatingToolBars.IndexOf(t) <> - 1 then
+    FloatingToolBars.Add(t);
 end;
 
 procedure RemoveFromToolbarList(t: TfrToolBar);
 var
   i: Integer;
 begin
-  i := FloatingToolbars.IndexOf(t);
-  if i <> -1 then
-    FloatingToolbars.Delete(i);
+  i := FloatingToolBars.IndexOf(t);
+  if i <> - 1 then
+    FloatingToolBars.Delete(i);
 end;
 
 procedure DestroyToolbarList;
 var
   i: Integer;
 begin
-  for i := 0 to FloatingToolBars.Count-1 do
+  for i := 0 to FloatingToolBars.Count - 1 do
     TfrToolBar(FloatingToolBars[i]).Free;
 end;
-
 
 procedure SaveToolbarPosition(t: TfrToolBar);
 var
   Ini: TRegIniFile;
-  X, Y: integer;
+  X, Y: Integer;
   Name: String;
 begin
   Ini := TRegIniFile.Create(RegRootKey);
-  Name := rsToolbar + t.Name;
-  Ini.WriteBool(Name, rsFloat, t.isFloat);
+  Name := rsToolBar + t.Name;
+  Ini.WriteBool(Name, rsFloat, t.IsFloat);
   Ini.WriteBool(Name, rsVisible, t.IsVisible);
-  X := t.Left; Y := t.Top;
+  X := t.Left;
+  Y := t.Top;
   if t.IsFloat then
   begin
-    X := t.FloatWindow.Left; Y := t.FloatWindow.Top;
+    X := t.FloatWindow.Left;
+    Y := t.FloatWindow.Top;
   end;
   Ini.WriteInteger(Name, rsX, X);
   Ini.WriteInteger(Name, rsY, Y);
@@ -199,7 +188,7 @@ var
   Name: String;
 begin
   Ini := TRegIniFile.Create(RegRootKey);
-  Name := rsToolbar + t.Name;
+  Name := rsToolBar + t.Name;
   t.IsVisible := False;
   X := Ini.ReadInteger(Name, rsX, t.Left);
   Y := Ini.ReadInteger(Name, rsY, t.Top);
@@ -256,8 +245,7 @@ begin
   Ini.Free;
 end;
 
-
-{--------------------------------------------------------------------------}
+{ -------------------------------------------------------------------------- }
 constructor TfrDock.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -280,73 +268,75 @@ begin
   if ControlCount = 0 then
   begin
     if Align in [alTop, alBottom] then
-      Height := 1 else
+      Height := 1
+    else
       Width := 1;
     Exit;
   end;
   if Align in [alTop, alBottom] then
-    L := Height else
-    L := Width;
-  LineCount := L div RowSize;
+    l := Height
+  else
+    l := Width;
+  LineCount := l div RowSize;
   NewSize := RowSize * LineCount + 1;
-  L := 0;
-  dL := RowSize;
+  l := 0;
+  dl := RowSize;
   if Align in [alRight, alBottom] then
   begin
-    dL := -RowSize;
+    dl := - RowSize;
     if Align = alRight then
-      L := Width else
-      L := Height;
+      l := Width
+    else
+      l := Height;
   end;
   Line := 0;
   while Line < LineCount do
   begin
     CtlOnLine := 0;
-    for i := 0 to ControlCount-1 do
+    for i := 0 to ControlCount - 1 do
     begin
       c := Controls[i];
       if c.Visible then
-      case Align of
-        alLeft:
-          if (c.Left = L) or
-            ((c.Left < L) and (c.Left + c.Width > L)) then Inc(CtlOnLine);
-        alRight:
-          if (c.Left + c.Width = L) or
-            ((c.Left + c.Width > L) and (c.Left < L)) then Inc(CtlOnLine);
-        alTop:
-          if (c.Top = L) or
-            ((c.Top < L) and (c.Top + c.Height > L)) then Inc(CtlOnLine);
-        alBottom:
-          if (c.Top + c.Height = L) or
-            ((c.Top + c.Height > L) and (c.Top < L)) then Inc(CtlOnLine);
-      end;
+        case Align of
+          alLeft:
+            if (c.Left = l) or ((c.Left < l) and (c.Left + c.Width > l)) then
+              Inc(CtlOnLine);
+          alRight:
+            if (c.Left + c.Width = l) or ((c.Left + c.Width > l) and (c.Left < l)) then
+              Inc(CtlOnLine);
+          alTop:
+            if (c.Top = l) or ((c.Top < l) and (c.Top + c.Height > l)) then
+              Inc(CtlOnLine);
+          alBottom:
+            if (c.Top + c.Height = l) or ((c.Top + c.Height > l) and (c.Top < l)) then
+              Inc(CtlOnLine);
+        end;
     end;
     if CtlOnLine = 0 then
     begin
-      for i := 0 to ControlCount-1 do
+      for i := 0 to ControlCount - 1 do
       begin
         c := Controls[i];
         if c.Visible then
         begin
-          if ((Align = alLeft) and (c.Left > L)) or
-             ((Align = alRight) and (c.Left + c.Width > L)) then
+          if ((Align = alLeft) and (c.Left > l)) or ((Align = alRight) and (c.Left + c.Width > l)) then
             c.Left := c.Left - RowSize;
-          if ((Align = alTop) and (c.Top > L)) or
-             ((Align = alBottom) and (c.Top + c.Height > L)) then
+          if ((Align = alTop) and (c.Top > l)) or ((Align = alBottom) and (c.Top + c.Height > l)) then
             c.Top := c.Top - RowSize;
         end;
       end;
       Dec(NewSize, RowSize);
       Dec(LineCount);
       Dec(Line);
-      if Align in [alTop, alLeft] then Dec(L, dL);
+      if Align in [alTop, alLeft] then
+        Dec(l, dl);
     end;
     Inc(Line);
-    Inc(L, dL);
+    Inc(l, dl);
   end;
 
   ShiftNeeded := False;
-  for i := 0 to ControlCount-1 do
+  for i := 0 to ControlCount - 1 do
   begin
     c := Controls[i];
     if c.Visible then
@@ -354,15 +344,15 @@ begin
       if (Align = alRight) and (c.Left < 0) then
       begin
         ShiftNeeded := True;
-        L := -c.Left + 1;
-        Inc(NewSize, L);
+        l := - c.Left + 1;
+        Inc(NewSize, l);
         break;
       end;
       if (Align = alBottom) and (c.Top < 0) then
       begin
         ShiftNeeded := True;
-        L := -c.Top + 1;
-        Inc(NewSize, L);
+        l := - c.Top + 1;
+        Inc(NewSize, l);
         break;
       end;
       if (Align = alTop) and (c.Top + c.Height > NewSize) then
@@ -378,17 +368,18 @@ begin
     end;
   end;
   if ShiftNeeded then
-    for i := 0 to ControlCount-1 do
+    for i := 0 to ControlCount - 1 do
     begin
       c := Controls[i];
       if c.Visible then
         if Align = alRight then
-          c.Left := c.Left + L
-        else if Align = alBottom then
-          c.Top := c.Top + L;
+          c.Left := c.Left + l
+        else
+          if Align = alBottom then
+            c.Top := c.Top + l;
     end;
 
-  for i := 0 to ControlCount-1 do
+  for i := 0 to ControlCount - 1 do
   begin
     c := Controls[i];
     if c.Visible then
@@ -401,8 +392,10 @@ begin
   end;
 
   case Align of
-    alTop: Height := NewSize;
-    alLeft: Width := NewSize;
+    alTop:
+      Height := NewSize;
+    alLeft:
+      Width := NewSize;
     alBottom:
       if Height < NewSize then
         SetBounds(0, Top - (NewSize - Height), Width, NewSize)
@@ -433,8 +426,7 @@ begin
   end;
 end;
 
-
-{--------------------------------------------------------------------------}
+{ -------------------------------------------------------------------------- }
 constructor TfrDragBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -458,8 +450,7 @@ begin
     Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
     R := Rect(5, 0, 8, Height);
     Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
-  end
-  else if (Parent as TfrToolBar).ParentAlign = alLeft then
+  end else if (Parent as TfrToolBar).ParentAlign = alLeft then
   begin
     R := Rect(0, 2, Width, 5);
     Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
@@ -468,14 +459,13 @@ begin
   end;
 end;
 
-procedure TfrDragBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TfrDragBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
 begin
   p := ClientToScreen(Point(X, Y));
   p := Parent.ScreenToClient(p);
-  (Parent as TfrToolBar).DoMouseDown(Self, Button, Shift, P.X, P.Y);
+  (Parent as TfrToolBar).DoMouseDown(Self, Button, Shift, p.X, p.Y);
 end;
 
 procedure TfrDragBox.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -484,21 +474,19 @@ var
 begin
   p := ClientToScreen(Point(X, Y));
   p := Parent.ScreenToClient(p);
-  (Parent as TfrToolBar).DoMouseMove(Self, Shift, P.X, P.Y);
+  (Parent as TfrToolBar).DoMouseMove(Self, Shift, p.X, p.Y);
 end;
 
-procedure TfrDragBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TfrDragBox.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
 begin
   p := ClientToScreen(Point(X, Y));
   p := Parent.ScreenToClient(p);
-  (Parent as TfrToolBar).DoMouseUp(Self, Button, Shift, P.X, P.Y);
+  (Parent as TfrToolBar).DoMouseUp(Self, Button, Shift, p.X, p.Y);
 end;
 
-
-{--------------------------------------------------------------------------}
+{ -------------------------------------------------------------------------- }
 constructor TfrToolBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -550,27 +538,31 @@ end;
 function TfrToolBar.ParentAlign: TAlign;
 begin
   Result := Parent.Align;
-  if Result = alBottom then Result := alTop;
-  if Result = alRight then Result := alLeft;
+  if Result = alBottom then
+    Result := alTop;
+  if Result = alRight then
+    Result := alLeft;
 end;
 
 function TfrToolBar.GetClientRect: TRect;
 begin
   Result := inherited GetClientRect;
-  InflateRect(Result, -1, -1);
+  InflateRect(Result, - 1, - 1);
 end;
 
 function TfrToolBar.GetVisible: Boolean;
 begin
   if IsFloat then
-    Result := FWindow.Visible else
+    Result := FWindow.Visible
+  else
     Result := Visible;
 end;
 
 procedure TfrToolBar.SetVisible(Value: Boolean);
 begin
   if IsFloat then
-    FWindow.Visible := Value else
+    FWindow.Visible := Value
+  else
     Visible := Value;
 end;
 
@@ -595,7 +587,8 @@ begin
   FIsFloat := False;
   FDragBox.Show;
   RealignControls;
-  Left := X; Top := Y;
+  Left := X;
+  Top := Y;
   Show;
   Dock.AdjustBounds;
   RemoveFromToolbarList(Self);
@@ -603,25 +596,30 @@ end;
 
 procedure TfrToolBar.AddToDock(Dock: TfrDock);
 var
-  X,Y: Integer;
+  X, Y: Integer;
 begin
-  X := 0; Y := 0;
+  X := 0;
+  Y := 0;
   case Dock.Align of
     alTop:
       begin
-        X := 0; Y := Dock.Height - 1;
+        X := 0;
+        Y := Dock.Height - 1;
       end;
     alBottom:
       begin
-        X := 0; Y := -Height + 1;
+        X := 0;
+        Y := - Height + 1;
       end;
     alLeft:
       begin
-        X := Dock.Width - 1; Y := 0;
+        X := Dock.Width - 1;
+        Y := 0;
       end;
     alRight:
       begin
-        X := -Width + 1; Y := 0;
+        X := - Width + 1;
+        Y := 0;
       end;
   end;
   DockTo(Dock, X, Y);
@@ -634,35 +632,34 @@ var
   d: TfrDock;
 begin
   Result := False;
-  for i := 0 to AOwner.ControlCount-1 do
+  for i := 0 to AOwner.ControlCount - 1 do
   begin
     c := AOwner.Controls[i];
     if c is TfrDock then
-      if (p.X >= c.Left) and (p.X <= c.Left + c.Width) and
-         (p.Y >= c.Top) and (p.Y <= c.Top + c.Height) then
+      if (p.X >= c.Left) and (p.X <= c.Left + c.Width) and (p.Y >= c.Top) and (p.Y <= c.Top + c.Height) then
       begin
         with c as TfrDock do
           if ((FOrientation = toHorzOnly) and (Align in [alLeft, alRight])) or
-             ((FOrientation = toVertOnly) and (Align in [alTop, alBottom])) then
+            ((FOrientation = toVertOnly) and (Align in [alTop, alBottom])) then
             break;
         d := c as TfrDock;
-        if d.Align in [alTop,alBottom] then
+        if d.Align in [alTop, alBottom] then
         begin
           p := Point(p.X - d.Left, d.Height - 1);
           if p.X + Width > d.Width then
             p.X := d.Width - Width;
-          if p.X < 0 then p.X := 0;
+          if p.X < 0 then
+            p.X := 0;
           if d.Align = alBottom then
-            p.Y := -Height + 1;
-        end
-        else
-        begin
+            p.Y := - Height + 1;
+        end else begin
           p := Point(d.Width - 1, p.Y - d.Top);
           if p.Y + Height > d.Height then
             p.Y := d.Height - Height;
-          if p.Y < 0 then p.Y := 0;
+          if p.Y < 0 then
+            p.Y := 0;
           if d.Align = alRight then
-            p.X := -Height + 1;
+            p.X := - Height + 1;
         end;
         DockTo(d, p.X, p.Y);
         SetCaptureControl(Self);
@@ -677,12 +674,12 @@ procedure TfrToolBar.RealignControls;
 var
   i, j, t: Integer;
   TempCtrl: TControl;
-  Ctrls: Array[0..100] of TControl;
+  Ctrls: Array [0 .. 100] of TControl;
 begin
-  for i := 0 to ControlCount-1 do
+  for i := 0 to ControlCount - 1 do
     Ctrls[i] := Controls[i];
-  for i := 0 to ControlCount-1 do
-    for j := 0 to ControlCount-2 do
+  for i := 0 to ControlCount - 1 do
+    for j := 0 to ControlCount - 2 do
       if Parent.Align in [alTop, alBottom, alNone] then
       begin
         if Ctrls[j].Left > Ctrls[j + 1].Left then
@@ -691,12 +688,9 @@ begin
           Ctrls[j + 1] := Ctrls[j];
           Ctrls[j] := TempCtrl;
         end;
-      end
-      else
-      begin
-        if (Ctrls[j].Align in [alTop, alBottom]) and
-           (Ctrls[j + 1].Align in [alTop, alBottom]) and
-           (Ctrls[j].Top > Ctrls[j + 1].Top) then
+      end else begin
+        if (Ctrls[j].Align in [alTop, alBottom]) and (Ctrls[j + 1].Align in [alTop, alBottom]) and
+          (Ctrls[j].Top > Ctrls[j + 1].Top) then
         begin
           TempCtrl := Ctrls[j];
           Ctrls[j] := Ctrls[j + 1];
@@ -705,43 +699,43 @@ begin
       end;
   case Parent.Align of
     alTop, alBottom, alNone:
-    begin
-      if Height > Width then
       begin
-        t := Width;
-        Width := Height;
-        Height := t;
+        if Height > Width then
+        begin
+          t := Width;
+          Width := Height;
+          Height := t;
+        end;
+        for t := 0 to ControlCount - 1 do
+          if Ctrls[t] <> nil then
+            if not (Ctrls[t].Align in [alLeft, alRight]) then
+              if (Ctrls[t].Align = alBottom) then
+                Ctrls[t].Align := alRight
+              else
+              begin
+                Ctrls[t].Left := Ctrls[t].Top;
+                Ctrls[t].Align := alLeft;
+              end;
       end;
-      for t := 0 to ControlCount-1 do
-        if Ctrls[t] <> nil then
-          if not (Ctrls[t].Align in [alLeft, alRight]) then
-            if (Ctrls[t].Align = alBottom) then
-              Ctrls[t].Align := alRight
-            else
-            begin
-              Ctrls[t].Left := Ctrls[t].Top;
-              Ctrls[t].Align := alLeft;
-            end;
-    end;
     alLeft, alRight:
-    begin
-      if Width > Height then
       begin
-        t := Width;
-        Width := Height;
-        Height := t;
+        if Width > Height then
+        begin
+          t := Width;
+          Width := Height;
+          Height := t;
+        end;
+        for t := 0 to ControlCount - 1 do
+          if Ctrls[t] <> nil then
+            if not (Ctrls[t].Align in [alTop, alBottom]) then
+              if (Ctrls[t].Align = alRight) then
+                Ctrls[t].Align := alBottom
+              else
+              begin
+                Ctrls[t].Top := Ctrls[t].Left;
+                Ctrls[t].Align := alTop;
+              end;
       end;
-      for t := 0 to ControlCount-1 do
-        if Ctrls[t] <> nil then
-          if not (Ctrls[t].Align in [alTop, alBottom]) then
-            if (Ctrls[t].Align = alRight) then
-              Ctrls[t].Align := alBottom
-            else
-            begin
-              Ctrls[t].Top := Ctrls[t].Left;
-              Ctrls[t].Align := alTop;
-            end;
-    end;
   end;
 end;
 
@@ -752,7 +746,7 @@ var
 begin
   RealignControls;
   max := 0;
-  for i := 0 to ControlCount-1 do
+  for i := 0 to ControlCount - 1 do
   begin
     c := Controls[i];
     if Parent.Align in [alTop, alBottom, alNone] then
@@ -761,7 +755,8 @@ begin
       Inc(max, c.Height);
   end;
   if Parent.Align in [alTop, alBottom, alNone] then
-    Width := max + 4 else
+    Width := max + 4
+  else
     Height := max + 4;
 end;
 
@@ -800,7 +795,8 @@ begin
     FWindow.ClientWidth := Width - 11;
     FWindow.ClientHeight := Height;
     FWindow.ToolBar := Self;
-    Left := 0; Top := 0;
+    Left := 0;
+    Top := 0;
     Show;
     AddToToolbarList(Self);
   end
@@ -812,98 +808,107 @@ function TfrToolBar.MoveTo(X, Y: Integer): Boolean;
 var
   i, n, oldSize, ShiftCount: Integer;
   c: TControl;
-  procedure Shift(ax,ay:Integer);
+  procedure Shift(ax, ay: Integer);
   begin
-    x := ax;
-    y := ay;
+    X := ax;
+    Y := ay;
     Inc(ShiftCount);
   end;
+
 begin
   Result := True;
-  if IsFloat then Exit;
+  if IsFloat then
+    Exit;
   n := 0;
   repeat
     ShiftCount := 0;
     if ParentAlign = alTop then
     begin
-      if x < -20 then FIsFloat := True;
-      if x < 0 then Shift(0, y);
-      if x + Width > Parent.Width then Shift(Parent.Width - Width, y);
+      if X < - 20 then
+        FIsFloat := True;
+      if X < 0 then
+        Shift(0, Y);
+      if X + Width > Parent.Width then
+        Shift(Parent.Width - Width, Y);
     end
     else // if ParentAlign = alLeft then
     begin
-      if y < -20 then FIsFloat := True;
-      if y < 0 then Shift(x, 0);
-      if y + Height > Parent.Height then Shift(x, Parent.Height - Height);
+      if Y < - 20 then
+        FIsFloat := True;
+      if Y < 0 then
+        Shift(X, 0);
+      if Y + Height > Parent.Height then
+        Shift(X, Parent.Height - Height);
     end;
     if not IsFloat then
-      for i := 0 to Parent.ControlCount-1 do
+      for i := 0 to Parent.ControlCount - 1 do
       begin
         c := Parent.Controls[i];
         if (c <> Self) and c.Visible then
           if ParentAlign = alTop then
           begin
-            if ((y >= c.Top) and (y < c.Top + c.Height)) or
-               ((y <= c.Top) and (y + Height > c.Top)) then
+            if ((Y >= c.Top) and (Y < c.Top + c.Height)) or ((Y <= c.Top) and (Y + Height > c.Top)) then
             begin
-              if (x >= c.Left) and (x < c.Left + c.Width) then
-                Shift(c.Left + c.Width, y);
-              if (x < c.Left) and (x + Width > c.Left) then
-                Shift(c.Left - Width, y);
+              if (X >= c.Left) and (X < c.Left + c.Width) then
+                Shift(c.Left + c.Width, Y);
+              if (X < c.Left) and (X + Width > c.Left) then
+                Shift(c.Left - Width, Y);
             end;
           end
           else // if ParentAlign = alLeft then
           begin
-            if ((x >= c.Left) and (x < c.Left + c.Width)) or
-               ((x <= c.Left) and (x + Width > c.Left)) then
+            if ((X >= c.Left) and (X < c.Left + c.Width)) or ((X <= c.Left) and (X + Width > c.Left)) then
             begin
-              if (y >= c.Top) and (y < c.Top + c.Height) then
-                Shift(x, c.Top + c.Height);
-              if (y < c.Top) and (y + Height > c.Top) then
-                Shift(x, c.Top - Height);
+              if (Y >= c.Top) and (Y < c.Top + c.Height) then
+                Shift(X, c.Top + c.Height);
+              if (Y < c.Top) and (Y + Height > c.Top) then
+                Shift(X, c.Top - Height);
             end;
           end;
       end;
     Inc(n);
   until (n > 3) or (ShiftCount = 0) or IsFloat;
 
-  if not FCanFloat then FIsFloat := False;
+  if not FCanFloat then
+    FIsFloat := False;
   if IsFloat then
     MakeFloat
   else
     if n < 3 then
     begin
       if ParentAlign = alTop then
-        if (y + Height > Parent.Height) or (y < 0) then
-          oldSize := Parent.Height else
+        if (Y + Height > Parent.Height) or (Y < 0) then
+          oldSize := Parent.Height
+        else
           oldSize := 0
       else
-        if (x + Width > Parent.Width) or (x < 0) then
-          oldSize := Parent.Width else
+        if (X + Width > Parent.Width) or (X < 0) then
+          oldSize := Parent.Width
+        else
           oldSize := 0;
-      Left := x;
-      Top := y;
+      Left := X;
+      Top := Y;
       (Parent as TfrDock).AdjustBounds;
       if FCanFloat then
-        if ((ParentAlign = alTop) and (Parent.Height = oldSize)) or
-           ((ParentAlign = alLeft) and (Parent.Width = oldSize)) then
+        if ((ParentAlign = alTop) and (Parent.Height = oldSize)) or ((ParentAlign = alLeft) and (Parent.Width = oldSize))
+        then
           MakeFloat;
     end
-    else Result := False;
+    else
+      Result := False;
 end;
 
-procedure TfrToolBar.DoMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TfrToolBar.DoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
 begin
   GetCursorPos(p);
-  FLastX := p.X; FLastY := p.Y;
+  FLastX := p.X;
+  FLastY := p.Y;
   FDown := True;
 end;
 
-procedure TfrToolBar.DoMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer);
+procedure TfrToolBar.DoMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
   dx, dy: Integer;
@@ -916,44 +921,52 @@ begin
     FDown := False;
     Exit;
   end;
-  if not FDown then Exit;
+  if not FDown then
+    Exit;
   GetCursorPos(p);
   if ParentAlign = alTop then
-    StepY := (Parent as TfrDock).RowSize else
+    StepY := (Parent as TfrDock).RowSize
+  else
     StepY := 1;
   if ParentAlign = alLeft then
-    StepX := (Parent as TfrDock).RowSize else
+    StepX := (Parent as TfrDock).RowSize
+  else
     StepX := 1;
   dx := (p.X - FLastX) div StepX * StepX;
   dy := (p.Y - FLastY) div StepY * StepY;
   b := False;
-  if (dx <> 0) or (dy <> 0) then b := MoveTo(Left + dx, Top + dy);
+  if (dx <> 0) or (dy <> 0) then
+    b := MoveTo(Left + dx, Top + dy);
   if b then
   begin
-    if dx <> 0 then FLastX := p.X;
-    if dy <> 0 then FLastY := p.Y;
+    if dx <> 0 then
+      FLastX := p.X;
+    if dy <> 0 then
+      FLastY := p.Y;
   end;
 end;
 
-procedure TfrToolBar.DoMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TfrToolBar.DoMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   FDown := False;
 end;
 
 procedure TfrToolBar.DoResize(Sender: TObject);
 begin
-  if csDestroying in ComponentState then Exit;
+  if csDestroying in ComponentState then
+    Exit;
   FDragBox.SetBounds(0, 0, 11, 11);
   if ParentAlign = alTop then
-    FDragBox.Align := alLeft else
+    FDragBox.Align := alLeft
+  else
     FDragBox.Align := alTop;
 end;
 
 procedure TfrToolBar.WMWindowPosChanged(var Message: TWMWindowPosChanged);
 begin
   if csDesigning in ComponentState then
-    inherited else
+    inherited
+  else
     DefaultHandler(Message);
 end;
 
@@ -962,8 +975,7 @@ begin
   Result := FWindow;
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 procedure DrawFrameRect(R: TRect);
 var
   DC: HDC;
@@ -973,7 +985,7 @@ begin
   for i := 0 to 3 do
   begin
     DrawFocusRect(DC, R);
-    InflateRect(R, -1, -1);
+    InflateRect(R, - 1, - 1);
   end;
   ReleaseDC(0, DC);
 end;
@@ -987,11 +999,11 @@ end;
 procedure TfrFloatWindow.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
   inherited;
-  if Msg.Result = htCaption then Msg.Result := htClient;
+  if Msg.Result = htCaption then
+    Msg.Result := htClient;
 end;
 
-procedure TfrFloatWindow.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TfrFloatWindow.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
 begin
@@ -1006,18 +1018,17 @@ procedure TfrFloatWindow.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
 begin
-  if not FDown then Exit;
+  if not FDown then
+    Exit;
   GetCursorPos(p);
   DrawFrameRect(FRect);
   FRect := Rect(p.X, p.Y, p.X + Width, p.Y + Height);
-  if ToolBar.FindDock(Owner as TWinControl,
-    (Owner as TWinControl).ScreenToClient(Point(p.X, p.Y))) then
+  if ToolBar.FindDock(Owner as TWinControl, (Owner as TWinControl).ScreenToClient(Point(p.X, p.Y))) then
     Exit;
   DrawFrameRect(FRect);
 end;
 
-procedure TfrFloatWindow.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TfrFloatWindow.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   DrawFrameRect(FRect);
   MoveWindow(Handle, FRect.Left, FRect.Top, Width, Height, True);
@@ -1027,8 +1038,7 @@ end;
 
 procedure TfrFloatWindow.FormShow(Sender: TObject);
 begin
-  SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or
-    SWP_NOSIZE or SWP_NOACTIVATE);
+  SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
 end;
 
 procedure TfrFloatWindow.FormDestroy(Sender: TObject);
@@ -1037,14 +1047,15 @@ begin
     ToolBar.FWindow := nil;
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 initialization
-  FloatingToolBars := TList.Create;
-  RegRootKey := 'Software\FastReport';
+
+FloatingToolBars := TList.Create;
+RegRootKey := 'Software\FastReport';
 
 finalization
-  DestroyToolbarList;
-  FloatingToolBars.Free;
+
+DestroyToolbarList;
+FloatingToolBars.Free;
 
 end.

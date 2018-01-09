@@ -1,12 +1,11 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{           Chart Add-In Object           }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ }
+{ FastReport v2.3 }
+{ Chart Add-In Object }
+{ }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ }
+{ ***************************************** }
 
 unit FR_Chart;
 
@@ -16,8 +15,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  FR_Class, ExtCtrls, TeeProcs, TeEngine, Chart, Series, StdCtrls, FR_Ctrls,
-  ComCtrls, Menus;
+  FR_Class, ExtCtrls,
+  FR_Ctrls,
+  ComCtrls, Menus,
+  TeeGDIPlus, TeEngine, TeeProcs, Chart, Series, StdCtrls;
 
 type
   TChartOptions = packed record
@@ -25,10 +26,10 @@ type
     Dim3D, IsSingle, ShowLegend, ShowAxis, ShowMarks, Colored: Boolean;
     MarksStyle: Byte;
     Top10Num: Integer;
-    Reserved: Array[0..35] of Byte;
+    Reserved: Array [0 .. 35] of Byte;
   end;
 
-  TfrChartObject = class(TComponent)  // fake component
+  TfrChartObject = class(TComponent)// fake component
   end;
 
   TfrChartView = class(TfrView)
@@ -97,10 +98,10 @@ type
     procedure ShowEditor(t: TfrView); override;
   end;
 
-
 implementation
 
-uses FR_Intrp, FR_Pars, FR_Utils, FR_Const;
+uses
+  FR_Intrp, FR_Pars, FR_Utils, FR_Const;
 
 {$R *.DFM}
 
@@ -115,18 +116,19 @@ var
   SChart: TChart;
 
 const
-  ChartTypes: Array[0..5] of TSeriesClass =
-    (TLineSeries, TAreaSeries, TPointSeries,
-     TBarSeries, THorizBarSeries, TPieSeries);
+  ChartTypes: Array [0 .. 5] of TSeriesClass = (TLineSeries, TAreaSeries, TPointSeries, TBarSeries, THorizBarSeries,
+    TPieSeries);
 
 function ExtractFieldName(const Fields: string; var Pos: Integer): string;
 var
   i: Integer;
 begin
   i := Pos;
-  while (i <= Length(Fields)) and (Fields[i] <> ';') do Inc(i);
+  while (i <= Length(Fields)) and (Fields[i] <> ';') do
+    Inc(i);
   Result := Copy(Fields, Pos, i - Pos);
-  if (i <= Length(Fields)) and (Fields[i] = ';') then Inc(i);
+  if (i <= Length(Fields)) and (Fields[i] = ';') then
+    Inc(i);
   Pos := i;
 end;
 
@@ -165,12 +167,12 @@ var
   function Str2Float(s: String): Double;
   begin
     s := Trim(s);
-    while (Length(s) > 0) and not (s[1] in ['0'..'9']) do
-      s := Copy(s, 2, 255);           // trim all non-digit chars at the begin
-    while (Length(s) > 0) and not (s[Length(s)] in ['0'..'9']) do
+    while (Length(s) > 0) and not CharInset(s[1], ['0' .. '9']) do
+      s := Copy(s, 2, 255); // trim all non-digit chars at the begin
+    while (Length(s) > 0) and not CharInset(s[Length(s)], ['0' .. '9']) do
       s := Copy(s, 1, Length(s) - 1); // trim all non-digit chars at the end
-    while Pos(ThousandSeparator, s) <> 0 do
-      Delete(s, Pos(ThousandSeparator, s), 1);
+    while Pos(FormatSettings.ThousandSeparator, s) <> 0 do
+      Delete(s, Pos(FormatSettings.ThousandSeparator, s), 1);
     Result := 0;
     try
       Result := StrToFloat(s);
@@ -189,12 +191,13 @@ var
     sl := TStringList.Create;
     sl.Sorted := True;
 
-    i := 1; j := 1;
+    i := 1;
+    j := 1;
     while i <= Length(LegS) do
-      sl.Add(SysUtils.Format('%12.3f', [Str2Float(ExtractFieldName(ValS, j))]) + '=' +
-             ExtractFieldName(LegS, i));
+      sl.Add(SysUtils.Format('%12.3f', [Str2Float(ExtractFieldName(ValS, j))]) + '=' + ExtractFieldName(LegS, i));
 
-    LegS := ''; ValS := '';
+    LegS := '';
+    ValS := '';
     for i := 1 to Chart.Top10Num do
     begin
       s := sl[sl.Count - i];
@@ -202,7 +205,8 @@ var
       LegS := LegS + Copy(s, Pos('=', s) + 1, 255) + ';';
     end;
 
-    i := sl.Count - Chart.Top10Num - 1; d := 0;
+    i := sl.Count - Chart.Top10Num - 1;
+    d := 0;
     while i >= 0 do
     begin
       s := sl[i];
@@ -214,7 +218,6 @@ var
     ValS := ValS + FloatToStr(d) + ';';
     sl.Free;
   end;
-
 
 begin
   Result := False;
@@ -238,13 +241,16 @@ begin
   end;
 
   if Memo.Count > 0 then
-    LegS := Memo[0] else
+    LegS := Memo[0]
+  else
     LegS := '';
   if Memo.Count > 1 then
-    ValS := Memo[1] else
+    ValS := Memo[1]
+  else
     ValS := '';
 
-  if (LegS = '') or (ValS = '') then Exit;
+  if (LegS = '') or (ValS = '') then
+    Exit;
   if LegS[Length(LegS)] <> ';' then
     LegS := LegS + ';';
   if ValS[Length(ValS)] <> ';' then
@@ -261,27 +267,31 @@ begin
 
     c1 := 0;
     for i := 1 to Length(LegS) do
-      if LegS[i] = ';' then Inc(c1);
+      if LegS[i] = ';' then
+        Inc(c1);
     c2 := 0;
     for i := 1 to Length(ValS) do
-      if ValS[i] = ';' then Inc(c2);
-    if c1 <> c2 then Exit;
+      if ValS[i] = ';' then
+        Inc(c2);
+    if c1 <> c2 then
+      Exit;
 
     if (Chart.Top10Num > 0) and (c1 > Chart.Top10Num) then
       SortValues(LegS, ValS);
-    i := 1; j := 1;
+    i := 1;
+    j := 1;
     while i <= Length(LegS) do
     begin
       s := ExtractFieldName(ValS, j);
       Ser.Add(Str2Float(s), ExtractFieldName(LegS, i), clTeeColor);
     end;
-  end
-  else
-  begin
+  end else begin
     c1 := 0;
     for i := 1 to Length(LegS) do
-      if LegS[i] = ';' then Inc(c1);
-    if c1 <> Memo.Count - 1 then Exit;
+      if LegS[i] = ';' then
+        Inc(c1);
+    if c1 <> Memo.Count - 1 then
+      Exit;
 
     i := 1;
     c1 := 1;
@@ -332,7 +342,8 @@ begin
   Memo1.Assign(Memo);
   CurReport.InternalOnEnterRect(Memo1, Self);
   frInterpretator.DoScript(Script);
-  if not Visible then Exit;
+  if not Visible then
+    Exit;
 
   Stream.Write(Typ, 1);
   frWriteString(Stream, ClassName);
@@ -345,19 +356,21 @@ var
   function ReadString(Stream: TStream): String;
   begin
     if frVersion >= 23 then
-    {$IFDEF FREEREP2217READ}
+{$IFDEF FREEREP2217READ}
     begin
       if (frVersion = 23) and FRE_COMPATIBLE_READ then
-        Result := frReadString2217(Stream) // load in bad format
+        Result := frReadString2217(Stream)// load in bad format
       else
         Result := frReadString(Stream); // load in current format
     end
     else
-    {$ELSE}
-      Result := frReadString(Stream) else
-    {$ENDIF}
+{$ELSE}
+    Result := frReadString(Stream)
+    else
+{$ENDIF}
       Result := frReadString22(Stream);
   end;
+
 begin
   inherited LoadFromStream(Stream);
   with Stream do
@@ -402,13 +415,12 @@ begin
     Memo.Add('');
     Memo.Add('');
   end;
-  i := -1;
+  i := - 1;
   if AnsiCompareText(View.Name, LegendObj) = 0 then
   begin
     i := 0;
     Inc(CurStr);
-  end
-  else if AnsiCompareText(View.Name, ValueObj) = 0 then
+  end else if AnsiCompareText(View.Name, ValueObj) = 0 then
     i := CurStr;
   if Chart.IsSingle then
     CurStr := 1;
@@ -428,8 +440,7 @@ begin
   end;
 end;
 
-
-{------------------------------------------------------------------------}
+{ ------------------------------------------------------------------------ }
 procedure TfrChartForm.ShowEditor(t: TfrView);
   procedure SetButton(b: Array of TfrSpeedButton; n: Integer);
   begin
@@ -457,6 +468,7 @@ procedure TfrChartForm.ShowEditor(t: TfrView);
       if b[i].Checked then
         Result := i;
   end;
+
 begin
   Page1.ActivePage := Tab1;
   with TfrChartView(t), Chart do
@@ -524,14 +536,14 @@ begin
 end;
 
 initialization
-  frChartForm := TfrChartForm.Create(nil);
-  SChart := frChartForm.Chart1;
-  frRegisterObject(TfrChartView, frChartForm.Image1.Picture.Bitmap,
-    LoadStr(SInsChart), frChartForm);
+
+frChartForm := TfrChartForm.Create(nil);
+SChart := frChartForm.Chart1;
+frRegisterObject(TfrChartView, frChartForm.Image1.Picture.Bitmap, LoadStr(SInsChart), frChartForm);
 
 finalization
-  frChartForm.Free;
-  frChartForm := nil;
+
+frChartForm.Free;
+frChartForm := nil;
 
 end.
-

@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{8B9BF8F8-D3DC-45B1-A718-28DD292E2058}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="FreeReportXEd.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="FreeReportXE.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="FreeReportXEd">
+        <MSBuild Projects="FreeReportXEd.dproj"/>
+    </Target>
+    <Target Name="FreeReportXEd:Clean">
+        <MSBuild Projects="FreeReportXEd.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FreeReportXEd:Make">
+        <MSBuild Projects="FreeReportXEd.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="FreeReportXE">
+        <MSBuild Projects="FreeReportXE.dproj"/>
+    </Target>
+    <Target Name="FreeReportXE:Clean">
+        <MSBuild Projects="FreeReportXE.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FreeReportXE:Make">
+        <MSBuild Projects="FreeReportXE.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="FreeReportXEd;FreeReportXE"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="FreeReportXEd:Clean;FreeReportXE:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="FreeReportXEd:Make;FreeReportXE:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

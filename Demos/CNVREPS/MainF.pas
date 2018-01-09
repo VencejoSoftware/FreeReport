@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, FileCtrl, ComCtrls, Buttons, FR_Desgn, FR_RRect,
-  FR_Chart, FR_BarC, FR_Shape, FR_ChBox, FR_Rich, FR_Class;
+  FR_Chart, FR_BarC, FR_Shape, FR_ChBox, FR_Rich, FR_Class, FR_E_TNPDF;
 
 type
   TForm1 = class(TForm)
@@ -50,6 +50,7 @@ var
   VersionB: Byte;
   Len1, Len2: Word;
   OldPosition: Longint;
+  FRE_COMPATIBLE_READ: Boolean;
 begin
   try
     FRE_COMPATIBLE_READ := False;
@@ -60,7 +61,7 @@ begin
       Stream.Seek(4, soFromCurrent);
       Stream.ReadBuffer(Len1, SizeOf(Len1));
       Stream.ReadBuffer(Len2, SizeOf(Len2));
-      if (Len1 >2) and (Len1 <= 255) and (Len2 = 0) then
+      if (Len1 > 2) and (Len1 <= 255) and (Len2 = 0) then
         FRE_COMPATIBLE_READ := True;
     end;
     Stream.Position := OldPosition;
@@ -127,7 +128,8 @@ begin
       Stream.Free;
     end;
   end
-  else sbPreview.Enabled := False;
+  else
+    sbPreview.Enabled := False;
 
   sbConvert.Enabled := CnvEnabled;
   StatusBar.Panels[0].Text := VersionStr;
@@ -140,7 +142,7 @@ begin
   FileName := lbFiles.FileName;
   if FileName <> '' then
   begin
-    FRELoadFromFile(frReport1, Filename);
+    FRELoadFromFile(frReport1, FileName);
     frReport1.DesignReport;
   end;
 end;
@@ -152,7 +154,7 @@ begin
   FileName := lbFiles.FileName;
   if FileName <> '' then
   begin
-    FRELoadFromFile(frReport1, Filename);
+    FRELoadFromFile(frReport1, FileName);
     if cbCreateBAK.Checked then
     begin
       BakFileName := ChangeFileExt(FileName, '.BAK');
@@ -163,7 +165,7 @@ begin
       end;
       RenameFile(FileName, BakFileName);
     end;
-    frReport1.SaveToFile(Filename);
+    frReport1.SaveToFile(FileName);
     lbFilesChange(lbFiles);
   end;
 end;

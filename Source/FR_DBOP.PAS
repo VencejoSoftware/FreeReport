@@ -78,7 +78,7 @@ begin
     0, 0, SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
 end;
 
-function ExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
+function ExplorerHook(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): UINT_PTR stdcall;
 var
   s: String[255];
   i: Integer;
@@ -96,12 +96,12 @@ begin
         end;
       CDN_FOLDERCHANGE:
         begin
-          s[0] := Chr(GetCurrentDirectory(255, @s[1]));
+          s[0] := AnsiChar(Chr(GetCurrentDirectory(255, @s[1])));
           b := True;
           with OpenDBDialog.FComboBox do
           begin
             for i := 0 to Items.Count-1 do
-              if AnsiCompareText(s, OpenDBDialog.GetAliasDirectory(Items[i])) = 0 then
+              if AnsiCompareText(String(s), OpenDBDialog.GetAliasDirectory(Items[i])) = 0 then
               begin
                 ItemIndex := i;
                 b := False;

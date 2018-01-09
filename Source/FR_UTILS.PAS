@@ -1,12 +1,11 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{            Various routines             }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ }
+{ FastReport v2.3 }
+{ Various routines }
+{ }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ }
+{ ***************************************** }
 
 unit FR_Utils;
 
@@ -18,52 +17,55 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls,
   FR_DBRel, Forms, StdCtrls, ClipBrd, Menus, FR_Class;
 
-
 procedure frReadMemo(Stream: TStream; l: TStrings);
+procedure frReadMemo23(Stream: TStream; l: TStrings);
 procedure frReadMemo22(Stream: TStream; l: TStrings);
 procedure frWriteMemo(Stream: TStream; l: TStrings);
 function frReadString(Stream: TStream): String;
+function frReadString23(Stream: TStream): AnsiString;
 function frReadString22(Stream: TStream): String;
 procedure SaveToFR3Stream(Report: TfrReport; Stream: TStream);
 function StrToXML(const s: String): String;
 function frStreamToString(Stream: TStream): String;
 {$IFDEF FREEREP2217READ}
-function frReadString2217(Stream: TStream): String;
+function frReadString2217(Stream: TStream): AnsiString;
 {$ENDIF}
 procedure frWriteString(Stream: TStream; s: String);
 procedure frEnableControls(c: Array of TControl; e: Boolean);
 function frControlAtPos(Win: TWinControl; p: TPoint): TControl;
 function frGetDataSet(ComplexName: String): TfrTDataSet;
-procedure frGetDataSetAndField(ComplexName: String;
-  var DataSet: TfrTDataSet; var Field: TfrTField);
+procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet; var Field: TfrTField);
 function frGetFontStyle(Style: TFontStyles): Integer;
 function frSetFontStyle(Style: Integer): TFontStyles;
 function frFindComponent(Owner: TComponent; Name: String): TComponent;
-procedure frGetComponents(Owner: TComponent; ClassRef: TClass;
-  List: TStrings; Skip: TComponent);
+procedure frGetComponents(Owner: TComponent; ClassRef: TClass; List: TStrings; Skip: TComponent);
 function frGetWindowsVersion: String;
-
-
 
 implementation
 
-uses FR_DSet, Printers;
-
+uses
+  FR_DSet, Printers;
 
 function frSetFontStyle(Style: Integer): TFontStyles;
 begin
   Result := [];
-  if (Style and $1) <> 0 then Result := Result + [fsItalic];
-  if (Style and $2) <> 0 then Result := Result + [fsBold];
-  if (Style and $4) <> 0 then Result := Result + [fsUnderLine];
+  if (Style and $1) <> 0 then
+    Result := Result + [fsItalic];
+  if (Style and $2) <> 0 then
+    Result := Result + [fsBold];
+  if (Style and $4) <> 0 then
+    Result := Result + [fsUnderLine];
 end;
 
 function frGetFontStyle(Style: TFontStyles): Integer;
 begin
   Result := 0;
-  if fsItalic in Style then Result := Result or $1;
-  if fsBold in Style then Result := Result or $2;
-  if fsUnderline in Style then Result := Result or $4;
+  if fsItalic in Style then
+    Result := Result or $1;
+  if fsBold in Style then
+    Result := Result or $2;
+  if fsUnderLine in Style then
+    Result := Result or $4;
 end;
 
 procedure RemoveQuotes(var s: String);
@@ -84,7 +86,27 @@ begin
     repeat
       Stream.Read(n, 2);
       SetLength(s, n);
-      Stream.Read(s[1], n);
+      Stream.Read(Pointer(s)^, n * sizeof(char));
+      l.Add(s);
+      Stream.Read(b, 1);
+    until b = 0
+  else
+    Stream.Read(b, 1);
+end;
+
+procedure frReadMemo23(Stream: TStream; l: TStrings);
+var
+  s: String;
+  b: Byte;
+  n: Word;
+begin
+  l.Clear;
+  Stream.Read(n, 2);
+  if n > 0 then
+    repeat
+      Stream.Read(n, 2);
+      SetLength(s, n);
+      Stream.Read(Pointer(s)^, n);
       l.Add(s);
       Stream.Read(b, 1);
     until b = 0
@@ -106,9 +128,10 @@ begin
     s := l[i];
     n := Length(s);
     Stream.Write(n, 2);
-    Stream.Write(s[1], n);
+    Stream.Write(Pointer(s)^, n * sizeof(char));
     b := 13;
-    if i <> l.Count - 1 then Stream.Write(b, 1);
+    if i <> l.Count - 1 then
+      Stream.Write(b, 1);
   end;
   b := 0;
   Stream.Write(b, 1);
@@ -122,7 +145,20 @@ var
 begin
   Stream.Read(n, 2);
   SetLength(s, n);
-  Stream.Read(s[1], n);
+  Stream.Read(Pointer(s)^, n * sizeof(char));
+  Stream.Read(b, 1);
+  Result := s;
+end;
+
+function frReadString23(Stream: TStream): AnsiString;
+var
+  s: AnsiString;
+  n: Word;
+  b: Byte;
+begin
+  Stream.Read(n, 2);
+  SetLength(s, n);
+  Stream.Read(Pointer(s)^, n);
   Stream.Read(b, 1);
   Result := s;
 end;
@@ -134,7 +170,7 @@ var
 begin
   n := Length(s);
   Stream.Write(n, 2);
-  Stream.Write(s[1], n);
+  Stream.Write(Pointer(s)^, n * sizeof(char));
   b := 0;
   Stream.Write(b, 1);
 end;
@@ -149,17 +185,17 @@ begin
   l.Clear;
   i := 1;
   repeat
-    Stream.Read(b,1);
+    Stream.Read(b, 1);
     if (b = 13) or (b = 0) then
     begin
       SetLength(s, i - 1);
-      if not ((b = 0) and (i = 1)) then l.Add(s);
+      if not ((b = 0) and (i = 1)) then
+        l.Add(s);
       SetLength(s, 4096);
       i := 1;
-    end
-    else if b <> 0 then
+    end else if b <> 0 then
     begin
-      s[i] := Chr(b);
+      s[i] := char(b);
       Inc(i);
       if i > 4096 then
         SetLength(s, Length(s) + 4096);
@@ -169,7 +205,7 @@ end;
 
 function frReadString22(Stream: TStream): String;
 var
-  s: String;
+  s: AnsiString;
   i: Integer;
   b: Byte;
 begin
@@ -181,23 +217,24 @@ begin
       SetLength(s, i - 1)
     else
     begin
-      s[i] := Chr(b);
+      s[i] := AnsiChar(b);
       Inc(i);
       if i > 4096 then
         SetLength(s, Length(s) + 4096);
     end;
   until b = 0;
-  Result := s;
+  Result := String(s);
 end;
 
 {$IFDEF FREEREP2217READ}
-function frReadString2217(Stream: TStream): String;
+
+function frReadString2217(Stream: TStream): AnsiString;
 var
-  I: Integer;
+  i: Integer;
 begin
-  Stream.ReadBuffer(I, SizeOf(I));
-  SetLength(Result, I);
-  Stream.ReadBuffer(PChar(Result)^, I);
+  Stream.ReadBuffer(i, sizeof(i));
+  SetLength(Result, i);
+  Stream.ReadBuffer(PChar(Result)^, i);
 end;
 {$ENDIF}
 
@@ -207,8 +244,8 @@ type
 
 procedure frEnableControls(c: Array of TControl; e: Boolean);
 const
-  Clr1: Array[Boolean] of TColor = (clGrayText,clWindowText);
-  Clr2: Array[Boolean] of TColor = (clBtnFace,clWindow);
+  Clr1: Array [Boolean] of TColor = (clGrayText, clWindowText);
+  Clr2: Array [Boolean] of TColor = (clBtnFace, clWindow);
 var
   i: Integer;
 begin
@@ -218,8 +255,7 @@ begin
       begin
         Font.Color := Clr1[e];
         Enabled := e;
-      end
-    else if c[i] is TWinControl then
+      end else if c[i] is TWinControl then
       with THackWinControl(c[i]) do
       begin
         Color := Clr2[e];
@@ -240,20 +276,18 @@ begin
     begin
       c := Controls[i];
       if c.Visible and PtInRect(Rect(c.Left, c.Top, c.Left + c.Width, c.Top + c.Height), p) then
-        if (c is TWinControl) and (csAcceptsControls in c.ControlStyle) and
-           (TWinControl(c).ControlCount > 0) then
+        if (c is TWinControl) and (csAcceptsControls in c.ControlStyle) and (TWinControl(c).ControlCount > 0) then
         begin
           p1 := p;
-          Dec(p1.X, c.Left); Dec(p1.Y, c.Top);
+          Dec(p1.X, c.Left);
+          Dec(p1.Y, c.Top);
           c := frControlAtPos(TWinControl(c), p1);
           if c <> nil then
           begin
             Result := c;
             Exit;
           end;
-        end
-        else
-        begin
+        end else begin
           Result := c;
           Exit;
         end;
@@ -266,8 +300,7 @@ begin
   Result := TfrTDataSet(frFindComponent(CurReport.Owner, ComplexName));
 end;
 
-procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet;
-  var Field: TfrTField);
+procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet; var Field: TfrTField);
 var
   n: Integer;
   f: TComponent;
@@ -278,9 +311,9 @@ begin
   n := Pos('.', ComplexName);
   if n <> 0 then
   begin
-    s1 := Copy(ComplexName, 1, n - 1);        // table name
-    s2 := Copy(ComplexName, n + 1, 255);      // field name
-    if Pos('.', s2) <> 0 then                 // module name present
+    s1 := Copy(ComplexName, 1, n - 1);   // table name
+    s2 := Copy(ComplexName, n + 1, 255); // field name
+    if Pos('.', s2) <> 0 then            // module name present
     begin
       s3 := Copy(s2, Pos('.', s2) + 1, 255);
       s2 := Copy(s2, 1, Pos('.', s2) - 1);
@@ -292,16 +325,13 @@ begin
         if DataSet <> nil then
           Field := TfrTField(DataSet.FindField(s3));
       end;
-    end
-    else
-    begin
+    end else begin
       DataSet := TfrTDataSet(frFindComponent(f, s1));
       RemoveQuotes(s2);
       if DataSet <> nil then
         Field := TfrTField(DataSet.FindField(s2));
     end;
-  end
-  else if DataSet <> nil then
+  end else if DataSet <> nil then
   begin
     RemoveQuotes(ComplexName);
     Field := TfrTField(DataSet.FindField(ComplexName));
@@ -320,8 +350,8 @@ begin
       Result := Owner.FindComponent(Name)
     else
     begin
-      s1 := Copy(Name, 1, n - 1);        // module name
-      s2 := Copy(Name, n + 1, 255);      // component name
+      s1 := Copy(Name, 1, n - 1);   // module name
+      s2 := Copy(Name, n + 1, 255); // component name
       Owner := FindGlobalComponent(s1);
       if Owner <> nil then
         Result := Owner.FindComponent(s2);
@@ -332,8 +362,7 @@ begin
   end;
 end;
 
-procedure frGetComponents(Owner: TComponent; ClassRef: TClass;
-  List: TStrings; Skip: TComponent);
+procedure frGetComponents(Owner: TComponent; ClassRef: TClass; List: TStrings; Skip: TComponent);
 var
   i: Integer;
   procedure EnumComponents(f: TComponent);
@@ -346,10 +375,12 @@ var
       c := f.Components[i];
       if (c <> Skip) and (c is ClassRef) then
         if f = Owner then
-          List.Add(c.Name) else
+          List.Add(c.Name)
+        else
           List.Add(f.Name + '.' + c.Name);
     end;
   end;
+
 begin
   List.Clear;
   for i := 0 to Screen.FormCount - 1 do
@@ -359,34 +390,38 @@ begin
 end;
 
 function frGetWindowsVersion: String;
-var Ver: TOsVersionInfo;
+var
+  Ver: TOsVersionInfo;
 begin
-  Ver.dwOSVersionInfoSize := SizeOf(Ver);
+  Ver.dwOSVersionInfoSize := sizeof(Ver);
   GetVersionEx(Ver);
-  with Ver do begin
+  with Ver do
+  begin
     case dwPlatformId of
-      VER_PLATFORM_WIN32s: Result := '32s';
+      VER_PLATFORM_WIN32s:
+        Result := '32s';
       VER_PLATFORM_WIN32_WINDOWS:
         begin
           dwBuildNumber := dwBuildNumber and $0000FFFF;
-          if (dwMajorVersion > 4) or ((dwMajorVersion = 4) and
-            (dwMinorVersion >= 10)) then
-            Result := '98' else
+          if (dwMajorVersion > 4) or ((dwMajorVersion = 4) and (dwMinorVersion >= 10)) then
+            Result := '98'
+          else
             Result := '95';
         end;
-      VER_PLATFORM_WIN32_NT: Result := 'NT';
+      VER_PLATFORM_WIN32_NT:
+        Result := 'NT';
     end;
   end;
 end;
 
 procedure SaveToFR3Stream(Report: TfrReport; Stream: TStream);
 const
-  fr01cm = 3.77953; // 96 / 25.4
+  fr01cm = 3.77953;         // 96 / 25.4
   frKx = 96 / (93 / 1.015); // convert from 2.4 units to 3.0 units
 
   procedure WriteStr(const s: String);
   begin
-    Stream.Write(s[1], Length(s));
+    Stream.Write(Pointer(s)^, Length(s) * sizeof(char));
   end;
 
   procedure WriteLn(const s: String);
@@ -433,9 +468,7 @@ const
               Script.Add(vScript[vScript.Count - 1]);
             Script.Add('  end');
             Script.Add('end;');
-          end
-          else
-          begin
+          end else begin
             Script.Add('  end');
             Script.Add(vScript[vScript.Count - 1] + ';');
           end;
@@ -448,7 +481,7 @@ const
       for i := 0 to Report.Pages.Count - 1 do
       begin
         Page := Report.Pages[i];
-//        AddScript('Page' + IntToStr(i + 1), Page.Script);
+// AddScript('Page' + IntToStr(i + 1), Page.Script);
         for j := 0 to Page.Objects.Count - 1 do
         begin
           v := Page.Objects[j];
@@ -480,15 +513,15 @@ const
 
       v := vaCollection;
       wr.WriteStr('Datasets');
-      wr.Write(v, SizeOf(v));
+      wr.Write(v, sizeof(v));
       for i := 0 to dsList.Count - 1 do
       begin
-//        varName := TfrDataset(dsList.Objects[i]).Name;
+// varName := TfrDataset(dsList.Objects[i]).Name;
         varName := dsList.Strings[i];
         wr.WriteListBegin;
         wr.WriteStr('DataSet');
         v := vaNil;
-        wr.Write(v, SizeOf(v));
+        wr.Write(v, sizeof(v));
         wr.WriteStr('DataSetName');
         wr.WriteString(varName);
         wr.WriteListEnd;
@@ -496,13 +529,13 @@ const
       wr.WriteListEnd;
 
       wr.WriteStr('Variables');
-      wr.Write(v, SizeOf(v));
+      wr.Write(v, sizeof(v));
       for i := 0 to Report.Variables.Count - 1 do
       begin
         varName := Report.Variables.Names[i];
         varValue := Report.Variables.Values[varName];
 
-{        ds := nil;
+{ ds := nil;
         fld := '';
         frGetDatasetAndField(varValue, ds, fld);
         if (ds <> nil) and (fld <> '') then
@@ -544,16 +577,16 @@ const
     WriteScript;
     WriteVariables;
 
-//    WriteStr(' ReportOptions.Name="' + {StrToXML(Report.ReportName)}' ' +
-//      '" ReportOptions.Author="' + {StrToXML(Report.ReportAutor)}' ' +
-//    '" ReportOptions.Description.text="' + {StrToXML(Report.ReportComment)}' ' +
-//    '" ReportOptions.CreateDate="' + {FloatToStr(Report.ReportCreateDate)}' ' +
-//    '" ReportOptions.LastChange="' + {FloatToStr(Report.ReportLastChange)}' ' +
-//    '" ReportOptions.VersionMajor="' + {StrToXML(Report.ReportVersionMajor)}' ' +
-//    '" ReportOptions.VersionMinor="' + {StrToXML(Report.ReportVersionMinor)}' ' +
-//    '" ReportOptions.VersionRelease="' + {StrToXML(Report.ReportVersionRelease)}' ' +
-//    '" ReportOptions.VersionBuild="' + {StrToXML(Report.ReportVersionBuild)}' ' +
-//    '" ReportOptions.Password="' + {StrToXML(EncodePwd(Report.ReportPassword))}''+ '"');
+// WriteStr(' ReportOptions.Name="' + {StrToXML(Report.ReportName)}' ' +
+// '" ReportOptions.Author="' + {StrToXML(Report.ReportAutor)}' ' +
+// '" ReportOptions.Description.text="' + {StrToXML(Report.ReportComment)}' ' +
+// '" ReportOptions.CreateDate="' + {FloatToStr(Report.ReportCreateDate)}' ' +
+// '" ReportOptions.LastChange="' + {FloatToStr(Report.ReportLastChange)}' ' +
+// '" ReportOptions.VersionMajor="' + {StrToXML(Report.ReportVersionMajor)}' ' +
+// '" ReportOptions.VersionMinor="' + {StrToXML(Report.ReportVersionMinor)}' ' +
+// '" ReportOptions.VersionRelease="' + {StrToXML(Report.ReportVersionRelease)}' ' +
+// '" ReportOptions.VersionBuild="' + {StrToXML(Report.ReportVersionBuild)}' ' +
+// '" ReportOptions.Password="' + {StrToXML(EncodePwd(Report.ReportPassword))}''+ '"');
     WriteLn('>');
   end;
 
@@ -568,28 +601,28 @@ const
       s: String;
     begin
       ofx := 0;
-        if Page.pgOr = poPortrait then
-          s := 'poPortrait' else
-          s := 'poLandscape';
-        WriteStr('<TfrxReportPage Name="' + PageName + '" ');
-        WriteStr('Orientation="' + s +
-          '" PaperWidth="' + IntToStr(Round(Page.prnInfo.PgW / fr01cm * frKx)) +
-          '" PaperHeight="' + IntToStr(Round(Page.prnInfo.PgH / fr01cm * frKx)) +
-          '" PaperSize="' + IntToStr(Page.pgSize) + '" ');
-        WriteStr('LeftMargin="' + IntToStr(Round(Page.LeftMargin / fr01cm * frKx)) +
-          '" RightMargin="' + IntToStr(Round((Page.prnInfo.PgW - Page.RightMargin) / fr01cm * frKx)) +
-          '" TopMargin="' + IntToStr(Round(Page.TopMargin / fr01cm * frKx)) +
-          '" BottomMargin="' + IntToStr(Round((Page.prnInfo.PgH - Page.BottomMargin) / fr01cm * frKx)) +
-          '" Columns="' + IntToStr(Page.ColCount) +
-          '" ColumnWidth="' + IntToStr(Page.ColWidth) + '"');
-        if Page.PrintToPrevPage then
-          WriteStr(' PrintOnPreviousPage="True"');
-//        if Page.Script.Count > 0 then
-//          WriteStr(' OnBeforePrint="' + PageName + 'OnBeforePrint"');
+      if Page.pgOr = poPortrait then
+        s := 'poPortrait'
+      else
+        s := 'poLandscape';
+      WriteStr('<TfrxReportPage Name="' + PageName + '" ');
+      WriteStr('Orientation="' + s + '" PaperWidth="' + IntToStr(Round(Page.prnInfo.PgW / fr01cm * frKx)) +
+        '" PaperHeight="' + IntToStr(Round(Page.prnInfo.PgH / fr01cm * frKx)) + '" PaperSize="' +
+        IntToStr(Page.pgSize) + '" ');
+      WriteStr('LeftMargin="' + IntToStr(Round(Page.LeftMargin / fr01cm * frKx)) + '" RightMargin="' +
+        IntToStr(Round((Page.prnInfo.PgW - Page.RightMargin) / fr01cm * frKx)) + '" TopMargin="' +
+        IntToStr(Round(Page.TopMargin / fr01cm * frKx)) + '" BottomMargin="' +
+        IntToStr(Round((Page.prnInfo.PgH - Page.BottomMargin) / fr01cm * frKx)) + '" Columns="' +
+        IntToStr(Page.ColCount) + '" ColumnWidth="' + IntToStr(Page.ColWidth) + '"');
+      if Page.PrintToPrevPage then
+        WriteStr(' PrintOnPreviousPage="True"');
+// if Page.Script.Count > 0 then
+// WriteStr(' OnBeforePrint="' + PageName + 'OnBeforePrint"');
 
-        ofx := -Page.LeftMargin;
+      ofx := - Page.LeftMargin;
       if Page.Objects.Count = 0 then
-        WriteLn('/>') else
+        WriteLn('/>')
+      else
         WriteLn('>');
     end;
 
@@ -602,10 +635,10 @@ const
       for j := 0 to Page.Objects.Count - 1 do
       begin
         v := Page.Objects[j];
-        savex := v.x;
-        v.x := v.x + ofx;
+        savex := v.X;
+        v.X := v.X + ofx;
         v.SaveToFR3Stream(Stream);
-        v.x := savex;
+        v.X := savex;
         WriteLn('/>');
       end;
 
@@ -636,7 +669,7 @@ var
 begin
   Result := s;
   for i := Length(s) downto 1 do
-    if s[i] in SpecChars then
+    if CharInSet(s[i], SpecChars) then
       ReplaceChars(Result, i);
 end;
 

@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{     Select Band datasource dialog       }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ Select Band datasource dialog }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_BndEd;
 
@@ -15,8 +11,8 @@ interface
 {$I FR.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, FR_Class;
+  SysUtils, Classes, Controls, Forms, ExtCtrls, StdCtrls,
+  FR_Class;
 
 type
   TfrBandEditorForm = class(TForm)
@@ -29,10 +25,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure CB1Click(Sender: TObject);
   private
-    { Private declarations }
     procedure FillCombo;
   public
-    { Public declarations }
     procedure ShowEditor(t: TfrView);
   end;
 
@@ -43,7 +37,8 @@ implementation
 
 {$R *.DFM}
 
-uses FR_DSet, FR_Const, FR_Utils;
+uses
+  FR_DSet, FR_Const, FR_Utils;
 
 procedure TfrBandEditorForm.ShowEditor(t: TfrView);
 var
@@ -52,15 +47,13 @@ var
 begin
   FillCombo;
   s := (t as TfrBandView).DataSet;
-  if (s <> '') and (s[1] in ['1'..'9']) then
+  if (s <> EmptyStr) and CharInset(s[1], ['1' .. '9']) then
   begin
     i := 1;
     Edit1.Text := s;
-  end
-  else
-  begin
+  end else begin
     i := CB1.Items.IndexOf(s);
-    if i = -1 then
+    if i = - 1 then
       i := CB1.Items.IndexOf(LoadStr(SNotAssigned));
   end;
   CB1.ItemIndex := i;
@@ -69,7 +62,8 @@ begin
   begin
     frDesigner.BeforeChange;
     if CB1.ItemIndex = 1 then
-      (t as TfrBandView).DataSet := Edit1.Text else
+      (t as TfrBandView).DataSet := Edit1.Text
+    else
       (t as TfrBandView).DataSet := CB1.Items[CB1.ItemIndex];
   end;
 end;
@@ -96,4 +90,3 @@ begin
 end;
 
 end.
-

@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 280
   Top = 180
-  Width = 532
-  Height = 339
   Caption = 'Form1'
+  ClientHeight = 301
+  ClientWidth = 516
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,7 +16,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 524
+    Width = 516
     Height = 29
     Align = alTop
     TabOrder = 0
@@ -72,7 +72,7 @@ object Form1: TForm1
     Left = 0
     Top = 29
     Width = 173
-    Height = 264
+    Height = 253
     Align = alLeft
     Caption = 'Panel2'
     TabOrder = 1
@@ -80,9 +80,8 @@ object Form1: TForm1
       Left = 1
       Top = 29
       Width = 171
-      Height = 234
+      Height = 223
       Align = alClient
-      ItemHeight = 16
       TabOrder = 0
       OnChange = lbDirectoryChange
     end
@@ -106,8 +105,8 @@ object Form1: TForm1
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 293
-    Width = 524
+    Top = 282
+    Width = 516
     Height = 19
     Panels = <
       item
@@ -116,13 +115,12 @@ object Form1: TForm1
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object lbFiles: TFileListBox
     Left = 173
     Top = 29
-    Width = 351
-    Height = 264
+    Width = 343
+    Height = 253
     Align = alClient
     ItemHeight = 13
     Mask = '*.frf'
@@ -134,7 +132,7 @@ object Form1: TForm1
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
     Left = 8
     Top = 245
-    ReportForm = {17000000}
+    ReportForm = {18000000}
   end
   object frRichObject1: TfrRichObject
     Left = 40

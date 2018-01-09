@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{             Report classes              }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ Report classes }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_Class;
 
@@ -15,18 +11,14 @@ interface
 {$I FR.inc}
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Printers, Controls,
+  SysUtils, Windows, Messages, Classes, Graphics, Printers, Controls, UITypes,
   Forms, StdCtrls, ComCtrls, Dialogs, Menus, Buttons,
-  FR_View, FR_Pars, FR_Intrp, FR_DSet, FR_DBSet, FR_DBRel
-{$IFDEF Delphi6}
-  , Variants
-{$ENDIF}
+  FR_View, FR_Pars, FR_Intrp, FR_DSet, FR_DBSet, FR_DBRel, Variants
 {$IFDEF IBO}
- , IB_Components
+    , IB_Components
 {$ELSE}
- , DB
+    , DB
 {$ENDIF};
-
 
 const
 // object flags
@@ -69,14 +61,10 @@ const
 
 type
   TfrDrawMode = (drAll, drCalcHeight, drAfterCalcHeight, drPart);
-  TfrBandType = (btReportTitle, btReportSummary,
-                 btPageHeader, btPageFooter,
-                 btMasterHeader, btMasterData, btMasterFooter,
-                 btDetailHeader, btDetailData, btDetailFooter,
-                 btSubDetailHeader, btSubDetailData, btSubDetailFooter,
-                 btOverlay, btColumnHeader, btColumnFooter,
-                 btGroupHeader, btGroupFooter,
-                 btCrossHeader, btCrossData, btCrossFooter, btNone);
+  TfrBandType = (btReportTitle, btReportSummary, btPageHeader, btPageFooter, btMasterHeader, btMasterData,
+    btMasterFooter, btDetailHeader, btDetailData, btDetailFooter, btSubDetailHeader, btSubDetailData, btSubDetailFooter,
+    btOverlay, btColumnHeader, btColumnFooter, btGroupHeader, btGroupFooter, btCrossHeader, btCrossData,
+    btCrossFooter, btNone);
   TfrDataSetPosition = (psLocal, psGlobal);
   TfrValueType = (vtNotAssigned, vtDBField, vtOther, vtFRVar);
   TfrPageMode = (pmNormal, pmBuildList);
@@ -108,13 +96,14 @@ type
     FontColor, FillColor: TColor;
   end;
 
-  TfrPrnInfo = record // print info about page size, margins e.t.c
+  TfrPrnInfo = record              // print info about page size, margins e.t.c
     PPgw, PPgh, Pgw, Pgh: Integer; // page width/height (printer/screen)
     POfx, POfy, Ofx, Ofy: Integer; // offset x/y
     PPw, PPh, Pw, Ph: Integer;     // printable width/height
   end;
 
   PfrPageInfo = ^TfrPageInfo;
+
   TfrPageInfo = packed record // pages of a preview
     R: TRect;
     pgSize: Word;
@@ -128,6 +117,7 @@ type
   end;
 
   PfrBandRec = ^TfrBandRec;
+
   TfrBandRec = packed record
     Band: TfrBand;
     Action: TfrBandRecType;
@@ -160,8 +150,8 @@ type
     Typ: Byte;
     Selected: Boolean;
     OriginalRect: TRect;
-    ScaleX, ScaleY: Double;   // used for scaling objects in preview
-    OffsX, OffsY: Integer;    //
+    ScaleX, ScaleY: Double; // used for scaling objects in preview
+    OffsX, OffsY: Integer;  //
     IsPrinting: Boolean;
     x, y, dx, dy: Integer;
     Flags: Word;
@@ -310,8 +300,8 @@ type
     Next, Prev: TfrBand;
     SubIndex, MaxY: Integer;
     EOFReached: Boolean;
-    EOFArr: Array[0..31] of Boolean;
-    Positions: Array[TfrDatasetPosition] of Integer;
+    EOFArr: Array [0 .. 31] of Boolean;
+    Positions: Array [TfrDataSetPosition] of Integer;
     LastGroupValue: Variant;
     HeaderBand, FooterBand, LastBand: TfrBand;
     Values: TStringList;
@@ -356,9 +346,9 @@ type
   TfrValue = class
   public
     Typ: TfrValueType;
-    OtherKind: Integer;   // for vtOther - typ, for vtDBField - format
-    DataSet: String;      // for vtDBField
-    Field: String;        // here is an expression for vtOther
+    OtherKind: Integer; // for vtOther - typ, for vtDBField - format
+    DataSet: String;    // for vtDBField
+    Field: String;      // here is an expression for vtOther
     DSet: TfrTDataSet;
   end;
 
@@ -380,7 +370,7 @@ type
 
   TfrPage = class(TObject)
   private
-    Bands: Array[TfrBandType] of TfrBand;
+    Bands: Array [TfrBandType] of TfrBand;
     Skip, InitFlag: Boolean;
     CurColumn, LastStaticColumnY, XAdjust: Integer;
     List: TList;
@@ -477,7 +467,7 @@ type
     FEMFPages: TfrEMFPages;
     FVars: TStrings;
     FVal: TfrValues;
-    FDataset: TfrDataset;
+    FDataSet: TfrDataSet;
     FGrayedButtons: Boolean;
     FReportType: TfrReportType;
     FTitle: String;
@@ -505,10 +495,8 @@ type
     FPageNumbers: String;
     FCopies: Integer;
     FCurPage: TfrPage;
-    function FormatValue(V: Variant; Format: Integer;
-      const FormatStr: String): String;
-    procedure OnGetParsFunction(const name: String; p1, p2, p3: Variant;
-                                var val: String);
+    function FormatValue(V: Variant; Format: Integer; const FormatStr: String): String;
+    procedure OnGetParsFunction(const Name: String; p1, p2, p3: Variant; var val: String);
     procedure PrepareDataSets;
     procedure BuildBeforeModal(Sender: TObject);
     procedure ExportBeforeModal(Sender: TObject);
@@ -524,7 +512,7 @@ type
     procedure WriteBinaryData(Stream: TStream);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    CanRebuild: Boolean;            // true, if report can be rebuilded
+    CanRebuild: Boolean; // true, if report can be rebuilded
     Terminated: Boolean;
     PrintToDefault, DoublePass: WordBool;
     FinalPass: Boolean;
@@ -534,7 +522,7 @@ type
     destructor Destroy; override;
     // service methods
     function FindVariable(Variable: String): Integer;
-    procedure GetVariableValue(const s: String; var v: Variant);
+    procedure GetVariableValue(const s: String; var V: Variant);
     procedure GetVarList(CatNo: Integer; List: TStrings);
     procedure GetCategoryList(List: TStrings);
     function FindObject(Name: String): TfrView;
@@ -560,9 +548,8 @@ type
     procedure LoadFromDB(Table: TDataSet; DocN: Integer);
     procedure SaveToDB(Table: TDataSet; DocN: Integer);
 {$ENDIF}
-    procedure LoadTemplate(fname: String; comm: TStrings;
-      Bmp: TBitmap; Load: Boolean);
-    procedure SaveTemplate(fname: String; comm: TStrings; Bmp: TBitmap);
+    procedure LoadTemplate(FName: String; comm: TStrings; Bmp: TBitmap; Load: Boolean);
+    procedure SaveTemplate(FName: String; comm: TStrings; Bmp: TBitmap);
     procedure LoadPreparedReport(FName: String);
     procedure SavePreparedReport(FName: String);
     // report manipulation methods
@@ -580,7 +567,7 @@ type
     property Variables: TStrings read FVars write SetVars;
     property Values: TfrValues read FVal write FVal;
   published
-    property Dataset: TfrDataset read FDataset write FDataset;
+    property DataSet: TfrDataSet read FDataSet write FDataSet;
     property GrayedButtons: Boolean read FGrayedButtons write FGrayedButtons default False;
     property InitialZoom: TfrPreviewZoom read FInitialZoom write FInitialZoom;
     property ModalPreview: Boolean read FModalPreview write FModalPreview default True;
@@ -619,10 +606,8 @@ type
   public
     Page: TfrPage;
     Modified: Boolean;
-    procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
-      ButtonTag: Integer); virtual; abstract;
-    procedure RegisterTool(MenuCaption: String; ButtonBmp: TBitmap;
-      OnClick: TNotifyEvent); virtual; abstract;
+    procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String; ButtonTag: Integer); virtual; abstract;
+    procedure RegisterTool(MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent); virtual; abstract;
     procedure BeforeChange; virtual; abstract;
     procedure AfterChange; virtual; abstract;
     procedure RedrawPage; virtual; abstract;
@@ -665,10 +650,8 @@ type
     List: TStringList;
     constructor Create; virtual;
     destructor Destroy; override;
-    function OnFunction(const FName: String; p1, p2, p3: Variant;
-      var val: String): Boolean;
-    procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: String);
-      virtual; abstract;
+    function OnFunction(const FName: String; p1, p2, p3: Variant; var val: String): Boolean;
+    procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: String); virtual; abstract;
   end;
 
   TfrCompressor = class(TObject)
@@ -678,32 +661,29 @@ type
     procedure DeCompress(StreamIn, StreamOut: TStream); virtual;
   end;
 
-
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
-procedure frRegisterObject(ClassRef: TClass; ButtonBmp: TBitmap;
-  const ButtonHint: String; EditorForm: TfrObjEditorForm);
-procedure frRegisterExportFilter(ClassRef: TClass;
-  const FilterDesc, FilterExt: String);
+procedure frRegisterObject(ClassRef: TClass; ButtonBmp: TBitmap; const ButtonHint: String;
+  EditorForm: TfrObjEditorForm);
+procedure frRegisterExportFilter(ClassRef: TClass; const FilterDesc, FilterExt: String);
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
 procedure frRegisterTool(MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
 function GetDefaultDataSet: TfrTDataSet;
 
-
 const
-  frCurrentVersion = 23; // this is current version (2.3)
+  frCurrentVersion = 24; // this is current version (2.35 -> 2.4)
   frSpecCount = 9;
-  frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
-    'DATE', 'TIME', 'LINE#', 'LINETHROUGH#', 'COLUMN#', 'CURRENT#', 'TOTALPAGES');
-  frColors: Array[0..15] of TColor =
-    (clWhite, clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal,
-     clGray, clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua);
+  frSpecFuncs: Array [0 .. frSpecCount - 1] of String = ('PAGE#', '', 'DATE', 'TIME', 'LINE#', 'LINETHROUGH#',
+    'COLUMN#', 'CURRENT#', 'TOTALPAGES');
+  frColors: Array [0 .. 15] of TColor = (clWhite, clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal, clGray,
+    clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua);
 
 type
   PfrTextRec = ^TfrTextRec;
+
   TfrTextRec = record
     Next: PfrTextRec;
-    X: Integer;
-    Text: String[255];
+    x: Integer;
+    text: String[255];
     FontName: String[32];
     FontSize, FontStyle, FontColor, FontCharset, FillColor: Integer;
   end;
@@ -731,37 +711,37 @@ type
   end;
 
 var
-  frDesigner: TfrReportDesigner;                  // designer reference
-  frDataManager: TfrDataManager;                  // data manager reference
-  frParser: TfrParser;                            // parser reference
-  frInterpretator: TfrInterpretator;              // interpretator reference
-  frVariables: TfrVariables;                      // report variables reference
-  frCompressor: TfrCompressor;                    // compressor reference
-  CurReport: TfrReport;                           // currently proceeded report
-  MasterReport: TfrReport;               // reference to main composite report
-  CurView: TfrView;                               // currently proceeded view
-  CurBand: TfrBand;                               // currently proceeded band
-  CurPage: TfrPage;                               // currently proceeded page
-  DocMode: (dmDesigning, dmPrinting);             // current mode
+  frDesigner: TfrReportDesigner;      // designer reference
+  frDataManager: TfrDataManager;      // data manager reference
+  frParser: TfrParser;                // parser reference
+  frInterpretator: TfrInterpretator;  // interpretator reference
+  frVariables: TfrVariables;          // report variables reference
+  frCompressor: TfrCompressor;        // compressor reference
+  CurReport: TfrReport;               // currently proceeded report
+  MasterReport: TfrReport;            // reference to main composite report
+  CurView: TfrView;                   // currently proceeded view
+  CurBand: TfrBand;                   // currently proceeded band
+  CurPage: TfrPage;                   // currently proceeded page
+  DocMode: (dmDesigning, dmPrinting); // current mode
   DisableDrawing: Boolean;
-  frAddIns: Array[0..31] of TfrAddInObjectInfo;   // add-in objects
+  frAddIns: Array [0 .. 31] of TfrAddInObjectInfo; // add-in objects
   frAddInsCount: Integer;
-  frFilters: Array[0..31] of TfrExportFilterInfo; // export filters
+  frFilters: Array [0 .. 31] of TfrExportFilterInfo; // export filters
   frFiltersCount: Integer;
-  frFunctions: Array[0..31] of TfrFunctionInfo;   // function libraries
+  frFunctions: Array [0 .. 31] of TfrFunctionInfo; // function libraries
   frFunctionsCount: Integer;
-  frTools: Array[0..31] of TfrToolsInfo;          // tools
+  frTools: Array [0 .. 31] of TfrToolsInfo; // tools
   frToolsCount: Integer;
-  PageNo: Integer;                       // current page number in Building mode
-  frCharset: 0..255;
-  frBandNames: Array[0..21] of String;
-  frSpecArr: Array[0..frSpecCount - 1] of String;
-  frDateFormats, frTimeFormats: Array[0..3] of String;
-  frVersion: Byte;                       // version of currently loaded report
-  SMemo: TStringList;          // temporary memo used during TfrView drawing
+  PageNo: Integer; // current page number in Building mode
+  frCharset: 0 .. 255;
+  frBandNames: Array [0 .. 21] of String;
+  frSpecArr: Array [0 .. frSpecCount - 1] of String;
+  frDateFormats, frTimeFormats: Array [0 .. 3] of String;
+  frVersion: Byte;    // version of currently loaded report
+  SMemo: TStringList; // temporary memo used during TfrView drawing
   ShowBandTitles: Boolean = True;
 (*
-  FRE_COMPATIBLEREAD variable added for migrating from older versions 
+  FRE_COMPATIBLEREAD variable added for migrating from older versions
   of FreeReport and will be removed in next releases as soon as possible.
 *)
 {$IFDEF FREEREP2217READ}
@@ -772,7 +752,7 @@ implementation
 
 uses
   FR_Fmted, FR_Prntr, FR_Progr, FR_Utils, FR_Const
-  {$IFDEF JPEG}, JPEG {$ENDIF};
+{$IFDEF JPEG}, JPEG {$ENDIF};
 
 {$R FR_Lng1.RES}
 
@@ -787,10 +767,8 @@ type
   public
     procedure GetValue(const Name: String; var Value: Variant); override;
     procedure SetValue(const Name: String; Value: Variant); override;
-    procedure DoFunction(const name: String; p1, p2, p3: Variant;
-                         var val: String); override;
+    procedure DoFunction(const Name: String; p1, p2, p3: Variant; var val: String); override;
   end;
-
 
 var
   VHeight: Integer;            // used for height calculation of TfrMemoView
@@ -801,12 +779,12 @@ var
   AggrBand: TfrBand;           // used for aggregate functions
   CurVariable: String;
   IsColumns: Boolean;
-  SavedAllPages: Integer;      // number of pages in entire report
-  ErrorFlag: Boolean;          // error occured through TfrView drawing
-  ErrorStr: String;            // error description
-  SubValue: String;            // used in GetValue event handler
+  SavedAllPages: Integer; // number of pages in entire report
+  ErrorFlag: Boolean;     // error occured through TfrView drawing
+  ErrorStr: String;       // error description
+  SubValue: String;       // used in GetValue event handler
   ObjID: Integer = 0;
-  BoolStr: Array[0..3] of String;
+  BoolStr: Array [0 .. 3] of String;
   HookList: TList;
 
   // variables used through report building
@@ -814,21 +792,26 @@ var
   Append, WasPF: Boolean;
   CompositeMode: Boolean;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 function frCreateObject(Typ: Byte; const ClassName: String): TfrView;
 var
   i: Integer;
 begin
   Result := nil;
   case Typ of
-    gtMemo:      Result := TfrMemoView.Create;
-    gtPicture:   Result := TfrPictureView.Create;
-    gtBand:      Result := TfrBandView.Create;
-    gtSubReport: Result := TfrSubReportView.Create;
-    gtLine:      Result := TfrLineView.Create;
+    gtMemo:
+      Result := TfrMemoView.Create;
+    gtPicture:
+      Result := TfrPictureView.Create;
+    gtBand:
+      Result := TfrBandView.Create;
+    gtSubReport:
+      Result := TfrSubReportView.Create;
+    gtLine:
+      Result := TfrLineView.Create;
     gtAddIn:
       begin
-        for i := 0 to frAddInsCount - 1 do
+        for i := 0 to Pred(frAddInsCount) do
           if frAddIns[i].ClassRef.ClassName = ClassName then
           begin
             Result := TfrView(frAddIns[i].ClassRef.NewInstance);
@@ -837,7 +820,7 @@ begin
             break;
           end;
         if Result = nil then
-          raise EClassNotFound.Create('Не найден класс ' + ClassName);
+          raise EClassNotFound.Create('Class not found: ' + ClassName);
       end;
   end;
   if Result <> nil then
@@ -847,21 +830,19 @@ begin
   end;
 end;
 
-procedure frRegisterObject(ClassRef: TClass; ButtonBmp: TBitmap;
-  const ButtonHint: String; EditorForm: TfrObjEditorForm);
+procedure frRegisterObject(ClassRef: TClass; ButtonBmp: TBitmap; const ButtonHint: String;
+  EditorForm: TfrObjEditorForm);
 begin
   frAddIns[frAddInsCount].ClassRef := ClassRef;
   frAddIns[frAddInsCount].EditorForm := EditorForm;
   frAddIns[frAddInsCount].ButtonBmp := ButtonBmp;
   frAddIns[frAddInsCount].ButtonHint := ButtonHint;
   if frDesigner <> nil then
-    frDesigner.RegisterObject(ButtonBmp, ButtonHint,
-      Integer(gtAddIn) + frAddInsCount);
+    frDesigner.RegisterObject(ButtonBmp, ButtonHint, Integer(gtAddIn) + frAddInsCount);
   Inc(frAddInsCount);
 end;
 
-procedure frRegisterExportFilter(ClassRef: TClass;
-  const FilterDesc, FilterExt: String);
+procedure frRegisterExportFilter(ClassRef: TClass; const FilterDesc, FilterExt: String);
 begin
   frFilters[frFiltersCount].ClassRef := ClassRef;
   frFilters[frFiltersCount].FilterDesc := FilterDesc;
@@ -871,8 +852,7 @@ end;
 
 procedure frRegisterFunctionLibrary(ClassRef: TClass);
 begin
-  frFunctions[frFunctionsCount].FunctionLibrary :=
-    TfrFunctionLibrary(ClassRef.NewInstance);
+  frFunctions[frFunctionsCount].FunctionLibrary := TfrFunctionLibrary(ClassRef.NewInstance);
   frFunctions[frFunctionsCount].FunctionLibrary.Create;
   Inc(frFunctionsCount);
 end;
@@ -899,13 +879,13 @@ end;
 
 function GetDefaultDataSet: TfrTDataSet;
 var
-  Res: TfrDataset;
+  Res: TfrDataSet;
 begin
-  Result := nil; Res := nil;
+  Result := nil;
+  Res := nil;
   if CurBand <> nil then
     case CurBand.Typ of
-      btMasterData, btReportSummary, btMasterFooter,
-      btGroupHeader, btGroupFooter:
+      btMasterData, btReportSummary, btMasterFooter, btGroupHeader, btGroupFooter:
         Res := CurPage.Bands[btMasterData].DataSet;
       btDetailData, btDetailFooter:
         Res := CurPage.Bands[btDetailData].DataSet;
@@ -915,42 +895,44 @@ begin
         Res := CurPage.Bands[btCrossData].DataSet;
     end;
   if (Res <> nil) and (Res is TfrDBDataset) then
-    Result := TfrDBDataSet(Res).GetDataSet;
+    Result := TfrDBDataset(Res).GetDataSet;
 end;
 
 function ReadString(Stream: TStream): String;
 begin
-  if frVersion >= 23 then
-{$IFDEF FREEREP2217READ}
-      Result := frReadString(Stream) // load in current format
+  if frVersion >= 24 then         // unicode
+    Result := frReadString(Stream)// load in current format
   else
-    if (frVersion = 22) and FRE_COMPATIBLE_READ then
-      Result := frReadString2217(Stream) // load in bad format
+    if frVersion >= 23 then
+      Result := String(frReadString23(Stream))// load ansi format
     else
-{$ELSE}
-    Result := frReadString(Stream) else
+{$IFDEF FREEREP2217READ}
+      if (frVersion = 22) and FRE_COMPATIBLE_READ then
+        Result := String(frReadString2217(Stream))// load in bad format
+      else
 {$ENDIF}
-    Result := frReadString22(Stream);
+        Result := frReadString22(Stream);
 end;
 
 procedure ReadMemo(Stream: TStream; Memo: TStrings);
 begin
-  if frVersion >= 23 then
-{$IFDEF FREEREP2217READ}
-      frReadMemo(Stream, Memo) // load in current format
+  if frVersion >= 24 then   // unicode
+    frReadMemo(Stream, Memo)// load in current format
   else
-    if (frVersion = 22) and FRE_COMPATIBLE_READ then
-      Memo.Text := frReadString2217(Stream) // load in bad format
+    if frVersion >= 23 then
+      frReadMemo23(Stream, Memo)// load ansi format
     else
-{$ELSE}
-    frReadMemo(Stream, Memo) else
+{$IFDEF FREEREP2217READ}
+      if (frVersion = 22) and FRE_COMPATIBLE_READ then
+        Memo.text := frReadString2217(Stream)// load in bad format
+      else
 {$ENDIF}
-    frReadMemo22(Stream, Memo);
+        frReadMemo22(Stream, Memo);
 end;
 
 procedure CreateDS(Desc: String; var DataSet: TfrDataSet; var IsVirtualDS: Boolean);
 begin
-  if (Desc <> '') and (Desc[1] in ['1'..'9']) then
+  if (Desc <> EmptyStr) and CharInSet(Desc[1], ['1' .. '9']) then
   begin
     DataSet := TfrUserDataSet.Create(nil);
     DataSet.RangeEnd := reCount;
@@ -963,7 +945,7 @@ begin
     DataSet.Init;
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrView.Create;
 begin
   inherited Create;
@@ -974,12 +956,14 @@ begin
   FrameWidth := 1;
   FrameColor := clBlack;
   FillColor := clNone;
-  Format := 2*256 + Ord(DecimalSeparator);
+  Format := 2 * 256 + Ord(FormatSettings.DecimalSeparator);
   BaseName := 'View';
   Visible := True;
   StreamMode := smDesigning;
-  ScaleX := 1; ScaleY := 1;
-  OffsX := 0; OffsY := 0;
+  ScaleX := 1;
+  ScaleY := 1;
+  OffsX := 0;
+  OffsY := 0;
   Flags := flStretched;
 end;
 
@@ -996,7 +980,10 @@ begin
   Name := From.Name;
   Typ := From.Typ;
   Selected := From.Selected;
-  x := From.x; y := From.y; dx := From.dx; dy := From.dy;
+  x := From.x;
+  y := From.y;
+  dx := From.dx;
+  dy := From.dy;
   Flags := From.Flags;
   FrameTyp := From.FrameTyp;
   FrameWidth := From.FrameWidth;
@@ -1014,12 +1001,17 @@ procedure TfrView.CalcGaps;
 var
   bx, by, bx1, by1, wx1, wx2, wy1, wy2: Integer;
 begin
-  SaveX := x; SaveY := y; SaveDX := dx; SaveDY := dy;
+  SaveX := x;
+  SaveY := y;
+  SaveDX := dx;
+  SaveDY := dy;
   SaveFW := FrameWidth;
   if DocMode = dmDesigning then
   begin
-    ScaleX := 1; ScaleY := 1;
-    OffsX := 0; OffsY := 0;
+    ScaleX := 1;
+    ScaleY := 1;
+    OffsX := 0;
+    OffsY := 0;
   end;
   x := Round(x * ScaleX) + OffsX;
   y := Round(y * ScaleY) + OffsY;
@@ -1031,15 +1023,20 @@ begin
   wy1 := Round((FrameWidth * ScaleY - 1) / 2);
   wy2 := Round(FrameWidth * ScaleY / 2);
   FrameWidth := FrameWidth * ScaleX;
-  gapx := wx2 + 2; gapy := wy2 div 2 + 1;
+  gapx := wx2 + 2;
+  gapy := wy2 div 2 + 1;
   bx := x;
   by := y;
   bx1 := Round((SaveX + SaveDX) * ScaleX + OffsX);
   by1 := Round((SaveY + SaveDY) * ScaleY + OffsY);
-  if (FrameTyp and $1) <> 0 then Dec(bx1, wx2);
-  if (FrameTyp and $2) <> 0 then Dec(by1, wy2);
-  if (FrameTyp and $4) <> 0 then Inc(bx, wx1);
-  if (FrameTyp and $8) <> 0 then Inc(by, wy1);
+  if (FrameTyp and $1) <> 0 then
+    Dec(bx1, wx2);
+  if (FrameTyp and $2) <> 0 then
+    Dec(by1, wy2);
+  if (FrameTyp and $4) <> 0 then
+    Inc(bx, wx1);
+  if (FrameTyp and $8) <> 0 then
+    Inc(by, wy1);
   DRect := Rect(bx, by, bx1 + 1, by1 + 1);
 end;
 
@@ -1052,18 +1049,21 @@ begin
   FrameWidth := SaveFW;
 end;
 
-procedure TfrView.ShowBackground;
+procedure TfrView.ShowBackGround;
 var
   fp: TColor;
 begin
-  if DisableDrawing then Exit;
-  if (DocMode = dmPrinting) and (FillColor = clNone) then Exit;
+  if DisableDrawing then
+    Exit;
+  if (DocMode = dmPrinting) and (FillColor = clNone) then
+    Exit;
   fp := FillColor;
   if (DocMode = dmDesigning) and (fp = clNone) then
     fp := clWhite;
   Canvas.Brush.Color := fp;
   if DocMode = dmDesigning then
-    Canvas.FillRect(DRect) else
+    Canvas.FillRect(DRect)
+  else
     Canvas.FillRect(Rect(x, y,
 // use calculating coords instead of dx, dy - for best view
       Round((SaveX + SaveDX) * ScaleX + OffsX), Round((SaveY + SaveDY) * ScaleY + OffsY)));
@@ -1087,9 +1087,7 @@ var
       begin
         Canvas.MoveTo(x, y);
         Canvas.LineTo(x1, y1);
-      end
-      else
-      begin
+      end else begin
         if x = x1 then
         begin
           Canvas.MoveTo(x - Round(FrameWidth), y);
@@ -1100,9 +1098,7 @@ var
           Canvas.Pen.Color := FrameColor;
           Canvas.MoveTo(x + Round(FrameWidth), y);
           Canvas.LineTo(x1 + Round(FrameWidth), y1);
-        end
-        else
-        begin
+        end else begin
           Canvas.MoveTo(x, y - Round(FrameWidth));
           Canvas.LineTo(x1, y1 - Round(FrameWidth));
           Canvas.Pen.Color := FillColor;
@@ -1113,20 +1109,18 @@ var
           Canvas.LineTo(x1, y1 + Round(FrameWidth));
         end;
       end
-    end
-    else
-    begin
+    end else begin
       Canvas.Brush.Color := FillColor;
       w := Canvas.Pen.Width;
       Canvas.Pen.Width := 1;
       if x = x1 then
-        for i := 0 to w - 1 do
+        for i := 0 to Pred(w) do
         begin
           Canvas.MoveTo(x - w div 2 + i, y);
           Canvas.LineTo(x - w div 2 + i, y1);
         end
       else
-        for i := 0 to w - 1 do
+        for i := 0 to Pred(w) do
         begin
           Canvas.MoveTo(x, y - w div 2 + i);
           Canvas.LineTo(x1, y - w div 2 + i);
@@ -1134,9 +1128,12 @@ var
       Canvas.Pen.Width := w;
     end;
   end;
+
 begin
-  if DisableDrawing then Exit;
-  if (DocMode = dmPrinting) and ((FrameTyp and $F) = 0) then Exit;
+  if DisableDrawing then
+    Exit;
+  if (DocMode = dmPrinting) and ((FrameTyp and $F) = 0) then
+    Exit;
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -1145,10 +1142,14 @@ begin
     begin
       Pen.Color := clBlack;
       Pen.Width := 1;
-      Line(x, y + 3, 0, -3); Line(x, y, 4, 0);
-      Line(x, y + dy - 3, 0, 3); Line(x, y + dy, 4, 0);
-      Line(x + dx - 3, y, 3, 0); Line(x + dx, y, 0, 4);
-      Line(x + dx - 3, y + dy, 3, 0); Line(x + dx, y + dy, 0, -4);
+      Line(x, y + 3, 0, - 3);
+      Line(x, y, 4, 0);
+      Line(x, y + dy - 3, 0, 3);
+      Line(x, y + dy, 4, 0);
+      Line(x + dx - 3, y, 3, 0);
+      Line(x + dx, y, 0, 4);
+      Line(x + dx - 3, y + dy, 3, 0);
+      Line(x + dx, y + dy, 0, - 4);
     end;
     Pen.Color := FrameColor;
     Pen.Width := Round(FrameWidth);
@@ -1161,10 +1162,14 @@ begin
       Rectangle(x, y, x1 + 1, y1 + 1)
     else
     begin
-      if (FrameTyp and $1) <> 0 then Line1(x1, y, x1, y1);
-      if (FrameTyp and $4) <> 0 then Line1(x, y, x, y1);
-      if (FrameTyp and $2) <> 0 then Line1(x, y1, x1, y1);
-      if (FrameTyp and $8) <> 0 then Line1(x, y, x1, y);
+      if (FrameTyp and $1) <> 0 then
+        Line1(x1, y, x1, y1);
+      if (FrameTyp and $4) <> 0 then
+        Line1(x, y, x, y1);
+      if (FrameTyp and $2) <> 0 then
+        Line1(x, y1, x1, y1);
+      if (FrameTyp and $8) <> 0 then
+        Line1(x, y, x1, y);
     end;
   end;
 end;
@@ -1181,7 +1186,8 @@ begin
   Memo1.Assign(Memo);
   CurReport.InternalOnEnterRect(Memo1, Self);
   frInterpretator.DoScript(Script);
-  if not Visible then Exit;
+  if not Visible then
+    Exit;
 
   Stream.Write(Typ, 1);
   if Typ = gtAddIn then
@@ -1202,20 +1208,21 @@ begin
   begin
     if StreamMode = smDesigning then
       if frVersion >= 23 then
-        Name := ReadString(Stream) else
+        Name := ReadString(Stream)
+      else
         CreateUniqueName;
     Read(x, 30); // this is equal to, but much faster:
-{    Read(x, 4); Read(y, 4); Read(dx, 4); Read(dy, 4);
+{ Read(x, 4); Read(y, 4); Read(dx, 4); Read(dy, 4);
     Read(Flags, 2);
     Read(FrameTyp, 2);
     Read(FrameWidth, 4);
     Read(FrameColor, 4);
-    Read(FrameStyle, 2);}
+    Read(FrameStyle, 2); }
     Read(FillColor, 4);
     if StreamMode = smDesigning then
     begin
       Read(Format, 4);
-      FormatStr := ReadString(Stream);
+      FormatStr := ReadString(Stream)
     end;
     ReadMemo(Stream, Memo);
     if (frVersion >= 23) and (StreamMode = smDesigning) then
@@ -1233,24 +1240,25 @@ end;
 procedure TfrView.SaveToStream(Stream: TStream);
 var
   w: Integer;
-  f: Single;
+  F: Single;
 begin
-  f := FrameWidth;
-  if f <> Int(f) then
-    w := Round(FrameWidth * 1000) else
-    w := Round(f);
+  F := FrameWidth;
+  if F <> Int(F) then
+    w := Round(FrameWidth * 1000)
+  else
+    w := Round(F);
   PInteger(@FrameWidth)^ := w;
   with Stream do
   begin
     if StreamMode = smDesigning then
       frWriteString(Stream, Name);
     Write(x, 30); // this is equal to, but much faster:
-{    Write(x, 4); Write(y, 4); Write(dx, 4); Write(dy, 4);
+{ Write(x, 4); Write(y, 4); Write(dx, 4); Write(dy, 4);
     Write(Flags, 2);
     Write(FrameTyp, 2);
     Write(FrameWidth, 4);
     Write(FrameColor, 4);
-    Write(FrameStyle, 2);}
+    Write(FrameStyle, 2); }
     Write(FillColor, 4);
     if StreamMode = smDesigning then
     begin
@@ -1266,17 +1274,17 @@ begin
       Write(Visible, 2);
     end;
   end;
-  FrameWidth := f;
+  FrameWidth := F;
 end;
 
 procedure TfrView.SaveToFR3Stream(Stream: TStream);
-var 
+var
   FTyp: Integer;
   s: String;
 
   procedure WriteStr(const s: String);
   begin
-    Stream.Write(s[1], Length(s));
+    Stream.Write(Pointer(s)^, Length(s) * SizeOf(char));
   end;
 
 begin
@@ -1289,10 +1297,8 @@ begin
       s := 'TfrxSubreport';
   end;
   WriteStr('<' + s + ' ');
-  WriteStr('Name="' + Name +
-    '" Left="' + IntToStr(x) + '" Top="' + IntToStr(y) +
-    '" Width="' + IntToStr(dx) + '" Height="' + IntToStr(dy) +
-    '" Color="' + IntToStr(FillColor) + '"');
+  WriteStr('Name="' + Name + '" Left="' + IntToStr(x) + '" Top="' + IntToStr(y) + '" Width="' + IntToStr(dx) +
+    '" Height="' + IntToStr(dy) + '" Color="' + IntToStr(FillColor) + '"');
   if not Visible then
     WriteStr(' Visible="False"');
 
@@ -1306,26 +1312,23 @@ begin
   if (FrameTyp and frftDown) <> 0 then
     FTyp := FTyp or 8;
 
-  WriteStr(' Frame.Typ="' + IntToStr(FTyp) +
-    '" Frame.Width="' + FloatToStr(FrameWidth) +
-    '" Frame.Color="' + IntToStr(FrameColor) +
-    '" Frame.Style="' + IntToStr(FrameStyle) +
-    '" GapX="' + IntToStr(gapx) + '" GapY="' + IntToStr(gapy) +
-    {'" TagStr="' + StrToXML(Tag) + }'" Memo.text="' + StrToXML(Memo.Text) + '"');
+  WriteStr(' Frame.Typ="' + IntToStr(FTyp) + '" Frame.Width="' + FloatToStr(FrameWidth) + '" Frame.Color="' +
+    IntToStr(FrameColor) + '" Frame.Style="' + IntToStr(FrameStyle) + '" GapX="' + IntToStr(gapx) + '" GapY="' +
+    IntToStr(gapy) +
+    { '" TagStr="' + StrToXML(Tag) + } '" Memo.text="' + StrToXML(Memo.text) + '"');
 
-{  ba := BandAlign;
+{ ba := BandAlign;
   if ba = baRest then
     ba := baWidth
   else if ba = baTop then
     ba := baNone;
-  WriteStr(' Align="' + IntToStr(ba) + '"');}
+  WriteStr(' Align="' + IntToStr(ba) + '"'); }
 
   if Script.Count > 0 then
-    WriteStr(' OnBeforePrint="' + Name + 'OnBeforePrint' +
-      '" OnClick="' + Name + 'OnBeforePrint' +
-      '" OnActivate="' + Name + 'OnBeforePrint"');
+    WriteStr(' OnBeforePrint="' + Name + 'OnBeforePrint' + '" OnClick="' + Name + 'OnBeforePrint' + '" OnActivate="' +
+      Name + 'OnBeforePrint"');
 
-{  RTyp := 0;
+{ RTyp := 0;
   if ((Restrictions and frrfDontEditMemo) <> 0) or
      ((Restrictions and frrfDontEditScript) <> 0) or
      ((Restrictions and frrfDontEditContents) <> 0) or
@@ -1337,7 +1340,7 @@ begin
     RTyp := RTyp or 4;
   if (Restrictions and frrfDontDelete) <> 0 then
     RTyp := RTyp or 8;
-  WriteStr(' Restrictions="' + IntToStr(RTyp) + '"');}
+  WriteStr(' Restrictions="' + IntToStr(RTyp) + '"'); }
 end;
 
 procedure TfrView.Resized;
@@ -1360,19 +1363,25 @@ begin
   begin
     w1 := Round(FrameWidth * 1.5);
     w2 := Round((FrameWidth - 1) / 2 + FrameWidth);
-  end
-  else
-  begin
+  end else begin
     w1 := Round(FrameWidth / 2);
     w2 := Round((FrameWidth - 1) / 2);
   end;
-  bx := x; by := y; bx1 := x + dx + 1; by1 := y + dy + 1;
-  if (FrameTyp and $1) <> 0 then Inc(bx1, w2);
-  if (FrameTyp and $2) <> 0 then Inc(by1, w2);
-  if (FrameTyp and $4) <> 0 then Dec(bx, w1);
-  if (FrameTyp and $8) <> 0 then Dec(by, w1);
+  bx := x;
+  by := y;
+  bx1 := x + dx + 1;
+  by1 := y + dy + 1;
+  if (FrameTyp and $1) <> 0 then
+    Inc(bx1, w2);
+  if (FrameTyp and $2) <> 0 then
+    Inc(by1, w2);
+  if (FrameTyp and $4) <> 0 then
+    Dec(bx, w1);
+  if (FrameTyp and $8) <> 0 then
+    Dec(by, w1);
   if rt = rtNormal then
-    Result := CreateRectRgn(bx, by, bx1, by1) else
+    Result := CreateRectRgn(bx, by, bx1, by1)
+  else
     Result := CreateRectRgn(bx - 10, by - 10, bx1 + 10, by1 + 10);
 end;
 
@@ -1380,7 +1389,7 @@ procedure TfrView.CreateUniqueName;
 var
   i: Integer;
 begin
-  Name := '';
+  Name := EmptyStr;
   for i := 1 to 10000 do
     if CurReport.FindObject(BaseName + IntToStr(i)) = nil then
     begin
@@ -1421,7 +1430,7 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count-1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
@@ -1431,7 +1440,7 @@ begin
   frDesigner.AfterChange;
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrMemoView.Create;
 begin
   inherited Create;
@@ -1484,12 +1493,13 @@ var
   begin
     i := 1;
     repeat
-      while (i < Length(s)) and (s[i] <> '[') do Inc(i);
+      while (i < Length(s)) and (s[i] <> '[') do
+        Inc(i);
       s1 := GetBrackedVariable(s, i, j);
       if i <> j then
       begin
         Delete(s, i, j - i + 1);
-        s2 := '';
+        s2 := EmptyStr;
         CurReport.InternalOnGetValue(s1, s2);
         Insert(s2, s, i);
         Inc(i, Length(s2));
@@ -1497,18 +1507,19 @@ var
       end;
     until i = j;
   end;
+
 begin
   Memo1.Clear;
-  for i := 0 to Memo.Count - 1 do
+  for i := 0 to Pred(Memo.Count) do
   begin
     s := Memo[i];
     if Length(s) > 0 then
     begin
       GetData(s);
-      Memo1.Text := Memo1.Text + s;
+      Memo1.text := Memo1.text + s;
     end
     else
-      Memo1.Add('');
+      Memo1.Add(EmptyStr);
   end;
 end;
 
@@ -1519,39 +1530,36 @@ begin
     Brush.Style := bsClear;
     Font := Self.Font;
     if not IsPrinting then
-      Font.Height := -Round(Font.Size * 96 / 72 * ScaleY);
+      Font.Height := - Round(Font.Size * 96 / 72 * ScaleY);
   end;
 end;
-
 
 type
   TWordBreaks = string;
 
 const
-  gl: set of Char = ['А', 'Е', 'Ё', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я'];
-  r_sogl: set of Char = ['Ъ', 'Ь'];
-  spaces: set of Char = [' ', '.', ',', '-'];
+  gl: set of AnsiChar = ['А', 'Е', 'Ё', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я'];
+  r_sogl: set of AnsiChar = ['Ъ', 'Ь'];
+  spaces: set of AnsiChar = [' ', '.', ',', '-'];
 
 function BreakWord(s: String): TWordBreaks;
 var
   i: Integer;
   CanBreak: Boolean;
 begin
-  Result := '';
+  Result := EmptyStr;
   s := AnsiUpperCase(s);
   if Length(s) > 4 then
   begin
     i := 2;
     repeat
       CanBreak := False;
-      if s[i] in gl then
+      if CharInSet(s[i], gl) then
       begin
-        if (s[i + 1] in gl) or (s[i + 2] in gl) then CanBreak := True;
-      end
-      else
-      begin
-        if not (s[i + 1] in gl) and not (s[i + 1] in r_sogl) and
-           (s[i + 2] in gl) then
+        if CharInSet(s[i + 1], gl) or CharInSet(s[i + 2], gl) then
+          CanBreak := True;
+      end else begin
+        if not CharInSet(s[i + 1], gl) and not CharInSet(s[i + 1], r_sogl) and CharInSet(s[i + 2], gl) then
           CanBreak := True;
       end;
       if CanBreak then
@@ -1563,7 +1571,7 @@ end;
 
 procedure TfrMemoView.WrapMemo;
 var
-  size, size1, maxwidth: Integer;
+  Size, size1, maxwidth: Integer;
   b: TWordBreaks;
   WCanvas: TCanvas;
 
@@ -1573,10 +1581,11 @@ var
   begin
     n := Length(str);
     if (n > 0) and (str[n] = #1) then
-      w := WCanvas.TextWidth(Copy(str, 1, n - 1)) else
+      w := WCanvas.TextWidth(Copy(str, 1, Pred(n)))
+    else
       w := WCanvas.TextWidth(str);
     SMemo.Add(str + Chr(w div 256) + Chr(w mod 256));
-    Inc(size, size1);
+    Inc(Size, size1);
   end;
 
   procedure WrapLine(const s: String);
@@ -1586,12 +1595,13 @@ var
   begin
     CRLF := False;
     for i := 1 to Length(s) do
-      if s[i] in [#10, #13] then
+      if CharInSet(s[i], [#10, #13]) then
       begin
         CRLF := True;
         break;
       end;
-    last := 1; beg := 1;
+    last := 1;
+    beg := 1;
     if not CRLF and ((Length(s) <= 1) or (WCanvas.TextWidth(s) <= maxwidth)) then
       OutLine(s + #1)
     else
@@ -1599,64 +1609,71 @@ var
       cur := 1;
       while cur <= Length(s) do
       begin
-        if s[cur] in [#10, #13] then
+        if CharInSet(s[cur], [#10, #13]) then
         begin
           OutLine(Copy(s, beg, cur - beg) + #1);
-          while (cur < Length(s)) and (s[cur] in [#10, #13]) do Inc(cur);
-          beg := cur; last := beg;
-          if s[cur] in [#13, #10] then
-            Exit else
+          while (cur < Length(s)) and CharInSet(s[cur], [#10, #13]) do
+            Inc(cur);
+          beg := cur;
+          last := beg;
+          if CharInSet(s[cur], [#13, #10]) then
+            Exit
+          else
             continue;
         end;
         if s[cur] <> ' ' then
-        if WCanvas.TextWidth(Copy(s, beg, cur - beg + 1)) > maxwidth then
-        begin
-          WasBreak := False;
-          if (Flags and flWordBreak) <> 0 then
+          if WCanvas.TextWidth(Copy(s, beg, cur - beg + 1)) > maxwidth then
           begin
-            i := cur;
-            while (i <= Length(s)) and not (s[i] in spaces) do
-              Inc(i);
-            b := BreakWord(Copy(s, last + 1, i - last - 1));
-            if Length(b) > 0 then
+            WasBreak := False;
+            if (Flags and flWordBreak) <> 0 then
             begin
-              i := 1;
-              cur := last;
-              while (i <= Length(b)) and
-                (WCanvas.TextWidth(Copy(s, beg, last - beg + 1 + Ord(b[i])) + '-') <= maxwidth) do
-              begin
-                WasBreak := True;
-                cur := last + Ord(b[i]);
+              i := cur;
+              while (i <= Length(s)) and not CharInSet(s[i], spaces) do
                 Inc(i);
+              b := BreakWord(Copy(s, last + 1, i - last - 1));
+              if Length(b) > 0 then
+              begin
+                i := 1;
+                cur := last;
+                while (i <= Length(b)) and (WCanvas.TextWidth(Copy(s, beg, last - beg + 1 + Ord(b[i])) + '-') <=
+                  maxwidth) do
+                begin
+                  WasBreak := True;
+                  cur := last + Ord(b[i]);
+                  Inc(i);
+                end;
+                last := cur;
               end;
+            end else if last = beg then
               last := cur;
-            end;
-          end
-          else
-            if last = beg then last := cur;
-          if WasBreak then
-            OutLine(Copy(s, beg, last - beg + 1) + '-')
-          else if s[last] = ' ' then
-            OutLine(Copy(s, beg, last - beg)) else
-            OutLine(Copy(s, beg, last - beg + 1));
-          if ((Flags and flWordBreak) <> 0) and not WasBreak and (last = cur) then
-          begin
-            beg := cur + 1;
-            cur := Length(s);
-            break;
-          end;
-          if (Flags and flWordBreak) = 0 then
-            if last = cur then
+            if WasBreak then
+              OutLine(Copy(s, beg, last - beg + 1) + '-')
+            else
+              if s[last] = ' ' then
+                OutLine(Copy(s, beg, last - beg))
+              else
+                OutLine(Copy(s, beg, last - beg + 1));
+            if ((Flags and flWordBreak) <> 0) and not WasBreak and (last = cur) then
             begin
-              beg := cur;
+              beg := cur + 1;
+              cur := Length(s);
               break;
             end;
-          beg := last + 1; last := beg;
-        end;
-        if s[cur] in spaces then last := cur;
+            if (Flags and flWordBreak) = 0 then
+              if last = cur then
+              begin
+                beg := cur;
+                break;
+              end;
+            beg := last + 1;
+            last := beg;
+          end;
+        if CharInSet(s[cur], spaces) then
+          last := cur;
         Inc(cur);
       end;
-      if beg <> cur then OutLine(Copy(s, beg, cur - beg + 1) + #1);
+      if beg <> cur then
+        OutLine(Copy(s, beg, cur - beg + 1) + #1);
     end;
   end;
 
@@ -1664,14 +1681,15 @@ var
   var
     i: Integer;
   begin
-    size := y + gapy;
-    size1 := -WCanvas.Font.Height + LineSpacing;
+    Size := y + gapy;
+    size1 := - WCanvas.Font.Height + LineSpacing;
     maxwidth := dx - gapx - gapx;
-    for i := 0 to Memo1.Count - 1 do
+    for i := 0 to Pred(Memo1.Count) do
       if (Flags and flWordWrap) <> 0 then
-        WrapLine(Memo1[i]) else
+        WrapLine(Memo1[i])
+      else
         OutLine(Memo1[i] + #1);
-    VHeight := size - y + gapy;
+    VHeight := Size - y + gapy;
     TextHeight := size1;
   end;
 
@@ -1682,31 +1700,34 @@ var
   begin
     h := Create90Font(WCanvas.Font);
     oldh := SelectObject(WCanvas.Handle, h);
-    size := x + gapx;
-    size1 := -WCanvas.Font.Height + LineSpacing;
+    Size := x + gapx;
+    size1 := - WCanvas.Font.Height + LineSpacing;
     maxwidth := dy - gapy - gapy;
-    for i := 0 to Memo1.Count - 1 do
+    for i := 0 to Pred(Memo1.Count) do
       if (Flags and flWordWrap) <> 0 then
-        WrapLine(Memo1[i]) else
+        WrapLine(Memo1[i])
+      else
         OutLine(Memo1[i]);
     SelectObject(WCanvas.Handle, oldh);
     DeleteObject(h);
-    VHeight := size - x + gapx;
+    VHeight := Size - x + gapx;
     TextHeight := size1;
   end;
 
 begin
   WCanvas := TempBmp.Canvas;
   WCanvas.Font.Assign(Font);
-  WCanvas.Font.Height := -Round(Font.Size * 96 / 72);
+  WCanvas.Font.Height := - Round(Font.Size * 96 / 72);
   SetTextCharacterExtra(WCanvas.Handle, CharacterSpacing);
   SMemo.Clear;
-  if (Adjust and $4) <> 0 then OutMemo90 else OutMemo;
+  if (Adjust and $4) <> 0 then
+    OutMemo90
+  else
+    OutMemo;
 end;
 
-
 var
-  DxArray: Array[0..2047] of Integer;
+  DxArray: Array [0 .. 2047] of Integer;
 
 procedure TfrMemoView.ShowMemo;
 var
@@ -1716,22 +1737,23 @@ var
 
   procedure OutMemo;
   var
-    i, cury, th: Integer;
+    i, CurY, th: Integer;
 
     function OutLine(str: String): Boolean;
     var
-      i, n, aw, nw, w, curx: Integer;
+      i, n, aw, nw, w, CurX: Integer;
       ParaEnd: Boolean;
     begin
-      if not Streaming or (cury + th <= DR.Bottom) then
+      if not Streaming or (CurY + th <= DR.Bottom) then
       begin
         n := Length(str);
-        w := Ord(str[n - 1]) * 256 + Ord(str[n]);
+        w := Ord(str[Pred(n)]) * 256 + Ord(str[n]);
         SetLength(str, n - 2);
         ParaEnd := True;
         if Length(str) > 0 then
           if str[Length(str)] = #1 then
-            SetLength(str, Length(str) - 1) else
+            SetLength(str, Pred(Length(str)))
+          else
             ParaEnd := False;
 
         if Adjust <> 3 then
@@ -1742,125 +1764,131 @@ var
           GCP.nGlyphs := Length(str);
           AssignFont(Canvas);
 
-          nw := Round(w * ScaleX);                    // needed width
-          while (Canvas.TextWidth(str) > nw) and
-            (Canvas.Font.Height < -1) do
+          nw := Round(w * ScaleX); // needed width
+          while (Canvas.TextWidth(str) > nw) and (Canvas.Font.Height < - 1) do
             Canvas.Font.Height := Canvas.Font.Height + 1;
 
-          aw := Canvas.TextWidth(str);                // actual width
+          aw := Canvas.TextWidth(str); // actual width
 
           // preventing Win32 error when printing
           if (aw <> nw) and not Exporting then
-        {$IFDEF VER180}
-        GetCharacterPlacement(Canvas.Handle, PChar(str), Length(str), nw, GCP, GCP_JUSTIFY + GCP_MAXEXTENT)
-        {$ELSE}
-          {$IFDEF VER150}
+{$IFDEF VER180}
             GetCharacterPlacement(Canvas.Handle, PChar(str), Length(str), nw, GCP, GCP_JUSTIFY + GCP_MAXEXTENT)
-          {$ELSE}
-            GetCharacterPlacement(Canvas.Handle, PChar(str), BOOL(Length(str)), BOOL(nw), GCP, GCP_JUSTIFY + GCP_MAXEXTENT)
-          {$ENDIF}
-        {$ENDIF}
+{$ELSE}
+{$IFDEF VER210}
+            GetCharacterPlacement(Canvas.Handle, PChar(str), Length(str), nw, GCP, GCP_JUSTIFY + GCP_MAXEXTENT)
+{$ELSE}
+{$IFDEF VER150}
+            GetCharacterPlacement(Canvas.Handle, PChar(str), Length(str), nw, GCP, GCP_JUSTIFY + GCP_MAXEXTENT)
+{$ELSE}
+            GetCharacterPlacement(Canvas.Handle, PChar(str), Length(str), nw, GCP, GCP_JUSTIFY + GCP_MAXEXTENT)
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
           else
             GCP.lpDx := nil;
 
           if Adjust = 0 then
-            curx := x + gapx
-          else if Adjust = 1 then
-            curx := x + dx - 1 - gapx - nw
+            CurX := x + gapx
           else
-            curx := x + gapx + (dx - gapx - gapx - nw) div 2;
+            if Adjust = 1 then
+              CurX := x + dx - 1 - gapx - nw
+            else
+              CurX := x + gapx + (dx - gapx - gapx - nw) div 2;
 
           if not Exporting then
-            ExtTextOut(Canvas.Handle, curx, cury, ETO_CLIPPED, @DR,
-              PChar(str), Length(str), PInteger(GCP.lpDx))
-        end
-        else
-        begin
-          curx := x + gapx;
+            ExtTextOut(Canvas.Handle, CurX, CurY, ETO_CLIPPED, @DR, PChar(str), Length(str), PInteger(GCP.lpDx))
+        end else begin
+          CurX := x + gapx;
           if not Exporting then
           begin
             n := 0;
             for i := 1 to Length(str) do
-              if str[i] = ' ' then Inc(n);
+              if str[i] = ' ' then
+                Inc(n);
             if (n <> 0) and not ParaEnd then
-              SetTextJustification(Canvas.Handle,
-                dx - gapx - gapx - Canvas.TextWidth(str), n);
+              SetTextJustification(Canvas.Handle, dx - gapx - gapx - Canvas.TextWidth(str), n);
 
-            ExtTextOut(Canvas.Handle, curx, cury, ETO_CLIPPED, @DR,
-              PChar(str), Length(str), nil);
+            ExtTextOut(Canvas.Handle, CurX, CurY, ETO_CLIPPED, @DR, PChar(str), Length(str), nil);
             SetTextJustification(Canvas.Handle, 0, 0);
           end;
         end;
-        if Exporting then CurReport.InternalOnExportText(curx, cury, str, Self);
+        if Exporting then
+          CurReport.InternalOnExportText(CurX, CurY, str, Self);
         Inc(CurStrNo);
         Result := False;
       end
-      else Result := True;
-      cury := cury + th;
+      else
+        Result := True;
+      CurY := CurY + th;
     end;
 
   begin
-    cury := y + gapy;
-    th := -Canvas.Font.Height + Round(LineSpacing * ScaleY);
+    CurY := y + gapy;
+    th := - Canvas.Font.Height + Round(LineSpacing * ScaleY);
     CurStrNo := 0;
-    for i := 0 to Memo1.Count - 1 do
+    for i := 0 to Pred(Memo1.Count) do
       if OutLine(Memo1[i]) then
         break;
   end;
 
   procedure OutMemo90;
   var
-    i, th, curx: Integer;
+    i, th, CurX: Integer;
     h, oldh: HFont;
 
     procedure OutLine(str: String);
     var
-      i, n, cury: Integer;
+      i, n, CurY: Integer;
       ParaEnd: Boolean;
     begin
       SetLength(str, Length(str) - 2);
       if str[Length(str)] = #1 then
       begin
         ParaEnd := True;
-        SetLength(str, Length(str) - 1);
+        SetLength(str, Pred(Length(str)));
       end
       else
         ParaEnd := False;
-      cury := 0;
+      CurY := 0;
       if Adjust = 4 then
-        cury := y + dy - gapy
-      else if Adjust = 5 then
-        cury := y + gapy + Canvas.TextWidth(str)
-      else if Adjust = 6 then
-        cury := y + dy - 1 - gapy - (dy - gapy - gapy - Canvas.TextWidth(str)) div 2
-      else if not Exporting then
-      begin
-        cury := y + dy - gapy;
-        n := 0;
-        for i := 1 to Length(str) do
-          if str[i] = ' ' then Inc(n);
-        if (n <> 0) and not ParaEnd then
-          SetTextJustification(Canvas.Handle,
-            dy - gapy - gapy - Canvas.TextWidth(str), n);
-      end;
+        CurY := y + dy - gapy
+      else
+        if Adjust = 5 then
+          CurY := y + gapy + Canvas.TextWidth(str)
+        else
+          if Adjust = 6 then
+            CurY := y + dy - 1 - gapy - (dy - gapy - gapy - Canvas.TextWidth(str)) div 2
+          else
+            if not Exporting then
+            begin
+              CurY := y + dy - gapy;
+              n := 0;
+              for i := 1 to Length(str) do
+                if str[i] = ' ' then
+                  Inc(n);
+              if (n <> 0) and not ParaEnd then
+                SetTextJustification(Canvas.Handle, dy - gapy - gapy - Canvas.TextWidth(str), n);
+            end;
       if not Exporting then
       begin
-        ExtTextOut(Canvas.Handle, curx, cury, ETO_CLIPPED, @DR,
-          PChar(str), Length(str), nil);
+        ExtTextOut(Canvas.Handle, CurX, CurY, ETO_CLIPPED, @DR, PChar(str), Length(str), nil);
         if Adjust <> 7 then
           SetTextJustification(Canvas.Handle, 0, 0);
       end;
-      if Exporting then CurReport.InternalOnExportText(curx, cury, str, Self);
+      if Exporting then
+        CurReport.InternalOnExportText(CurX, CurY, str, Self);
       Inc(CurStrNo);
-      curx := curx + th;
+      CurX := CurX + th;
     end;
+
   begin
     h := Create90Font(Canvas.Font);
-    oldh := SelectObject(Canvas.Handle,h);
-    curx := x + gapx;
-    th := -Canvas.Font.Height + Round(LineSpacing * ScaleY);
+    oldh := SelectObject(Canvas.Handle, h);
+    CurX := x + gapx;
+    th := - Canvas.Font.Height + Round(LineSpacing * ScaleY);
     CurStrNo := 0;
-    for i := 0 to Memo1.Count - 1 do
+    for i := 0 to Pred(Memo1.Count) do
       OutLine(Memo1[i]);
     SelectObject(Canvas.Handle, oldh);
     DeleteObject(h);
@@ -1874,28 +1902,32 @@ begin
   if (Adjust and $18) <> 0 then
   begin
     ad := Adjust;
-    ox := x; oy := y;
+    ox := x;
+    oy := y;
     Adjust := Adjust and $7;
     if (ad and $4) <> 0 then
     begin
       if (ad and $18) = $8 then
         x := x + (dx - VHeight) div 2
-      else if (ad and $18) = $10 then
-        x := x + dx - VHeight;
+      else
+        if (ad and $18) = $10 then
+          x := x + dx - VHeight;
       OutMemo90;
-    end
-    else
-    begin
+    end else begin
       if (ad and $18) = $8 then
         y := y + (dy - VHeight) div 2
-      else if (ad and $18) = $10 then
-        y := y + dy - VHeight;
+      else
+        if (ad and $18) = $10 then
+          y := y + dy - VHeight;
       OutMemo;
     end;
     Adjust := ad;
-    x := ox; y := oy;
-  end
-  else if (Adjust and $4) <> 0 then OutMemo90 else OutMemo;
+    x := ox;
+    y := oy;
+  end else if (Adjust and $4) <> 0 then
+    OutMemo90
+  else
+    OutMemo;
 end;
 
 function TfrMemoView.CalcWidth(Memo: TStringList): Integer;
@@ -1906,11 +1938,11 @@ var
 begin
   CalcRect := Rect(0, 0, dx, dy);
   Canvas.Font.Assign(Font);
-  Canvas.Font.Height := -Round(Font.Size * 96 / 72);
-  s := Memo.Text;
+  Canvas.Font.Height := - Round(Font.Size * 96 / 72);
+  s := Memo.text;
   n := Length(s);
   if n > 2 then
-    if (s[n - 1] = #13) and (s[n] = #10) then
+    if (s[Pred(n)] = #13) and (s[n] = #10) then
       SetLength(s, n - 2);
   SetTextCharacterExtra(Canvas.Handle, Round(CharacterSpacing * ScaleX));
   DrawText(Canvas.Handle, PChar(s), Length(s), CalcRect, DT_CALCRECT);
@@ -1924,8 +1956,7 @@ var
   OldScaleX, OldScaleY: Double;
 begin
   BeginDraw(Canvas);
-  if ((Flags and flAutoSize) <> 0) and (Memo.Count > 0) and
-     (DocMode <> dmDesigning) then
+  if ((Flags and flAutoSize) <> 0) and (Memo.Count > 0) and (DocMode <> dmDesigning) then
   begin
     newdx := CalcWidth(Memo);
     if (Adjust and frtaRight) <> 0 then
@@ -1939,17 +1970,19 @@ begin
 
   Streaming := False;
   Memo1.Assign(Memo);
-
-  OldScaleX := ScaleX; OldScaleY := ScaleY;
-  ScaleX := 1; ScaleY := 1;
+  OldScaleX := ScaleX;
+  OldScaleY := ScaleY;
+  ScaleX := 1;
+  ScaleY := 1;
   CalcGaps;
-  ScaleX := OldScaleX; ScaleY := OldScaleY;
+  ScaleX := OldScaleX;
+  ScaleY := OldScaleY;
   RestoreCoord;
   if Memo1.Count > 0 then
   begin
-    NeedWrap := Pos(#1, Memo1.Text) = 0;
-    if Memo1[Memo1.Count - 1] = #1 then
-      Memo1.Delete(Memo1.Count - 1);
+    NeedWrap := Pos(#1, Memo1.text) = 0;
+    if Memo1[Pred(Memo1.Count)] = #1 then
+      Memo1.Delete(Pred(Memo1.Count));
     if NeedWrap then
     begin
       WrapMemo;
@@ -1958,8 +1991,10 @@ begin
   end;
 
   CalcGaps;
-  if not Exporting then ShowBackground;
-  if not Exporting then ShowFrame;
+  if not Exporting then
+    ShowBackGround;
+  if not Exporting then
+    ShowFrame;
   if Memo1.Count > 0 then
     ShowMemo;
   RestoreCoord;
@@ -1980,17 +2015,18 @@ begin
 
   CanExpandVar := True;
   if (DrawMode = drAll) and (Assigned(CurReport.OnEnterRect) or
-     ((FDataSet <> nil) and frIsBlob(TfrTField(FDataSet.FindField(FField))))) then
+    ((FDataSet <> nil) and frIsBlob(TfrTField(FDataSet.FindField(FField))))) then
   begin
     Memo1.Assign(Memo);
-    s := Memo1.Text;
+    s := Memo1.text;
     CurReport.InternalOnEnterRect(Memo1, Self);
-    if s <> Memo1.Text then CanExpandVar := False;
-  end
-  else if DrawMode = drAfterCalcHeight then
+    if s <> Memo1.text then
+      CanExpandVar := False;
+  end else if DrawMode = drAfterCalcHeight then
     CanExpandVar := False;
   if DrawMode <> drPart then
-    if CanExpandVar then ExpandVariables;
+    if CanExpandVar then
+      ExpandVariables;
 
   if not Visible then
   begin
@@ -1999,39 +2035,42 @@ begin
   end;
 
   OldFont := TFont.Create;
-  OldFont.Assign(Font);
-  OldFill := FillColor;
-  if Length(HighlightStr) <> 0 then
-    if frParser.Calc(HighlightStr) <> 0 then
+  try
+    OldFont.Assign(Font);
+    OldFill := FillColor;
+    if Length(HighlightStr) <> 0 then
+      if frParser.Calc(HighlightStr) <> 0 then
+      begin
+        Font.Style := frSetFontStyle(Highlight.FontStyle);
+        Font.Color := Highlight.FontColor;
+        FillColor := Highlight.FillColor;
+      end;
+
+    if DrawMode = drPart then
     begin
-      Font.Style := frSetFontStyle(Highlight.FontStyle);
-      Font.Color := Highlight.FontColor;
-      FillColor := Highlight.FillColor;
+      CalcGaps;
+      ShowMemo;
+      SMemo.Assign(Memo1);
+      while Memo1.Count > CurStrNo do
+        Memo1.Delete(CurStrNo);
+      if Pos(#1, Memo1.text) = 0 then
+        Memo1.Add(#1);
     end;
 
-  if DrawMode = drPart then
-  begin
-    CalcGaps;
-    ShowMemo;
-    SMemo.Assign(Memo1);
-    while Memo1.Count > CurStrNo do
-      Memo1.Delete(CurStrNo);
-    if Pos(#1, Memo1.Text) = 0 then
-      Memo1.Add(#1);
+    Stream.Write(Typ, 1);
+    if Typ = gtAddIn then
+      frWriteString(Stream, ClassName);
+    SaveToStream(Stream);
+    if DrawMode = drPart then
+    begin
+      Memo1.Assign(SMemo);
+      for i := 0 to Pred(CurStrNo) do
+        Memo1.Delete(0);
+    end;
+    Font.Assign(OldFont);
+  finally
+    OldFont.Free;
   end;
-
-  Stream.Write(Typ, 1);
-  if Typ = gtAddIn then
-    frWriteString(Stream, ClassName);
-  SaveToStream(Stream);
-  if DrawMode = drPart then
-  begin
-    Memo1.Assign(SMemo);
-    for i := 0 to CurStrNo - 1 do
-      Memo1.Delete(0);
-  end;
-  Font.Assign(OldFont);
-  OldFont.Free;
   FillColor := OldFill;
   DrawMode := drAll;
 end;
@@ -2055,37 +2094,40 @@ begin
   DrawMode := drAfterCalcHeight;
   BeginDraw(TempBmp.Canvas);
   frInterpretator.DoScript(Script);
-  if not Visible then Exit;
-
+  if not Visible then
+    Exit;
   CanExpandVar := True;
   Memo1.Assign(Memo);
-  s := Memo1.Text;
+  s := Memo1.text;
   CurReport.InternalOnEnterRect(Memo1, Self);
-  if s <> Memo1.Text then CanExpandVar := False;
-  if CanExpandVar then ExpandVariables;
-
+  if s <> Memo1.text then
+    CanExpandVar := False;
+  if CanExpandVar then
+    ExpandVariables;
   OldFont := TFont.Create;
-  OldFont.Assign(Font);
-  OldFill := FillColor;
-  if Length(HighlightStr) <> 0 then
-    if frParser.Calc(HighlightStr) <> 0 then
-    begin
-      Font.Style := frSetFontStyle(Highlight.FontStyle);
-      Font.Color := Highlight.FontColor;
-      FillColor := Highlight.FillColor;
-    end;
-  if ((Flags and flAutoSize) <> 0) and (Memo1.Count > 0) and
-     (DocMode <> dmDesigning) then
-    dx := CalcWidth(Memo1);
+  try
+    OldFont.Assign(Font);
+    OldFill := FillColor;
+    if Length(HighlightStr) <> 0 then
+      if frParser.Calc(HighlightStr) <> 0 then
+      begin
+        Font.Style := frSetFontStyle(Highlight.FontStyle);
+        Font.Color := Highlight.FontColor;
+        FillColor := Highlight.FillColor;
+      end;
+    if ((Flags and flAutoSize) <> 0) and (Memo1.Count > 0) and (DocMode <> dmDesigning) then
+      dx := CalcWidth(Memo1);
 
-  CalcGaps;
-  if Memo1.Count <> 0 then
-  begin
-    WrapMemo;
-    Result := VHeight;
+    CalcGaps;
+    if Memo1.Count <> 0 then
+    begin
+      WrapMemo;
+      Result := VHeight;
+    end;
+    Font.Assign(OldFont);
+  finally
+    OldFont.Free;
   end;
-  Font.Assign(OldFont);
-  OldFont.Free;
   FillColor := OldFill;
 end;
 
@@ -2169,29 +2211,17 @@ var
 
   procedure WriteStr(const s: String);
   begin
-    Stream.Write(s[1], Length(s));
+    Stream.Write(Pointer(s)^, Length(s) * SizeOf(char));
   end;
 
 begin
   inherited;
-
   if (Flags and flStretched) <> 0 then
     WriteStr(' StretchMode="smMaxHeight"');
   if (Flags and flWordWrap) = 0 then
     WriteStr(' WordWrap="False"');
   if (Flags and flAutoSize) <> 0 then
     WriteStr(' AutoWidth="True"');
-//  if (Flags and flTextOnly) <> 0 then
-//    WriteStr(' AllowExpressions="False"');
-//  if (Flags and flSuppressRepeated) <> 0 then
-//    WriteStr(' SuppressRepeated="True"');
-//  if (Flags and flHideZeros) <> 0 then
-//    WriteStr(' HideZeros="True"');
-//  if (Flags and flUnderlines) <> 0 then
-//    WriteStr(' Underlines="True"');
-//  if (Flags and flRTLReading) <> 0 then
-//    WriteStr(' RTLReading="True"');
-
   fs := 0;
   if fsBold in Font.Style then
     fs := fs or 1;
@@ -2202,54 +2232,36 @@ begin
   if fsStrikeout in Font.Style then
     fs := fs or 8;
 
-  WriteStr(' Font.Name="' + Font.Name +
-    '" Font.Height="' + IntToStr(Font.Height) +
-    '" Font.Color="' + IntToStr(Font.Color) +
-    '" Font.Style="' + IntToStr(fs) + '"');
+  WriteStr(' Font.Name="' + Font.Name + '" Font.Height="' + IntToStr(Font.Height) + '" Font.Color="' +
+    IntToStr(Font.Color) + '" Font.Style="' + IntToStr(fs) + '"');
 
-  WriteStr(' LineSpacing="' + IntToStr(LineSpacing) +
-    '" CharSpacing="' + IntToStr(CharacterSpacing) + '"');
+  WriteStr(' LineSpacing="' + IntToStr(LineSpacing) + '" CharSpacing="' + IntToStr(CharacterSpacing) + '"');
 
-  if HighlightStr <> '' then
-    WriteStr(' Highlight.Condition="' + StrToXML(HighlightStr) +
-      '" Highlight.Font.Style="' + IntToStr(Highlight.FontStyle) +
-      '" Highlight.Font.Color="' + IntToStr(Highlight.FontColor) +
-      '" Highlight.Color="' + IntToStr(Highlight.FillColor) + '"');
-
-{  al := 0;
-  if ((Alignment and frtaRight) <> 0) and ((Alignment and frtaCenter) <> 0) then
-    al := 3
-  else if (Alignment and frtaRight) <> 0 then
-    al := 1
-  else if (Alignment and frtaCenter) <> 0 then
-    al := 2;
-  WriteStr(' HAlign="' + IntToStr(al) + '"');
-
-  al := 0;
-  if (Alignment and frtaMiddle) <> 0 then
-    al := 2
-  else if (Alignment and frtaDown) <> 0 then
-    al := 1;
-  WriteStr(' VAlign="' + IntToStr(al) + '"');
-
-  if (Alignment and frtaVertical) <> 0 then
-    WriteStr(' Rotation="90"');}
-
+  if HighlightStr <> EmptyStr then
+    WriteStr(' Highlight.Condition="' + StrToXML(HighlightStr) + '" Highlight.Font.Style="' +
+      IntToStr(Highlight.FontStyle) + '" Highlight.Font.Color="' + IntToStr(Highlight.FontColor) + '" Highlight.Color="'
+      + IntToStr(Highlight.FillColor) + '"');
   f1 := (Format div $01000000) and $0F;
   f2 := (Format div $00010000) and $FF;
-  s := '';
+  s := EmptyStr;
   case f1 of
-    0: ;
+    0:
+      ;
     1:
       begin
         s := ' DisplayFormat.Kind="fkNumeric"';
         s := s + ' DisplayFormat.DecimalSeparator="' + Chr(Format and $FF) + '"';
         case f2 of
-          0: s := s + ' DisplayFormat.FormatStr="%g"';
-          1: s := s + ' DisplayFormat.FormatStr="%2.2f"';
-          2: s := s + ' DisplayFormat.FormatStr="%2.2n"';
-          3: s := s + ' DisplayFormat.FormatStr="%2.2m"';
-          4: s := s + ' DisplayFormat.FormatStr="' + StrToXML(FormatStr) + '"';
+          0:
+            s := s + ' DisplayFormat.FormatStr="%g"';
+          1:
+            s := s + ' DisplayFormat.FormatStr="%2.2f"';
+          2:
+            s := s + ' DisplayFormat.FormatStr="%2.2n"';
+          3:
+            s := s + ' DisplayFormat.FormatStr="%2.2m"';
+          4:
+            s := s + ' DisplayFormat.FormatStr="' + StrToXML(FormatStr) + '"';
         end;
       end;
     2:
@@ -2257,27 +2269,30 @@ begin
         s := ' DisplayFormat.Kind="fkDateTime"';
         if f2 = 4 then
           s := s + ' DisplayFormat.FormatStr="' + StrToXML(FormatStr) + '"'
-        else if f2 = 3 then
-          s := s + ' DisplayFormat.FormatStr="dd mmmm yyyy"'
         else
-          s := s + ' DisplayFormat.FormatStr="' + frDateFormats[f2] + '"'
+          if f2 = 3 then
+            s := s + ' DisplayFormat.FormatStr="dd mmmm yyyy"'
+          else
+            s := s + ' DisplayFormat.FormatStr="' + frDateFormats[f2] + '"'
       end;
     3:
       begin
         s := ' DisplayFormat.Kind="fkDateTime"';
         if f2 = 4 then
-          s := s + ' DisplayFormat.FormatStr="' + StrToXML(FormatStr) + '"' else
+          s := s + ' DisplayFormat.FormatStr="' + StrToXML(FormatStr) + '"'
+        else
           s := s + ' DisplayFormat.FormatStr="' + frTimeFormats[f2] + '"'
       end;
     4:
-       begin
-         s := ' DisplayFormat.Kind="fkBoolean"';
-         if f2 = 4 then
-           s := s + ' DisplayFormat.FormatStr="' + StrToXML(FormatStr) + '"' else
-           s := s + ' DisplayFormat.FormatStr="' + BoolStr[f2] + '"'
-       end;
+      begin
+        s := ' DisplayFormat.Kind="fkBoolean"';
+        if f2 = 4 then
+          s := s + ' DisplayFormat.FormatStr="' + StrToXML(FormatStr) + '"'
+        else
+          s := s + ' DisplayFormat.FormatStr="' + BoolStr[f2] + '"'
+      end;
   end;
-  if s <> '' then
+  if s <> EmptyStr then
     WriteStr(s);
 end;
 
@@ -2311,7 +2326,7 @@ begin
   m.Checked := (Flags and flWordWrap) <> 0;
   Popup.Items.Add(m);
 
-  if LoadStr(SWordBreak) <> '' then
+  if LoadStr(SWordBreak) <> EmptyStr then
   begin
     m := TMenuItem.Create(Popup);
     m.Caption := LoadStr(SWordBreak);
@@ -2336,22 +2351,25 @@ var
 begin
   frDesigner.BeforeChange;
   frFmtForm := TfrFmtForm.Create(nil);
-  with frFmtForm do
-  begin
-    Format := Self.Format;
-    Edit1.Text := Self.FormatStr;
-    if ShowModal = mrOk then
-      for i := 0 to frDesigner.Page.Objects.Count - 1 do
-      begin
-        t := frDesigner.Page.Objects[i];
-        if t.Selected then
+  try
+    with frFmtForm do
+    begin
+      Format := Self.Format;
+      Edit1.text := Self.FormatStr;
+      if ShowModal = mrOk then
+        for i := 0 to Pred(frDesigner.Page.Objects.Count) do
         begin
-          (t as TfrMemoView).Format := Format;
-          (t as TfrMemoView).FormatStr := Edit1.Text;
+          t := frDesigner.Page.Objects[i];
+          if t.Selected then
+          begin
+            (t as TfrMemoView).Format := Format;
+            (t as TfrMemoView).FormatStr := Edit1.text;
+          end;
         end;
-      end;
+    end;
+  finally
+    frFmtForm.Free;
   end;
-  frFmtForm.Free;
 end;
 
 procedure TfrMemoView.P2Click(Sender: TObject);
@@ -2363,7 +2381,7 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
@@ -2382,7 +2400,7 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
@@ -2400,31 +2418,34 @@ var
 begin
   frDesigner.BeforeChange;
   fd := TFontDialog.Create(nil);
-  with fd do
-  begin
-    Font.Assign(Self.Font);
-    if Execute then
-      for i := 0 to frDesigner.Page.Objects.Count - 1 do
-      begin
-        t := frDesigner.Page.Objects[i];
-        if t.Selected then
+  try
+    with fd do
+    begin
+      Font.Assign(Self.Font);
+      if Execute then
+        for i := 0 to Pred(frDesigner.Page.Objects.Count) do
         begin
-          if Font.Name <> Self.Font.Name then
-            TfrMemoView(t).Font.Name := Font.Name;
-          if Font.Size <> Self.Font.Size then
-            TfrMemoView(t).Font.Size := Font.Size;
-          if Font.Color <> Self.Font.Color then
-            TfrMemoView(t).Font.Color := Font.Color;
-          if Font.Style <> Self.Font.Style then
-            TfrMemoView(t).Font.Style := Font.Style;
+          t := frDesigner.Page.Objects[i];
+          if t.Selected then
+          begin
+            if Font.Name <> Self.Font.Name then
+              TfrMemoView(t).Font.Name := Font.Name;
+            if Font.Size <> Self.Font.Size then
+              TfrMemoView(t).Font.Size := Font.Size;
+            if Font.Color <> Self.Font.Color then
+              TfrMemoView(t).Font.Color := Font.Color;
+            if Font.Style <> Self.Font.Style then
+              TfrMemoView(t).Font.Style := Font.Style;
 {$IFNDEF Delphi2}
-          if Font.Charset <> Self.Font.Charset then
-            TfrMemoView(t).Font.Charset := Font.Charset;
+            if Font.Charset <> Self.Font.Charset then
+              TfrMemoView(t).Font.Charset := Font.Charset;
 {$ENDIF}
+          end;
         end;
-      end;
+    end;
+  finally
+    fd.Free;
   end;
-  fd.Free;
   frDesigner.AfterChange;
 end;
 
@@ -2437,7 +2458,7 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
@@ -2447,7 +2468,7 @@ begin
   frDesigner.AfterChange;
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrBandView.Create;
 begin
   inherited Create;
@@ -2462,13 +2483,13 @@ var
   h, oldh: HFont;
 begin
   FrameWidth := 1;
-  if TfrBandType(FrameTyp) in [btCrossHeader..btCrossFooter] then
+  if TfrBandType(FrameTyp) in [btCrossHeader .. btCrossFooter] then
   begin
-    y := 0; dy := frDesigner.Page.PrnInfo.Pgh;
-  end
-  else
-  begin
-    x := 0; dx := frDesigner.Page.PrnInfo.Pgw;
+    y := 0;
+    dy := frDesigner.Page.PrnInfo.Pgh;
+  end else begin
+    x := 0;
+    dx := frDesigner.Page.PrnInfo.Pgw;
   end;
   BeginDraw(Canvas);
   CalcGaps;
@@ -2487,34 +2508,36 @@ begin
     Rectangle(x, y, x + dx + 1, y + dy + 1);
     Brush.Color := clBtnFace;
     if ShowBandTitles then
-      if TfrBandType(FrameTyp) in [btCrossHeader..btCrossFooter] then
+      if TfrBandType(FrameTyp) in [btCrossHeader .. btCrossFooter] then
       begin
         FillRect(Rect(x - 18, y, x, y + 100));
         Pen.Color := clBtnShadow;
-        MoveTo(x - 18, y + 98); LineTo(x, y + 98);
+        MoveTo(x - 18, y + 98);
+        LineTo(x, y + 98);
         Pen.Color := clBlack;
-        MoveTo(x - 18, y + 99); LineTo(x, y + 99);
+        MoveTo(x - 18, y + 99);
+        LineTo(x, y + 99);
         Pen.Color := clBtnHighlight;
-        MoveTo(x - 18, y + 99); LineTo(x - 18, y);
+        MoveTo(x - 18, y + 99);
+        LineTo(x - 18, y);
         h := Create90Font(Font);
         oldh := SelectObject(Handle, h);
         TextOut(x - 15, y + 94, frBandNames[FrameTyp]);
         SelectObject(Handle, oldh);
         DeleteObject(h);
-      end
-      else
-      begin
+      end else begin
         FillRect(Rect(x, y - 18, x + 100, y));
         Pen.Color := clBtnShadow;
-        MoveTo(x + 98, y - 18); LineTo(x + 98, y);
+        MoveTo(x + 98, y - 18);
+        LineTo(x + 98, y);
         Pen.Color := clBlack;
-        MoveTo(x + 99, y - 18); LineTo(x + 99, y);
+        MoveTo(x + 99, y - 18);
+        LineTo(x + 99, y);
         TextOut(x + 4, y - 17, frBandNames[FrameTyp]);
       end
-    else
-    begin
+    else begin
       Brush.Style := bsClear;
-      if TfrBandType(FrameTyp) in [btCrossHeader..btCrossFooter] then
+      if TfrBandType(FrameTyp) in [btCrossHeader .. btCrossFooter] then
       begin
         h := Create90Font(Font);
         oldh := SelectObject(Handle, h);
@@ -2538,9 +2561,10 @@ begin
     Exit;
   end;
   if rt = rtNormal then
-    Result := CreateRectRgn(x, y, x + dx + 1, y + dy + 1) else
+    Result := CreateRectRgn(x, y, x + dx + 1, y + dy + 1)
+  else
     Result := CreateRectRgn(x - 10, y - 10, x + dx + 10, y + dy + 10);
-  if TfrBandType(FrameTyp) in [btCrossHeader..btCrossFooter] then
+  if TfrBandType(FrameTyp) in [btCrossHeader .. btCrossFooter] then
     R := CreateRectRgn(x - 18, y, x, y + 100)
   else
     R := CreateRectRgn(x, y - 18, x + 100, y);
@@ -2550,39 +2574,25 @@ end;
 
 procedure TfrBandView.SaveToFR3Stream(Stream: TStream);
 const
-  BandNames: array[TfrBandType] of String =
-    ('TfrxReportTitle', 'TfrxReportSummary',
-     'TfrxPageHeader', 'TfrxPageFooter',
-     'TfrxHeader', 'TfrxMasterData', 'TfrxFooter',
-     'TfrxHeader', 'TfrxDetailData', 'TfrxFooter',
-     'TfrxHeader', 'TfrxSubDetailData', 'TfrxFooter',
-     'TfrxOverlay', 'TfrxColumnHeader', 'TfrxColumnFooter',
-     'TfrxGroupHeader', 'TfrxGroupFooter',
-     '', '', '', '');
+  BandNames: array [TfrBandType] of String = ('TfrxReportTitle', 'TfrxReportSummary', 'TfrxPageHeader',
+    'TfrxPageFooter', 'TfrxHeader', 'TfrxMasterData', 'TfrxFooter', 'TfrxHeader', 'TfrxDetailData', 'TfrxFooter',
+    'TfrxHeader', 'TfrxSubDetailData', 'TfrxFooter', 'TfrxOverlay', 'TfrxColumnHeader', 'TfrxColumnFooter',
+    'TfrxGroupHeader', 'TfrxGroupFooter', '', '', '', '');
 var
-  ds: TfrDataset;
+  ds: TfrDataSet;
 
   procedure WriteStr(const s: String);
   begin
-    Stream.Write(s[1], Length(s));
+    Stream.Write(Pointer(s)^, Length(s) * SizeOf(char));
   end;
 
 begin
-  if BandNames[BandType] = '' then Exit;
-
+  if BandNames[BandType] = EmptyStr then
+    Exit;
   WriteStr('<' + BandNames[BandType] + ' ');
-  WriteStr('Name="' + Name +
-    '" Top="' + IntToStr(y) +
-    '" Height="' + IntToStr(dy) +
-//    '" Columns="' + IntToStr(Columns) +
-//    '" ColumnWidth="' + IntToStr(ColumnWidth) +
-//    '" ColumnGap="' + IntToStr(ColumnGap) +
-    '"');
+  WriteStr('Name="' + Name + '" Top="' + IntToStr(y) + '" Height="' + IntToStr(dy) + '"');
   if not Visible then
     WriteStr(' Visible="False"');
-//  if ChildBand <> '' then
-//    WriteStr(' Child="' + ChildBand + '"');
-
   if (Flags and flStretched) <> 0 then
     WriteStr(' Stretched="True"');
   if (Flags and flBandNewPageAfter) <> 0 then
@@ -2599,8 +2609,8 @@ begin
     WriteStr(' ReprintOnNewPage="True"');
   if (Flags and flBandRepeatHeader) <> 0 then
     WriteStr(' ReprintOnNewPage="True"');
-//  if (Flags and flBandPrintChildIfInvisible) <> 0 then
-//    WriteStr(' PrintChildIfInvisible="True"');
+// if (Flags and flBandPrintChildIfInvisible) <> 0 then
+// WriteStr(' PrintChildIfInvisible="True"');
 
   if Script.Count > 0 then
     WriteStr(' OnBeforePrint="' + Name + 'OnBeforePrint"');
@@ -2620,12 +2630,11 @@ var
   b: TfrBandType;
 begin
   b := TfrBandType(FrameTyp);
-  if b in [btReportTitle, btReportSummary, btPageHeader, btCrossHeader,
-    btMasterHeader..btSubDetailFooter, btGroupHeader, btGroupFooter] then
+  if b in [btReportTitle, btReportSummary, btPageHeader, btCrossHeader, btMasterHeader .. btSubDetailFooter,
+    btGroupHeader, btGroupFooter] then
     inherited DefinePopupMenu(Popup);
 
-  if b in [btReportTitle, btReportSummary, btMasterData, btDetailData,
-    btSubDetailData, btMasterFooter, btDetailFooter,
+  if b in [btReportTitle, btReportSummary, btMasterData, btDetailData, btSubDetailData, btMasterFooter, btDetailFooter,
     btSubDetailFooter, btGroupHeader] then
   begin
     m := TMenuItem.Create(Popup);
@@ -2640,12 +2649,11 @@ begin
     m := TMenuItem.Create(Popup);
     m.Caption := LoadStr(SPrintIfSubsetEmpty);
     m.OnClick := P2Click;
-    m.Checked := (Flags and flBandPrintIfSubsetEmpty) <> 0;
+    m.Checked := (Flags and flBandPrintifSubsetEmpty) <> 0;
     Popup.Items.Add(m);
   end;
 
-  if b in [btReportTitle, btReportSummary, btMasterHeader..btSubDetailFooter,
-    btGroupHeader, btGroupFooter] then
+  if b in [btReportTitle, btReportSummary, btMasterHeader .. btSubDetailFooter, btGroupHeader, btGroupFooter] then
   begin
     m := TMenuItem.Create(Popup);
     m.Caption := LoadStr(SBreaked);
@@ -2672,8 +2680,7 @@ begin
     Popup.Items.Add(m);
   end;
 
-  if b in [btMasterHeader, btDetailHeader, btSubDetailHeader,
-    btCrossHeader, btGroupHeader] then
+  if b in [btMasterHeader, btDetailHeader, btSubDetailHeader, btCrossHeader, btGroupHeader] then
   begin
     m := TMenuItem.Create(Popup);
     m.Caption := LoadStr(SRepeatHeader);
@@ -2692,12 +2699,11 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
-        t.Flags := (t.Flags and not flBandNewPageAfter) +
-          Word(Checked) * flBandNewPageAfter;
+        t.Flags := (t.Flags and not flBandNewPageAfter) + Word(Checked) * flBandNewPageAfter;
     end;
   end;
 end;
@@ -2711,12 +2717,11 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
-        t.Flags := (t.Flags and not flBandPrintifSubsetEmpty) +
-          Word(Checked) * flBandPrintifSubsetEmpty;
+        t.Flags := (t.Flags and not flBandPrintifSubsetEmpty) + Word(Checked) * flBandPrintifSubsetEmpty;
     end;
   end;
 end;
@@ -2730,7 +2735,7 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
@@ -2779,7 +2784,7 @@ begin
   FrameTyp := Integer(Value);
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrSubReportView.Create;
 begin
   inherited Create;
@@ -2813,8 +2818,7 @@ begin
     Brush.Color := clWhite;
     Rectangle(x, y, x + dx + 1, y + dy + 1);
     Brush.Style := bsClear;
-    TextRect(DRect, x + 2, y + 2, LoadStr(SSubReportOnPage) + ' ' +
-      IntToStr(SubPage + 1));
+    TextRect(DRect, x + 2, y + 2, LoadStr(SSubReportOnPage) + ' ' + IntToStr(SubPage + 1));
   end;
   RestoreCoord;
 end;
@@ -2823,9 +2827,9 @@ procedure TfrSubReportView.SaveToFR3Stream(Stream: TStream);
 
   procedure WriteStr(const s: String);
   begin
-    Stream.Write(s[1], Length(s));
+    Stream.Write(Pointer(s)^, Length(s) * SizeOf(char));
   end;
- 
+
 begin
   inherited;
   WriteStr(' Page="Page' + IntToStr(SubPage + 1) + '"');
@@ -2848,7 +2852,7 @@ begin
   Stream.Write(SubPage, 4);
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrPictureView.Create;
 begin
   inherited Create;
@@ -2872,7 +2876,7 @@ end;
 
 procedure TfrPictureView.Draw(Canvas: TCanvas);
 var
-  r: TRect;
+  R: TRect;
   kx, ky: Double;
   w, h, w1, h1: Integer;
 
@@ -2888,17 +2892,12 @@ var
     GetMem(BitmapImage, ImageSize);
     try
       GetDIB(Bitmap.Handle, Bitmap.Palette, BitmapHeader^, BitmapImage^);
-      StretchDIBits(
-        Canvas.Handle,
-        DestRect.Left, DestRect.Top,     // Destination Origin
-        DestRect.Right - DestRect.Left,  // Destination Width
-        DestRect.Bottom - DestRect.Top,  // Destination Height
-        0, 0,                            // Source Origin
-        Bitmap.Width, Bitmap.Height,     // Source Width & Height
-        BitmapImage,
-        TBitmapInfo(BitmapHeader^),
-        DIB_RGB_COLORS,
-        SRCCOPY)
+      StretchDIBits(Canvas.Handle, DestRect.Left, DestRect.Top, // Destination Origin
+        DestRect.Right - DestRect.Left, // Destination Width
+        DestRect.Bottom - DestRect.Top, // Destination Height
+        0, 0,                           // Source Origin
+        Bitmap.Width, Bitmap.Height,    // Source Width & Height
+        BitmapImage, TBitmapInfo(BitmapHeader^), DIB_RGB_COLORS, SRCCOPY)
     finally
       FreeMem(BitmapHeader);
       FreeMem(BitmapImage)
@@ -2910,7 +2909,7 @@ begin
   CalcGaps;
   with Canvas do
   begin
-    ShowBackground;
+    ShowBackGround;
     if ((Picture.Graphic = nil) or Picture.Graphic.Empty) and (DocMode = dmDesigning) then
     begin
       Font.Name := 'Arial';
@@ -2921,43 +2920,39 @@ begin
       Font.Charset := frCharset;
 {$ENDIF}
       TextOut(x + 2, y + 2, LoadStr(SPicture));
-    end
-    else if not ((Picture.Graphic = nil) or Picture.Graphic.Empty) then
+    end else if not ((Picture.Graphic = nil) or Picture.Graphic.Empty) then
     begin
       if (Flags and flStretched) <> 0 then
       begin
-        r := DRect;
+        R := DRect;
         if (Flags and flPictRatio) <> 0 then
         begin
           kx := dx / Picture.Width;
           ky := dy / Picture.Height;
           if kx < ky then
-            r := Rect(DRect.Left, DRect.Top,
-              DRect.Right, DRect.Top + Round(Picture.Height * kx))
+            R := Rect(DRect.Left, DRect.Top, DRect.Right, DRect.Top + Round(Picture.Height * kx))
           else
-            r := Rect(DRect.Left, DRect.Top,
-              DRect.Left + Round(Picture.Width * ky), DRect.Bottom);
+            R := Rect(DRect.Left, DRect.Top, DRect.Left + Round(Picture.Width * ky), DRect.Bottom);
           w := DRect.Right - DRect.Left;
           h := DRect.Bottom - DRect.Top;
-          w1 := r.Right - r.Left;
-          h1 := r.Bottom - r.Top;
+          w1 := R.Right - R.Left;
+          h1 := R.Bottom - R.Top;
           if (Flags and flPictCenter) <> 0 then
-            OffsetRect(r, (w - w1) div 2, (h - h1) div 2);
+            OffsetRect(R, (w - w1) div 2, (h - h1) div 2);
         end;
         if IsPrinting and (Picture.Graphic is TBitmap) then
-          PrintBitmap(r, Picture.Bitmap) else
-          StretchDraw(r, Picture.Graphic);
-      end
-      else
-      begin
-        r := DRect;
+          PrintBitmap(R, Picture.Bitmap)
+        else
+          StretchDraw(R, Picture.Graphic);
+      end else begin
+        R := DRect;
         if (Flags and flPictCenter) <> 0 then
         begin
           w := DRect.Right - DRect.Left;
           h := DRect.Bottom - DRect.Top;
-          OffsetRect(r, (w - Picture.Width) div 2, (h - Picture.Height) div 2);
+          OffsetRect(R, (w - Picture.Width) div 2, (h - Picture.Height) div 2);
         end;
-        Draw(r.Left, r.Top, Picture.Graphic)
+        Draw(R.Left, R.Top, Picture.Graphic)
       end;
     end;
     ShowFrame;
@@ -2983,11 +2978,15 @@ begin
   Stream.Read(n, 4);
   Graphic := nil;
   case b of
-    pkBitmap:   Graphic := TBitmap.Create;
-    pkMetafile: Graphic := TMetafile.Create;
-    pkIcon:     Graphic := TIcon.Create;
+    pkBitmap:
+      Graphic := TBitmap.Create;
+    pkMetafile:
+      Graphic := TMetafile.Create;
+    pkIcon:
+      Graphic := TIcon.Create;
 {$IFDEF JPEG}
-    pkJPEG:     Graphic := TJPEGImage.Create;
+    pkJPEG:
+      Graphic := TJPEGImage.Create;
 {$ENDIF}
   end;
   Picture.Graphic := Graphic;
@@ -3009,13 +3008,16 @@ begin
   if Picture.Graphic <> nil then
     if Picture.Graphic is TBitmap then
       b := pkBitmap
-    else if Picture.Graphic is TMetafile then
-      b := pkMetafile
-    else if Picture.Graphic is TIcon then
-      b := pkIcon
+    else
+      if Picture.Graphic is TMetafile then
+        b := pkMetafile
+      else
+        if Picture.Graphic is TIcon then
+          b := pkIcon
 {$IFDEF JPEG}
-    else if Picture.Graphic is TJPEGImage then
-      b := pkJPEG
+        else
+          if Picture.Graphic is TJPEGImage then
+            b := pkJPEG
 {$ENDIF};
   Stream.Write(b, 1);
   n := Stream.Position;
@@ -3029,26 +3031,73 @@ begin
 end;
 
 procedure TfrPictureView.GetBlob(b: TfrTField);
-begin
-  if b.IsNull then
-    Picture.Assign(nil)
-  else
-{$IFDEF IBO}
-    b.AssignTo(Picture);
+  function TryFormats: Boolean;
+  var
+    grp: TGraphic;
+  begin
+    Result := False;
+{$IFDEF JPEG}
+    grp := TJPEGImage.Create;
 {$ELSE}
-    Picture.Assign(b);
+    grp := TIcon.Create;
 {$ENDIF}
+    try
+{$IFDEF JPEG}
+      try
+        grp.Assign(b);
+        Result := True;
+        Exit;
+      except
+        grp.Free;
+      end;
+{$ENDIF}
+      try
+        grp.Assign(b);
+        Result := True;
+        Exit;
+      except
+        grp.Free;
+      end;
+      grp := TMetafile.Create;
+      try
+        grp.Assign(b);
+        Result := True;
+        Exit;
+      except
+        grp.Free;
+      end;
+    finally
+      if Result then
+        Picture.Assign(grp);
+      grp.Free;
+    end;
+  end;
+
+begin
+  try
+    if b.IsNull then
+      Picture.Assign(nil)
+    else
+{$IFDEF IBO}
+      b.AssignTo(Picture);
+{$ELSE}
+      Picture.Assign(b);
+{$ENDIF}
+  except
+    if not TryFormats then
+      Picture.Assign(nil);
+  end;
 end;
 
 procedure TfrPictureView.SaveToFR3Stream(Stream: TStream);
 var
-  ms:  TMemoryStream;
+  ms: TMemoryStream;
   ds: TfrTDataSet;
   fld: TfrTField;
 
   procedure WriteStr(const s: String);
   begin
-    Stream.Write(s[1], Length(s));
+    Stream.Write(Pointer(s)^, Length(s) * SizeOf(char));
   end;
 
 begin
@@ -3057,17 +3106,19 @@ begin
   if Picture.Graphic <> nil then
   begin
     ms := TMemoryStream.Create;
-    Picture.Graphic.SaveToStream(ms);
-    WriteStr(' Picture.Propdata="' + frStreamToString(ms) + '"');
-    ms.Free;
+    try
+      Picture.Graphic.SaveToStream(ms);
+      WriteStr(' Picture.Propdata="' + frStreamToString(ms) + '"');
+    finally
+      ms.Free;
+    end;
   end;
 
   if Memo.Count <> 0 then
   begin
     frGetDataSetAndField(Memo[0], ds, fld);
     if (ds <> nil) and (fld <> nil) then
-      WriteStr(' DataSet="' + ds.Owner.Name + '.' + ds.Name +
-        '" DataField="' + StrToXML(fld.FieldName) + '"');
+      WriteStr(' DataSet="' + ds.Owner.Name + '.' + ds.Name + '" DataField="' + StrToXML(fld.FieldName) + '"');
   end;
 
   if (Flags and flStretched) = 0 then
@@ -3077,7 +3128,6 @@ begin
   if (Flags and flPictRatio) = 0 then
     WriteStr(' KeepAspectRatio="False"');
 end;
-
 
 procedure TfrPictureView.DefinePopupMenu(Popup: TPopupMenu);
 var
@@ -3108,7 +3158,7 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
@@ -3127,7 +3177,7 @@ begin
   with Sender as TMenuItem do
   begin
     Checked := not Checked;
-    for i := 0 to frDesigner.Page.Objects.Count - 1 do
+    for i := 0 to Pred(frDesigner.Page.Objects.Count) do
     begin
       t := frDesigner.Page.Objects[i];
       if t.Selected then
@@ -3137,7 +3187,7 @@ begin
   frDesigner.AfterChange;
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrLineView.Create;
 begin
   inherited Create;
@@ -3153,9 +3203,7 @@ begin
   begin
     dy := 0;
     FrameTyp := 8;
-  end
-  else
-  begin
+  end else begin
     dx := 0;
     FrameTyp := 4;
   end;
@@ -3173,22 +3221,25 @@ function TfrLineView.GetClipRgn(rt: TfrRgnType): HRGN;
 var
   bx, by, bx1, by1, dd: Integer;
 begin
-  bx := x; by := y; bx1 := x + dx + 1; by1 := y + dy + 1;
+  bx := x;
+  by := y;
+  bx1 := x + dx + 1;
+  by1 := y + dy + 1;
   if FrameStyle <> 5 then
-    dd := Round(FrameWidth / 2) else
+    dd := Round(FrameWidth / 2)
+  else
     dd := Round(FrameWidth * 1.5);
   if FrameTyp = 4 then
   begin
     Dec(bx, dd);
     Inc(bx1, dd);
-  end
-  else
-  begin
+  end else begin
     Dec(by, dd);
     Inc(by1, dd);
   end;
   if rt = rtNormal then
-    Result := CreateRectRgn(bx, by, bx1, by1) else
+    Result := CreateRectRgn(bx, by, bx1, by1)
+  else
     Result := CreateRectRgn(bx - 10, by - 10, bx1 + 10, by1 + 10);
 end;
 
@@ -3196,7 +3247,7 @@ procedure TfrLineView.SaveToFR3Stream(Stream: TStream);
 
   procedure WriteStr(const s: String);
   begin
-    Stream.Write(s[1], Length(s));
+    Stream.Write(Pointer(s)^, Length(s) * SizeOf(char));
   end;
 
 begin
@@ -3205,8 +3256,7 @@ begin
     WriteStr(' Stretched="False"');
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrBand.Create(ATyp: TfrBandType; AParent: TfrPage);
 begin
   inherited Create;
@@ -3248,9 +3298,8 @@ begin
   else
     if Pos(';', Desc) = 0 then
       CreateDS(Desc, DataSet, IsVirtualDS);
-  if (Typ = btMasterData) and (Dataset = nil) and
-     (CurReport.ReportType = rtSimple) then
-    DataSet := CurReport.Dataset;
+  if (Typ = btMasterData) and (DataSet = nil) and (CurReport.ReportType = rtSimple) then
+    DataSet := CurReport.DataSet;
 end;
 
 procedure TfrBand.DoError;
@@ -3259,17 +3308,17 @@ var
 begin
   ErrorFlag := True;
   ErrorStr := LoadStr(SErrorOccured);
-  for i := 0 to CurView.Memo.Count - 1 do
+  for i := 0 to Pred(CurView.Memo.Count) do
     ErrorStr := ErrorStr + #13 + CurView.Memo[i];
-  ErrorStr := ErrorStr + #13 + LoadStr(SDoc) + ' ' + CurReport.Name +
-    #13 + LoadStr(SBand) + ' ' + frBandNames[Integer(CurView.Parent.Typ)];
+  ErrorStr := ErrorStr + #13 + LoadStr(SDoc) + ' ' + CurReport.Name + #13 + LoadStr(SBand) + ' ' +
+    frBandNames[Integer(CurView.Parent.Typ)];
   MasterReport.Terminated := True;
 end;
 
 function TfrBand.CalcHeight: Integer;
 var
   Bnd: TfrBand;
-  DS: TfrDataSet;
+  ds: TfrDataSet;
   ddx: Integer;
 
   function DoCalcHeight(CheckAll: Boolean): Integer;
@@ -3280,7 +3329,7 @@ var
     CurBand := Self;
     AggrBand := Self;
     Result := dy;
-    for i := 0 to Objects.Count - 1 do
+    for i := 0 to Pred(Objects.Count) do
     begin
       t := Objects[i];
       t.olddy := t.dy;
@@ -3295,6 +3344,7 @@ var
         end
     end;
   end;
+
 begin
   Result := dy;
   if HasCross and (Typ <> btPageFooter) then
@@ -3305,10 +3355,11 @@ begin
     begin
       Bnd := Parent.Bands[btCrossData];
       if Bnd.DataSet <> nil then
-        DS := Bnd.DataSet else
-        DS := VCDataSet;
-      DS.First;
-      while not DS.Eof do
+        ds := Bnd.DataSet
+      else
+        ds := VCDataSet;
+      ds.First;
+      while not ds.Eof do
       begin
         ddx := 0;
         CurReport.InternalOnPrintColumn(Parent.ColPos, ddx);
@@ -3316,8 +3367,9 @@ begin
         if CalculatedHeight > Result then
           Result := CalculatedHeight;
         Inc(Parent.ColPos);
-        DS.Next;
-        if MasterReport.Terminated then break;
+        ds.Next;
+        if MasterReport.Terminated then
+          break;
       end;
     end;
   end
@@ -3331,7 +3383,7 @@ var
   i: Integer;
   t: TfrView;
 begin
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     t := Objects[i];
     if (t is TfrStretcheable) or (t is TfrLineView) then
@@ -3345,7 +3397,7 @@ var
   i: Integer;
   t: TfrView;
 begin
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     t := Objects[i];
     t.dy := t.olddy;
@@ -3354,7 +3406,7 @@ end;
 
 procedure TfrBand.DrawObject(t: TfrView);
 var
-  ox,oy: Integer;
+  ox, oy: Integer;
 begin
   CurPage := Parent;
   CurBand := Self;
@@ -3362,16 +3414,19 @@ begin
   try
     if (t.Parent = Self) and not DisableDrawing then
     begin
-      ox := t.x; Inc(t.x, Parent.XAdjust - Parent.LeftMargin);
-      oy := t.y; Inc(t.y, y);
+      ox := t.x;
+      Inc(t.x, Parent.XAdjust - Parent.LeftMargin);
+      oy := t.y;
+      Inc(t.y, y);
       t.Print(MasterReport.EMFPages[PageNo].Stream);
-      t.x := ox; t.y := oy;
-      if (t is TfrMemoView) and
-         (TfrMemoView(t).DrawMode in [drAll, drAfterCalcHeight]) then
+      t.x := ox;
+      t.y := oy;
+      if (t is TfrMemoView) and (TfrMemoView(t).DrawMode in [drAll, drAfterCalcHeight]) then
         Parent.AfterPrint;
     end;
   except
-    on exception do DoError;
+    on exception do
+      DoError;
   end;
 end;
 
@@ -3381,7 +3436,7 @@ var
   t: TfrView;
   Page: TfrPage;
 begin
-  for i := SubIndex to Objects.Count - 1 do
+  for i := SubIndex to Pred(Objects.Count) do
   begin
     t := Objects[i];
     Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
@@ -3405,16 +3460,25 @@ var
 begin
   repeat
     if not EOFReached then
-      for i := SubIndex to Objects.Count - 1 do
+      for i := SubIndex to Pred(Objects.Count) do
       begin
         t := Objects[i];
         Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+
+        // in PageFoother band need to update Parent.Y coordinates
+        // according t.y
+        if Typ = btPageFooter then
+        begin
+          Parent.CurY := Parent.Bands[btPageFooter].y + t.y;
+          Parent.CurBottomY := Parent.Bands[btPageFooter].y + Parent.Bands[btPageFooter].dy;
+        end;
+
         Page.CurY := Parent.CurY;
         Page.CurBottomY := Parent.CurBottomY;
       end;
     EOFReached := True;
     MaxY := Parent.CurY;
-    for i := SubIndex to Objects.Count - 1 do
+    for i := SubIndex to Pred(Objects.Count) do
       if not EOFArr[i - SubIndex] then
       begin
         t := Objects[i];
@@ -3424,7 +3488,8 @@ begin
         else
         begin
           EOFArr[i - SubIndex] := True;
-          if Page.CurY > MaxY then MaxY := Page.CurY;
+          if Page.CurY > MaxY then
+            MaxY := Page.CurY;
         end;
       end;
     if not EOFReached then
@@ -3433,12 +3498,11 @@ begin
       begin
         Parent.LastBand := Self;
         Exit;
-      end
-      else
+      end else if Typ <> btPageFooter then // No NewPage if in PageFooter band
         Parent.NewPage;
     end;
   until EOFReached or MasterReport.Terminated;
-  for i := SubIndex to Objects.Count - 1 do
+  for i := SubIndex to Pred(Objects.Count) do
   begin
     t := Objects[i];
     Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
@@ -3454,7 +3518,7 @@ var
   t: TfrView;
 begin
   Result := False;
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     t := Objects[i];
     if t.Typ = gtSubReport then
@@ -3466,7 +3530,8 @@ begin
       break;
     end;
     DrawObject(t);
-    if MasterReport.Terminated then break;
+    if MasterReport.Terminated then
+      break;
   end;
 end;
 
@@ -3475,19 +3540,21 @@ var
   i, sfx, sfy: Integer;
   t: TfrView;
 begin
-  if DisableDrawing then Exit;
+  if DisableDrawing then
+    Exit;
   try
-    for i := 0 to Objects.Count - 1 do
+    for i := 0 to Pred(Objects.Count) do
     begin
       t := Objects[i];
-      if Parnt.Objects.IndexOf(t) <> -1 then
+      if Parnt.Objects.IndexOf(t) <> - 1 then
       begin
-        sfx := t.x; Inc(t.x, CurX);
-        sfy := t.y; Inc(t.y, Parnt.y);
+        sfx := t.x;
+        Inc(t.x, CurX);
+        sfy := t.y;
+        Inc(t.y, Parnt.y);
         t.Parent := Parnt;
         t.Print(MasterReport.EMFPages[PageNo].Stream);
-        if (t is TfrMemoView) and
-           (TfrMemoView(t).DrawMode in [drAll, drAfterCalcHeight]) then
+        if (t is TfrMemoView) and (TfrMemoView(t).DrawMode in [drAll, drAfterCalcHeight]) then
           Parent.AfterPrint;
         t.Parent := Self;
         t.x := sfx;
@@ -3495,7 +3562,8 @@ begin
       end;
     end;
   except
-    on exception do DoError;
+    on exception do
+      DoError;
   end;
 end;
 
@@ -3504,7 +3572,7 @@ var
   Bnd: TfrBand;
   sfpage: Integer;
   CurX, ddx: Integer;
-  DS: TfrDataSet;
+  ds: TfrDataSet;
 
   procedure CheckColumnPageBreak(ddx: Integer);
   var
@@ -3522,8 +3590,7 @@ var
         sfy := Parent.CurY;
         Parent.ShowBand(Parent.Bands[btOverlay]);
         Parent.CurY := Parent.TopMargin;
-        if (sfPage <> 0) or
-          ((Parent.Bands[btPageHeader].Flags and flBandOnFirstPage) <> 0) then
+        if (sfpage <> 0) or ((Parent.Bands[btPageHeader].Flags and flBandOnFirstPage) <> 0) then
           Parent.ShowBand(Parent.Bands[btPageHeader]);
         Parent.CurY := sfy;
         CurReport.InternalOnProgress(PageNo);
@@ -3537,12 +3604,14 @@ var
         end;
     end;
   end;
+
 begin
   ColumnXAdjust := 0;
   Parent.ColPos := 1;
   CurX := 0;
   sfpage := PageNo;
-  if Typ = btPageFooter then Exit;
+  if Typ = btPageFooter then
+    Exit;
   IsColumns := True;
   CurReport.InternalOnBeginColumn(Self);
   if Parent.BandExists(Parent.Bands[btCrossHeader]) then
@@ -3554,35 +3623,39 @@ begin
   if Parent.BandExists(Parent.Bands[btCrossData]) then
   begin
     Bnd := Parent.Bands[btCrossData];
-    if CurX = 0 then CurX := Bnd.x;
+    if CurX = 0 then
+      CurX := Bnd.x;
     if Bnd.DataSet <> nil then
-      DS := Bnd.DataSet else
-      DS := VCDataSet;
-    if DS <> nil then
+      ds := Bnd.DataSet
+    else
+      ds := VCDataSet;
+    if ds <> nil then
     begin
-      DS.First;
-      while not DS.Eof do
+      ds.First;
+      while not ds.Eof do
       begin
         ddx := Bnd.dx;
         CurReport.InternalOnPrintColumn(Parent.ColPos, ddx);
         CheckColumnPageBreak(ddx);
         Bnd.DrawCrossCell(Self, CurX);
 
-        if Typ in [btMasterData, btDetailData, btSubdetailData] then
-          Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
-             btSubDetailFooter, btGroupFooter, btCrossFooter, btReportSummary]);
+        if Typ in [btMasterData, btDetailData, btSubDetailData] then
+          Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter, btSubDetailFooter, btGroupFooter,
+            btCrossFooter, btReportSummary]);
 
         Inc(CurX, ddx);
         Inc(Parent.ColPos);
-        DS.Next;
-        if MasterReport.Terminated then break;
+        ds.Next;
+        if MasterReport.Terminated then
+          break;
       end;
     end;
   end;
   if Parent.BandExists(Parent.Bands[btCrossFooter]) then
   begin
     Bnd := Parent.Bands[btCrossFooter];
-    if CurX = 0 then CurX := Bnd.x;
+    if CurX = 0 then
+      CurX := Bnd.x;
     CheckColumnPageBreak(Bnd.dx);
     AggrBand := Bnd;
     Bnd.DrawCrossCell(Self, CurX);
@@ -3597,18 +3670,18 @@ function TfrBand.CheckPageBreak(y, dy: Integer; PBreak: Boolean): Boolean;
 begin
   Result := False;
   with Parent do
-  if y + Bands[btColumnFooter].dy + dy > CurBottomY then
-  begin
-    if not PBreak then
-      NewColumn(Self);
-    Result := True;
-  end;
+    if y + Bands[btColumnFooter].dy + dy > CurBottomY then
+    begin
+      if not PBreak then
+        NewColumn(Self);
+      Result := True;
+    end;
 end;
 
 procedure TfrBand.DrawPageBreak;
 var
   i: Integer;
-  dy, oldy, olddy, maxy: Integer;
+  dy, oldy, olddy, MaxY: Integer;
   t: TfrView;
   Flag: Boolean;
 
@@ -3617,7 +3690,7 @@ var
     i: Integer;
     t1: TfrView;
   begin
-    for i := 0 to Objects.Count - 1 do
+    for i := 0 to Pred(Objects.Count) do
     begin
       t1 := Objects[i];
       if t1 <> t then
@@ -3627,7 +3700,7 @@ var
   end;
 
 begin
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     t := Objects[i];
     t.Selected := True;
@@ -3637,7 +3710,7 @@ begin
     DrawObjects
   else
   begin
-    for i := 0 to Objects.Count - 1 do
+    for i := 0 to Pred(Objects.Count) do
     begin
       t := Objects[i];
       if t is TfrStretcheable then
@@ -3650,79 +3723,83 @@ begin
     end;
     repeat
       dy := Parent.CurBottomY - Parent.Bands[btColumnFooter].dy - y - 2;
-      maxy := 0;
-      for i := 0 to Objects.Count - 1 do
+      MaxY := 0;
+      for i := 0 to Pred(Objects.Count) do
       begin
         t := Objects[i];
         if t.Selected then
-        if (t.y >= 0) and (t.y < dy) then
-          if (t.y + t.dy < dy) then
-          begin
-            if maxy < t.y + t.dy then maxy := t.y + t.dy;
-            DrawObject(t);
-            t.Selected := False;
-          end
-          else
-          begin
-            if t is TfrStretcheable then
+          if (t.y >= 0) and (t.y < dy) then
+            if (t.y + t.dy < dy) then
             begin
-              olddy := t.dy;
-              t.dy := dy - t.y + 1;
-              Inc(TfrStretcheable(t).ActualHeight, t.dy);
-              if t.dy > TfrStretcheable(t).MinHeight then
-              begin
-                TfrStretcheable(t).DrawMode := drPart;
-                DrawObject(t);
-              end;
-              t.dy := olddy;
-            end
-            else
-              t.y := dy
-          end
-        else if t is TfrStretcheable then
-          if (t.y < 0) and (t.y + t.dy >= 0) then
-            if t.y + t.dy < dy then
-            begin
-              oldy := t.y; olddy := t.dy;
-              t.dy := t.y + t.dy;
-              t.y := 0;
-              if t.dy > TfrStretcheable(t).MinHeight div 2 then
-              begin
-                t.dy := TfrStretcheable(t).RemainHeight + t.gapy * 2 + 1;
-                Inc(TfrStretcheable(t).ActualHeight, t.dy - 1);
-                if maxy < t.y + t.dy then
-                  maxy := t.y + t.dy;
-                TfrStretcheable(t).DrawMode := drPart;
-                DrawObject(t);
-              end;
-              t.y := oldy; t.dy := olddy;
-              CorrY(t, TfrStretcheable(t).ActualHeight - t.dy);
-              t.Selected := False;
-            end
-            else
-            begin
-              oldy := t.y; olddy := t.dy;
-              t.y := 0; t.dy := dy;
-              Inc(TfrStretcheable(t).ActualHeight, t.dy);
-              TfrStretcheable(t).DrawMode := drPart;
+              if MaxY < t.y + t.dy then
+                MaxY := t.y + t.dy;
               DrawObject(t);
-              t.y := oldy; t.dy := olddy;
-            end;
+              t.Selected := False;
+            end else begin
+              if t is TfrStretcheable then
+              begin
+                olddy := t.dy;
+                t.dy := dy - t.y + 1;
+                Inc(TfrStretcheable(t).ActualHeight, t.dy);
+                if t.dy > TfrStretcheable(t).MinHeight then
+                begin
+                  TfrStretcheable(t).DrawMode := drPart;
+                  DrawObject(t);
+                end;
+                t.dy := olddy;
+              end
+              else
+                t.y := dy
+            end else if t is TfrStretcheable then
+            if (t.y < 0) and (t.y + t.dy >= 0) then
+              if t.y + t.dy < dy then
+              begin
+                oldy := t.y;
+                olddy := t.dy;
+                t.dy := t.y + t.dy;
+                t.y := 0;
+                if t.dy > TfrStretcheable(t).MinHeight div 2 then
+                begin
+                  t.dy := TfrStretcheable(t).RemainHeight + t.gapy * 2 + 1;
+                  Inc(TfrStretcheable(t).ActualHeight, t.dy - 1);
+                  if MaxY < t.y + t.dy then
+                    MaxY := t.y + t.dy;
+                  TfrStretcheable(t).DrawMode := drPart;
+                  DrawObject(t);
+                end;
+                t.y := oldy;
+                t.dy := olddy;
+                CorrY(t, TfrStretcheable(t).ActualHeight - t.dy);
+                t.Selected := False;
+              end else begin
+                oldy := t.y;
+                olddy := t.dy;
+                t.y := 0;
+                t.dy := dy;
+                Inc(TfrStretcheable(t).ActualHeight, t.dy);
+                TfrStretcheable(t).DrawMode := drPart;
+                DrawObject(t);
+                t.y := oldy;
+                t.dy := olddy;
+              end;
       end;
       Flag := False;
-      for i := 0 to Objects.Count - 1 do
+      for i := 0 to Pred(Objects.Count) do
       begin
         t := Objects[i];
-        if t.Selected then Flag := True;
+        if t.Selected then
+          Flag := True;
         Dec(t.y, dy);
       end;
-      if Flag then CheckPageBreak(y, 10000, False);
+      if Flag then
+        CheckPageBreak(y, 10000, False);
       y := Parent.CurY;
-      if MasterReport.Terminated then break;
+      if MasterReport.Terminated then
+        break;
     until not Flag;
-    maxdy := maxy;
+    maxdy := MaxY;
   end;
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     t := Objects[i];
     t.y := t.OriginalRect.Top;
@@ -3737,7 +3814,7 @@ var
   t: TfrView;
 begin
   Result := False;
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     t := Objects[i];
     if t.Parent <> Self then
@@ -3754,64 +3831,66 @@ var
   UseY, WasSub: Boolean;
 
 begin
-  if Objects.Count = 0 then Exit;
+  if Objects.Count = 0 then
+    Exit;
   sfy := y;
   UseY := not (Typ in [btPageFooter, btOverlay, btNone]);
-  if UseY then y := Parent.CurY;
+  if UseY then
+    y := Parent.CurY;
   if Stretched then
   begin
     sh := CalculatedHeight;
-//    sh := CalcHeight;
-    if sh > dy then StretchObjects(sh);
+// sh := CalcHeight;
+    if sh > dy then
+      StretchObjects(sh);
     maxdy := sh;
-    if not PageBreak then CheckPageBreak(y, sh, False);
+    if not PageBreak then
+      CheckPageBreak(y, sh, False);
     y := Parent.CurY;
     WasSub := False;
     if PageBreak then
     begin
       DrawPageBreak;
       sh := 0;
-    end
-    else
-    begin
+    end else begin
       WasSub := DrawObjects;
-      if HasCross then DrawCross;
+      if HasCross then
+        DrawCross;
     end;
     UnStretchObjects;
-    if not WasSub then Inc(Parent.CurY, sh);
-  end
-  else
-  begin
+    if not WasSub then
+      Inc(Parent.CurY, sh);
+  end else begin
     if UseY then
     begin
-      if not PageBreak then CheckPageBreak(y, dy, False);
+      if not PageBreak then
+        CheckPageBreak(y, dy, False);
       y := Parent.CurY;
     end;
     if PageBreak then
     begin
       maxdy := CalculatedHeight;
-//      maxdy := CalcHeight;
+// maxdy := CalcHeight;
       DrawPageBreak;
-    end
-    else
-    begin
+    end else begin
       WasSub := DrawObjects;
-      if HasCross then DrawCross;
-      if UseY and not WasSub then Inc(Parent.CurY, dy);
+      if HasCross then
+        DrawCross;
+      if UseY and not WasSub then
+        Inc(Parent.CurY, dy);
     end;
   end;
   y := sfy;
   if Typ in [btMasterData, btDetailData, btSubDetailData] then
-    Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
-                 btSubDetailFooter, btGroupFooter, btReportSummary]);
+    Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter, btSubDetailFooter, btGroupFooter,
+      btReportSummary]);
 end;
 
 function TfrBand.DoCalcHeight: Integer;
 var
   b: TfrBand;
 begin
-  if (Typ in [btMasterData, btDetailData, btSubDetailData]) and
-    (Next <> nil) and (Next.Dataset = nil) then
+  if (Typ in [btMasterData, btDetailData, btSubDetailData]) and (Next <> nil) and (Next.DataSet = nil) then
   begin
     b := Self;
     Result := 0;
@@ -3819,12 +3898,11 @@ begin
       Result := Result + b.CalcHeight;
       b := b.Next;
     until b = nil;
-  end
-  else
-  begin
+  end else begin
     Result := dy;
     CalculatedHeight := dy;
-    if Stretched then Result := CalcHeight;
+    if Stretched then
+      Result := CalcHeight;
   end;
 end;
 
@@ -3836,7 +3914,7 @@ begin
   CurView := View;
   CurBand := Self;
   AggrBand := Self;
-  CalculatedHeight := -1;
+  CalculatedHeight := - 1;
 
   ForceNewPage := False;
   ForceNewColumn := False;
@@ -3865,40 +3943,40 @@ begin
         begin
           Result := True;
           if Parent.Skip then
-            Exit else
+            Exit
+          else
             CheckPageBreak(0, 10000, False);
         end;
       EOFReached := True;
 
 // dealing with multiple bands
-      if (Typ in [btMasterData, btDetailData, btSubDetailData]) and
-        (Next <> nil) and (Next.Dataset = nil) and (DataSet <> nil) then
+      if (Typ in [btMasterData, btDetailData, btSubDetailData]) and (Next <> nil) and (Next.DataSet = nil) and
+        (DataSet <> nil) then
       begin
         b := Self;
         repeat
           b.DoDraw;
           b := b.Next;
         until b = nil;
-      end
-      else
-      begin
+      end else begin
         DoDraw;
-        if not (Typ in [btMasterData, btDetailData, btSubDetailData, btGroupHeader]) and
-          NewPageAfter then
+        if not (Typ in [btMasterData, btDetailData, btSubDetailData, btGroupHeader]) and NewPageAfter then
           Parent.NewPage;
       end;
-      if not EOFReached then Result := True;
+      if not EOFReached then
+        Result := True;
     end;
   end
 // if band is not visible, just performing aggregate calculations
 // relative to it
-  else if Typ in [btMasterData, btDetailData, btSubDetailData] then
-    Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
-                        btSubDetailFooter, btGroupFooter, btReportSummary]);
+  else
+    if Typ in [btMasterData, btDetailData, btSubDetailData] then
+      Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter, btSubDetailFooter, btGroupFooter,
+        btReportSummary]);
 
 // check if multiple pagefooters (in cross-tab report) - resets last of them
   if not DisableInit then
-    if (Typ <> btPageFooter) or (PageNo = MasterReport.EMFPages.Count - 1) then
+    if (Typ <> btPageFooter) or (PageNo = Pred(MasterReport.EMFPages.Count)) then
       InitValues;
   if Assigned(CurReport.FOnEndBand) then
     CurReport.FOnEndBand(Self);
@@ -3921,9 +3999,7 @@ begin
       b.LastGroupValue := frParser.Calc(b.GroupCondition);
       b := b.Next;
     end;
-  end
-  else
-  begin
+  end else begin
     Values.Clear;
     Count := 0;
   end
@@ -3934,7 +4010,7 @@ var
   i: Integer;
   t: TfrView;
   s: String;
-  v: Boolean;
+  V: Boolean;
 begin
   for i := 0 to Values.Count - 1 do
   begin
@@ -3942,33 +4018,30 @@ begin
     Values[i] := Copy(s, 1, Pos('=', s) - 1) + '=0' + Copy(s, Pos('=', s) + 2, 255);
   end;
 
-  v := Visible;
+  V := Visible;
   Visible := False;
   AggrBand := Self;
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     t := Objects[i];
     CurView := t;
     if t is TfrMemoView then
       TfrMemoView(t).ExpandVariables;
   end;
-  Visible := v;
+  Visible := V;
   Inc(Count);
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 type
   TfrBandParts = (bpHeader, bpData, bpFooter);
+
 const
   MAXBNDS = 3;
-  Bnds: Array[1..MAXBNDS, TfrBandParts] of TfrBandType =
-   ((btMasterHeader, btMasterData, btMasterFooter),
-    (btDetailHeader, btDetailData, btDetailFooter),
-    (btSubDetailHeader, btSubDetailData, btSubDetailFooter));
+  Bnds: Array [1 .. MAXBNDS, TfrBandParts] of TfrBandType = ((btMasterHeader, btMasterData, btMasterFooter),
+    (btDetailHeader, btDetailData, btDetailFooter), (btSubDetailHeader, btSubDetailData, btSubDetailFooter));
 
-
-constructor TfrPage.Create(ASize, AWidth, AHeight: Integer;
-  AOr: TPrinterOrientation);
+constructor TfrPage.Create(ASize, AWidth, AHeight: Integer; AOr: TPrinterOrientation);
 begin
   inherited Create;
   List := TList.Create;
@@ -3988,8 +4061,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrPage.ChangePaper(ASize, AWidth, AHeight: Integer;
-  AOr: TPrinterOrientation);
+procedure TfrPage.ChangePaper(ASize, AWidth, AHeight: Integer; AOr: TPrinterOrientation);
 begin
   try
     Prn.SetPrinterInfo(ASize, AWidth, AHeight, AOr);
@@ -4023,8 +4095,8 @@ function TfrPage.FindObjectByID(ID: Integer): Integer;
 var
   i: Integer;
 begin
-  Result := -1;
-  for i := 0 to Objects.Count - 1 do
+  Result := - 1;
+  for i := 0 to Pred(Objects.Count) do
     if TfrView(Objects[i]).ID = ID then
     begin
       Result := i;
@@ -4037,7 +4109,7 @@ var
   i: Integer;
 begin
   Result := nil;
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
     if AnsiCompareText(TfrView(Objects[i]).Name, Name) = 0 then
     begin
       Result := Objects[i];
@@ -4050,7 +4122,7 @@ var
   i: Integer;
 begin
   Result := nil;
-  for i := 0 to RTObjects.Count - 1 do
+  for i := 0 to Pred(RTObjects.Count) do
     if AnsiCompareText(TfrView(RTObjects[i]).Name, Name) = 0 then
     begin
       Result := RTObjects[i];
@@ -4071,7 +4143,8 @@ begin
   end;
   TossObjects;
   InitFlag := True;
-  CurPos := 1; ColPos := 1;
+  CurPos := 1;
+  ColPos := 1;
 end;
 
 procedure TfrPage.DoneReport;
@@ -4095,7 +4168,8 @@ function TfrPage.TopMargin: Integer;
 begin
   if UseMargins then
     if pgMargins.Top = 0 then
-      Result := PrnInfo.Ofy else
+      Result := PrnInfo.Ofy
+    else
       Result := pgMargins.Top
   else
     Result := 0;
@@ -4106,7 +4180,8 @@ begin
   with PrnInfo do
     if UseMargins then
       if pgMargins.Bottom = 0 then
-        Result := Ofy + Ph else
+        Result := Ofy + Ph
+      else
         Result := Pgh - pgMargins.Bottom
     else
       Result := Pgh;
@@ -4118,7 +4193,8 @@ function TfrPage.LeftMargin: Integer;
 begin
   if UseMargins then
     if pgMargins.Left = 0 then
-      Result := PrnInfo.Ofx else
+      Result := PrnInfo.Ofx
+    else
       Result := pgMargins.Left
   else
     Result := 0;
@@ -4129,7 +4205,8 @@ begin
   with PrnInfo do
     if UseMargins then
       if pgMargins.Right = 0 then
-        Result := Ofx + Pw else
+        Result := Ofx + Pw
+      else
         Result := Pgw - pgMargins.Right
     else
       Result := Pgw;
@@ -4142,10 +4219,10 @@ var
   bt, t: TfrView;
   Bnd, Bnd1: TfrBand;
   FirstBand, Flag: Boolean;
-  BArr: Array[0..31] of TfrBand;
+  BArr: Array [0 .. 31] of TfrBand;
   s: String;
 begin
-  for i := 0 to Objects.Count - 1 do
+  for i := 0 to Pred(Objects.Count) do
   begin
     bt := Objects[i];
     t := frCreateObject(bt.Typ, bt.ClassName);
@@ -4156,7 +4233,7 @@ begin
       HookList.Add(t);
   end;
 
-  for i := 0 to RTObjects.Count - 1 do // select all objects exclude bands
+  for i := 0 to Pred(RTObjects.Count) do // select all objects exclude bands
   begin
     t := RTObjects[i];
     t.Selected := t.Typ <> gtBand;
@@ -4166,39 +4243,39 @@ begin
       CurReport.Pages[(t as TfrSubReportView).SubPage].Skip := True;
   end;
   Flag := False;
-  for i := 0 to RTObjects.Count - 1 do // search for btCrossXXX bands
+  for i := 0 to Pred(RTObjects.Count) do // search for btCrossXXX bands
   begin
     bt := RTObjects[i];
-    if (bt.Typ = gtBand) and
-       (TfrBandType(bt.FrameTyp) in [btCrossHeader..btCrossFooter]) then
-    with Bands[TfrBandType(bt.FrameTyp)] do
-    begin
-      Memo.Assign(bt.Memo);
-      Script.Assign(bt.Script);
-      x := bt.x; dx := bt.dx;
-      InitDataSet(bt.FormatStr);
-      View := bt;
-      Flags := bt.Flags;
-      Visible := bt.Visible;
-      bt.Parent := Bands[TfrBandType(bt.FrameTyp)];
-      Flag := True;
-    end;
+    if (bt.Typ = gtBand) and (TfrBandType(bt.FrameTyp) in [btCrossHeader .. btCrossFooter]) then
+      with Bands[TfrBandType(bt.FrameTyp)] do
+      begin
+        Memo.Assign(bt.Memo);
+        Script.Assign(bt.Script);
+        x := bt.x;
+        dx := bt.dx;
+        InitDataSet(bt.FormatStr);
+        View := bt;
+        Flags := bt.Flags;
+        Visible := bt.Visible;
+        bt.Parent := Bands[TfrBandType(bt.FrameTyp)];
+        Flag := True;
+      end;
   end;
 
   if Flag then // fill a ColumnXXX bands at first
     for b := btCrossHeader to btCrossFooter do
     begin
       Bnd := Bands[b];
-      for i := 0 to RTObjects.Count - 1 do
+      for i := 0 to Pred(RTObjects.Count) do
       begin
         t := RTObjects[i];
         if t.Selected then
-         if (t.x >= Bnd.x) and (t.x + t.dx <= Bnd.x + Bnd.dx) then
-         begin
-           t.x := t.x - Bnd.x;
-           t.Parent := Bnd;
-           Bnd.Objects.Add(t);
-         end;
+          if (t.x >= Bnd.x) and (t.x + t.dx <= Bnd.x + Bnd.dx) then
+          begin
+            t.x := t.x - Bnd.x;
+            t.Parent := Bnd;
+            Bnd.Objects.Add(t);
+          end;
       end;
     end;
 
@@ -4207,18 +4284,18 @@ begin
     FirstBand := True;
     Bnd := Bands[b];
     BArr[0] := Bnd;
-    Last := 1;
-    for i := 0 to RTObjects.Count - 1 do // search for specified band
+    last := 1;
+    for i := 0 to Pred(RTObjects.Count) do // search for specified band
     begin
       bt := RTObjects[i];
       if (bt.Typ = gtBand) and (bt.FrameTyp = Integer(b)) then
       begin
         if not FirstBand then
         begin
-          Bnd.Next := TfrBand.Create(b,Self);
+          Bnd.Next := TfrBand.Create(b, Self);
           Bnd := Bnd.Next;
-          BArr[Last] := Bnd;
-          Inc(Last);
+          BArr[last] := Bnd;
+          Inc(last);
         end;
         FirstBand := False;
         Bnd.Memo.Assign(bt.Memo);
@@ -4233,72 +4310,74 @@ begin
         begin
           InitDataSet(FormatStr);
           Stretched := (Flags and flStretched) <> 0;
-          PrintIfSubsetEmpty := (Flags and flBandPrintIfSubsetEmpty) <> 0;
+          PrintIfSubsetEmpty := (Flags and flBandPrintifSubsetEmpty) <> 0;
           if Skip then
           begin
             NewPageAfter := False;
             PageBreak := False;
-          end
-          else
-          begin
+          end else begin
             NewPageAfter := (Flags and flBandNewPageAfter) <> 0;
             PageBreak := (Flags and flBandPageBreak) <> 0;
           end;
         end;
-        for j := 0 to RTObjects.Count - 1 do // placing objects over band
+        for j := 0 to Pred(RTObjects.Count) do // placing objects over band
         begin
           t := RTObjects[j];
           if (t.Parent = nil) and (t.Typ <> gtSubReport) then
-           if t.Selected then
-            if (t.y >= Bnd.y) and (t.y <= Bnd.y + Bnd.dy) then
-            begin
-              t.Parent := Bnd;
-              t.y := t.y - Bnd.y;
-              t.Selected := False;
-              Bnd.Objects.Add(t);
-            end;
+            if t.Selected then
+              if (t.y >= Bnd.y) and (t.y <= Bnd.y + Bnd.dy) then
+              begin
+                t.Parent := Bnd;
+                t.y := t.y - Bnd.y;
+                t.Selected := False;
+                Bnd.Objects.Add(t);
+              end;
         end;
-        for j := 0 to RTObjects.Count - 1 do // placing ColumnXXX objects over band
+        for j := 0 to Pred(RTObjects.Count) do // placing ColumnXXX objects over band
         begin
           t := RTObjects[j];
           if t.Parent <> nil then
-           if t.Selected then
-            if (t.y >= Bnd.y) and (t.y <= Bnd.y + Bnd.dy) then
-            begin
-              t.y := t.y - Bnd.y;
-              t.Selected := False;
-              Bnd.Objects.Add(t);
-            end;
+            if t.Selected then
+              if (t.y >= Bnd.y) and (t.y <= Bnd.y + Bnd.dy) then
+              begin
+                t.y := t.y - Bnd.y;
+                t.Selected := False;
+                Bnd.Objects.Add(t);
+              end;
         end;
-        for j := 0 to RTObjects.Count - 1 do // placing subreports over band
+        for j := 0 to Pred(RTObjects.Count) do // placing subreports over band
         begin
           t := RTObjects[j];
           if (t.Parent = nil) and (t.Typ = gtSubReport) then
-           if t.Selected then
-            if (t.y >= Bnd.y) and (t.y <= Bnd.y + Bnd.dy) then
-            begin
-              t.Parent := Bnd;
-              t.y := t.y - Bnd.y;
-              t.Selected := False;
-              Bnd.Objects.Add(t);
-            end;
+            if t.Selected then
+              if (t.y >= Bnd.y) and (t.y <= Bnd.y + Bnd.dy) then
+              begin
+                t.Parent := Bnd;
+                t.y := t.y - Bnd.y;
+                t.Selected := False;
+                Bnd.Objects.Add(t);
+              end;
         end;
       end;
     end;
-    for i := 0 to Last - 1 do // sorting bands
+    for i := 0 to last - 1 do // sorting bands
     begin
-      miny := BArr[i].y; n := i;
-      for j := i + 1 to Last - 1 do
+      miny := BArr[i].y;
+      n := i;
+      for j := i + 1 to last - 1 do
         if BArr[j].y < miny then
         begin
           miny := BArr[j].y;
           n := j;
         end;
-      Bnd := BArr[i]; BArr[i] := BArr[n]; BArr[n] := Bnd;
+      Bnd := BArr[i];
+      BArr[i] := BArr[n];
+      BArr[n] := Bnd;
     end;
-    Bnd := BArr[0]; Bands[b] := Bnd;
+    Bnd := BArr[0];
+    Bands[b] := Bnd;
     Bnd.Prev := nil;
-    for i := 1 to Last - 1 do  // finally ordering
+    for i := 1 to last - 1 do // finally ordering
     begin
       Bnd.Next := BArr[i];
       Bnd := Bnd.Next;
@@ -4308,7 +4387,7 @@ begin
     Bands[b].LastBand := Bnd;
   end;
 
-  for i := 0 to RTObjects.Count - 1 do // place other objects on btNone band
+  for i := 0 to Pred(RTObjects.Count) do // place other objects on btNone band
   begin
     t := RTObjects[i];
     if t.Selected then
@@ -4319,7 +4398,7 @@ begin
     end;
   end;
 
-  for i := 1 to MAXBNDS do  // connect header & footer to each data-band
+  for i := 1 to MAXBNDS do // connect header & footer to each data-band
   begin
     Bnd := Bands[Bnds[i, bpHeader]];
     while Bnd <> nil do
@@ -4327,7 +4406,8 @@ begin
       Bnd1 := Bands[Bnds[i, bpData]];
       while Bnd1 <> nil do
       begin
-        if Bnd1.y > Bnd.y + Bnd.dy then break;
+        if Bnd1.y > Bnd.y + Bnd.dy then
+          break;
         Bnd1 := Bnd1.Next;
       end;
       if (Bnd1 <> nil) and (Bnd1.HeaderBand = nil) then
@@ -4347,7 +4427,8 @@ begin
           Bnd1 := Bnd1.Prev;
           break;
         end;
-        if Bnd1.Next = nil then break;
+        if Bnd1.Next = nil then
+          break;
         Bnd1 := Bnd1.Next;
       end;
       if (Bnd1 <> nil) and (Bnd1.FooterBand = nil) then
@@ -4372,9 +4453,11 @@ begin
     while i < Length(s) do
     begin
       j := i;
-      while s[j] <> '=' do Inc(j);
+      while s[j] <> '=' do
+        Inc(j);
       n := j;
-      while s[n] <> ';' do Inc(n);
+      while s[n] <> ';' do
+        Inc(n);
       for b := btMasterHeader to btGroupFooter do
       begin
         Bnd := Bands[b];
@@ -4390,8 +4473,9 @@ begin
     end;
   end;
 
-  if ColCount = 0 then ColCount := 1;
-  ColWidth := (RightMargin - LeftMargin) div ColCount;
+  if ColCount = 0 then
+    ColCount := 1;
+  ColWidth := ((RightMargin - LeftMargin) div ColCount) - ColGap;
 end;
 
 procedure TfrPage.PrepareObjects;
@@ -4404,32 +4488,32 @@ var
   Field: TfrTField;
 begin
   CurPage := Self;
-  for i := 0 to RTObjects.Count - 1 do
+  for i := 0 to Pred(RTObjects.Count) do
   begin
     t := RTObjects[i];
-    t.FField := '';
+    t.FField := EmptyStr;
     if t.Memo.Count > 0 then
       s := t.Memo[0];
     j := Length(s);
     if (j > 2) and (s[1] = '[') then
     begin
-      while (j > 0) and (s[j] <> ']') do Dec(j);
+      while (j > 0) and (s[j] <> ']') do
+        Dec(j);
       s := Copy(s, 2, j - 2);
       t.FDataSet := nil;
-      t.FField := '';
+      t.FField := EmptyStr;
       Value := CurReport.Values.FindVariable(s);
       if Value = nil then
       begin
         CurBand := t.Parent;
-        DSet := GetDefaultDataset;
-        frGetDatasetAndField(s, DSet, Field);
+        DSet := GetDefaultDataSet;
+        frGetDataSetAndField(s, DSet, Field);
         if Field <> nil then
         begin
           t.FDataSet := DSet;
           t.FField := Field.FieldName;
         end;
-      end
-      else if Value.Typ = vtDBField then
+      end else if Value.Typ = vtDBField then
         if Value.DSet <> nil then
         begin
           t.FDataSet := Value.DSet;
@@ -4443,7 +4527,8 @@ procedure TfrPage.ShowBand(b: TfrBand);
 begin
   if b <> nil then
     if Mode = pmBuildList then
-      AddRecord(b, rtShowBand) else
+      AddRecord(b, rtShowBand)
+    else
       b.Draw;
 end;
 
@@ -4517,13 +4602,11 @@ begin
               Result := True;
               Exit;
             end;
-          end
-          else
-            if b.Draw then
-            begin
-              Result := True;
-              Exit;
-            end;
+          end else if b.Draw then
+          begin
+            Result := True;
+            Exit;
+          end;
         end;
       rtFirst:
         begin
@@ -4553,8 +4636,7 @@ begin
       begin
         if (CurReport <> nil) and Assigned(CurReport.FOnEndPage) then
           CurReport.FOnEndPage(PageNo);
-        if (MasterReport <> CurReport) and (MasterReport <> nil) and
-          Assigned(MasterReport.FOnEndPage) then
+        if (MasterReport <> CurReport) and (MasterReport <> nil) and Assigned(MasterReport.FOnEndPage) then
           MasterReport.FOnEndPage(PageNo);
         ShowBand(Bands[btPageFooter]);
       end;
@@ -4602,8 +4684,7 @@ begin
       b := b.Next;
     end;
   if Band.Typ in [btMasterData, btDetailData, btSubDetailData] then
-    if (Band.HeaderBand <> nil) and
-      ((Band.HeaderBand.Flags and flBandRepeatHeader) <> 0) then
+    if (Band.HeaderBand <> nil) and ((Band.HeaderBand.Flags and flBandRepeatHeader) <> 0) then
       ShowBand(Band.HeaderBand);
 end;
 
@@ -4621,6 +4702,7 @@ var
       b := b.Next;
     end;
   end;
+
 begin
   for i := Low(a) to High(a) do
     DoAggregate1(a[i]);
@@ -4628,9 +4710,9 @@ end;
 
 procedure TfrPage.FormPage;
 var
-  BndStack: Array[1..MAXBNDS * 3] of TfrBand;
+  BndStack: Array [1 .. MAXBNDS * 3] of TfrBand;
   MaxLevel, BndStackTop: Integer;
-  i, sfPage: Integer;
+  i, sfpage: Integer;
   HasGroups: Boolean;
 
   procedure AddToStack(b: TfrBand);
@@ -4670,96 +4752,106 @@ var
 
   begin
     b := Bands[Bnds[Level, bpData]];
-    while (b <> nil) and (b.Dataset <> nil) do
+    while (b <> nil) do
     begin
-      b.DataSet.First;
-      if Mode = pmBuildList then
-        AddRecord(b, rtFirst) else
-        b.Positions[psLocal] := 1;
-
-      b1 := Bands[btGroupHeader];
-      while b1 <> nil do
+      if b.DataSet <> nil then
       begin
-        b1.Positions[psLocal] := 0;
-        b1.Positions[psGlobal] := 0;
-        b1 := b1.Next;
-      end;
+        b.DataSet.First;
+        if Mode = pmBuildList then
+          AddRecord(b, rtFirst)
+        else
+          b.Positions[psLocal] := 1;
 
-      if not b.DataSet.Eof then
-      begin
-        if (Level = 1) and HasGroups then
-          InitGroups(Bands[btGroupHeader]);
-        if b.HeaderBand <> nil then
-          AddToStack(b.HeaderBand);
-        if b.FooterBand <> nil then
-          b.FooterBand.InitValues;
-
-        while not b.DataSet.Eof do
+        b1 := Bands[btGroupHeader];
+        while b1 <> nil do
         begin
-          Application.ProcessMessages;
-          if MasterReport.Terminated then break;
-          AddToStack(b);
-          WasPrinted := True;
-          if Level < MaxLevel then
-          begin
-            DoLoop(Level + 1);
-            if BndStackTop > 0 then
-              if b.PrintIfSubsetEmpty then
-                ShowStack
-              else
-              begin
-                Dec(BndStackTop);
-                WasPrinted := False;
-              end;
-          end
-          else ShowStack;
-
-          b.DataSet.Next;
-
-          if (Level = 1) and HasGroups then
-          begin
-            b1 := Bands[btGroupHeader];
-            while b1 <> nil do
-            begin
-              if (frParser.Calc(b1.GroupCondition) <> b1.LastGroupValue) or
-                b.Dataset.Eof then
-              begin
-                ShowBand(b.FooterBand);
-                b2 := Bands[btGroupHeader].LastBand;
-                while b2 <> b1 do
-                begin
-                  ShowBand(b2.FooterBand);
-                  b2.Positions[psLocal] := 0;
-                  b2 := b2.Prev;
-                end;
-                ShowBand(b1.FooterBand);
-                if not b.DataSet.Eof then
-                begin
-                  if b1.NewPageAfter then NewPage;
-                  InitGroups(b1);
-                  ShowBand(b.HeaderBand);
-                  b.Positions[psLocal] := 0;
-                end;
-                break;
-              end;
-              b1 := b1.Next;
-            end;
-          end;
-
-          if Mode = pmBuildList then
-            AddRecord(b, rtNext)
-          else if WasPrinted then
-          begin
-            Inc(CurPos);
-            Inc(b.Positions[psGlobal]);
-            Inc(b.Positions[psLocal]);
-            if not b.DataSet.Eof and b.NewPageAfter then NewPage;
-          end;
-          if MasterReport.Terminated then break;
+          b1.Positions[psLocal] := 0;
+          b1.Positions[psGlobal] := 0;
+          b1 := b1.Next;
         end;
-        if BndStackTop = 0 then
-          ShowBand(b.FooterBand) else
-          Dec(BndStackTop);
+
+        if not b.DataSet.Eof then
+        begin
+          if (Level = 1) and HasGroups then
+            InitGroups(Bands[btGroupHeader]);
+          if b.HeaderBand <> nil then
+            AddToStack(b.HeaderBand);
+          if b.FooterBand <> nil then
+            b.FooterBand.InitValues;
+
+          while not b.DataSet.Eof do
+          begin
+            Application.ProcessMessages;
+            if MasterReport.Terminated then
+              break;
+            AddToStack(b);
+            WasPrinted := True;
+            if Level < MaxLevel then
+            begin
+              DoLoop(Level + 1);
+              if BndStackTop > 0 then
+                if b.PrintIfSubsetEmpty then
+                  ShowStack
+                else
+                begin
+                  Dec(BndStackTop);
+                  WasPrinted := False;
+                end;
+            end
+            else
+              ShowStack;
+
+            b.DataSet.Next;
+
+            if (Level = 1) and HasGroups then
+            begin
+              b1 := Bands[btGroupHeader];
+              while b1 <> nil do
+              begin
+                if (frParser.Calc(b1.GroupCondition) <> b1.LastGroupValue) or b.DataSet.Eof then
+                begin
+                  ShowBand(b.FooterBand);
+                  b2 := Bands[btGroupHeader].LastBand;
+                  while b2 <> b1 do
+                  begin
+                    ShowBand(b2.FooterBand);
+                    b2.Positions[psLocal] := 0;
+                    b2 := b2.Prev;
+                  end;
+                  ShowBand(b1.FooterBand);
+                  if not b.DataSet.Eof then
+                  begin
+                    if b1.NewPageAfter then
+                      NewPage;
+                    InitGroups(b1);
+                    ShowBand(b.HeaderBand);
+                    b.Positions[psLocal] := 0;
+                  end;
+                  break;
+                end;
+                b1 := b1.Next;
+              end;
+            end;
+
+            if Mode = pmBuildList then
+              AddRecord(b, rtNext)
+            else
+              if WasPrinted then
+              begin
+                Inc(CurPos);
+                Inc(b.Positions[psGlobal]);
+                Inc(b.Positions[psLocal]);
+                if not b.DataSet.Eof and b.NewPageAfter then
+                  NewPage;
+              end;
+            if MasterReport.Terminated then
+              break;
+          end;
+          if BndStackTop = 0 then
+            ShowBand(b.FooterBand)
+          else
+            Dec(BndStackTop);
+        end;
       end;
       b := b.Next;
     end;
@@ -4776,7 +4868,8 @@ begin
         PageNo := MasterReport.EMFPages.Count;
       end;
     if Append and WasPF then
-      CurBottomY := PrevBottomY else
+      CurBottomY := PrevBottomY
+    else
       CurBottomY := BottomMargin;
     CurColumn := 0;
     XAdjust := LeftMargin;
@@ -4789,12 +4882,11 @@ begin
     end
     else
       CurY := PrevY;
-    sfPage := PageNo;
+    sfpage := PageNo;
     ShowBand(Bands[btReportTitle]);
-    if PageNo = sfPage then // check if new page was formed
+    if PageNo = sfpage then // check if new page was formed
     begin
-      if BandExists(Bands[btPageHeader]) and
-        ((Bands[btPageHeader].Flags and flBandOnFirstPage) <> 0) then
+      if BandExists(Bands[btPageHeader]) and ((Bands[btPageHeader].Flags and flBandOnFirstPage) <> 0) then
         ShowBand(Bands[btPageHeader]);
       ShowBand(Bands[btColumnHeader]);
     end;
@@ -4816,14 +4908,15 @@ begin
       PrevY := BottomMargin;
     CurColumn := 0;
     XAdjust := LeftMargin;
-    sfPage := PageNo;
+    sfpage := PageNo;
     WasPF := False;
     if (Bands[btPageFooter].Flags and flBandOnLastPage) <> 0 then
     begin
       WasPF := BandExists(Bands[btPageFooter]);
-      if WasPF then DrawPageFooters;
+      if WasPF then
+        DrawPageFooters;
     end;
-    PageNo := sfPage + 1;
+    PageNo := sfpage + 1;
   end;
 end;
 
@@ -4850,7 +4943,7 @@ begin
     Read(pgSize, 4);
     Read(pgWidth, 4);
     Read(pgHeight, 4);
-    Read(pgMargins, Sizeof(pgMargins));
+    Read(pgMargins, SizeOf(pgMargins));
     Read(b, 1);
     pgOr := TPrinterOrientation(b);
     if frVersion < 23 then
@@ -4872,7 +4965,7 @@ begin
     Write(pgSize, 4);
     Write(pgWidth, 4);
     Write(pgHeight, 4);
-    Write(pgMargins, Sizeof(pgMargins));
+    Write(pgMargins, SizeOf(pgMargins));
     b := Byte(pgOr);
     Write(b, 1);
     Write(PrintToPrevPage, 2);
@@ -4882,7 +4975,7 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------}
+{ ----------------------------------------------------------------------- }
 constructor TfrPages.Create(AParent: TfrReport);
 begin
   inherited Create;
@@ -4911,7 +5004,7 @@ procedure TfrPages.Clear;
 var
   i: Integer;
 begin
-  for i := 0 to FPages.Count - 1 do
+  for i := 0 to Pred(FPages.Count) do
     Pages[i].Free;
   FPages.Clear;
 end;
@@ -4938,7 +5031,7 @@ var
   begin
     Stream.Read(b, 1);
     Pages[b].Objects.Add(frCreateObject(ot, clname));
-    t := Pages[b].Objects.Items[Pages[b].Objects.Count - 1];
+    t := Pages[b].Objects.Items[Pred(Pages[b].Objects.Count)];
   end;
 
 begin
@@ -4949,40 +5042,37 @@ begin
   while Stream.Position < Stream.Size do
   begin
     Stream.Read(b, 1);
-    if b = $FF then  // page info
+    if b = $FF then // page info
     begin
       Add;
       Pages[Count - 1].LoadFromStream(Stream);
-    end
-    else if b = $FE then // values
+    end else if b = $FE then // values
     begin
       Parent.FVal.ReadBinaryData(Stream);
       ReadMemo(Stream, SMemo);
       Parent.Variables.Assign(SMemo);
-    end
-    else if b = $FD then // datasets
+    end else if b = $FD then // datasets
     begin
       if frDataManager <> nil then
         frDataManager.LoadFromStream(Stream);
       break;
-    end
-    else
-    begin
+    end else begin
       if b > Integer(gtAddIn) then
       begin
-        raise Exception.Create('');
+        raise exception.Create(EmptyStr);
         break;
       end;
-      s := '';
+      s := EmptyStr;
       if b = gtAddIn then
       begin
         s := ReadString(Stream);
         if AnsiUpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
-          AddObject(gtMemo, '') else
+          AddObject(gtMemo, EmptyStr)
+        else
           AddObject(gtAddIn, s);
       end
       else
-        AddObject(b, '');
+        AddObject(b, EmptyStr);
       t.LoadFromStream(Stream);
       if AnsiUpperCase(s) = 'TFRFRAMEDMEMOVIEW' then
         Stream.Read(buf[1], 8);
@@ -5007,12 +5097,12 @@ begin
   for i := 0 to Count - 1 do // adding pages at first
   begin
     b := $FF;
-    Stream.Write(b, 1);      // page info
+    Stream.Write(b, 1); // page info
     Pages[i].SaveToStream(Stream);
   end;
   for i := 0 to Count - 1 do
   begin
-    for j := 0 to Pages[i].Objects.Count - 1 do // then adding objects
+    for j := 0 to Pred(Pages[i].Objects.Count) do // then adding objects
     begin
       t := Pages[i].Objects[j];
       b := Byte(t.Typ);
@@ -5036,7 +5126,7 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------}
+{ ----------------------------------------------------------------------- }
 constructor TfrEMFPages.Create(AParent: TfrReport);
 begin
   inherited Create;
@@ -5073,44 +5163,42 @@ var
   t: TfrView;
   i: Integer;
   sx, sy: Double;
-  v, IsPrinting: Boolean;
+  V, IsPrinting: Boolean;
   h: THandle;
 begin
   IsPrinting := Printer.Printing and (Canvas.Handle = Printer.Canvas.Handle);
   DocMode := dmPrinting;
   p := FPages[Index];
   with p^ do
-  if Visible then
-  begin
-    if Page = nil then
-      ObjectsToPage(Index);
-    sx := (DrawRect.Right - DrawRect.Left) / PrnInfo.PgW;
-    sy := (DrawRect.Bottom - DrawRect.Top) / PrnInfo.PgH;
-    h := Canvas.Handle;
-    for i := 0 to Page.Objects.Count - 1 do
+    if Visible then
     begin
-      t := Page.Objects[i];
-      v := True;
-      if not IsPrinting then
-        with t, DrawRect do
-          v := RectVisible(h, Rect(Round(x * sx) + Left - 10,
-                                   Round(y * sy) + Top - 10,
-                                   Round((x + dx) * sx) + Left + 10,
-                                   Round((y + dy) * sy) + Top + 10));
-      if v then
+      if Page = nil then
+        ObjectsToPage(Index);
+      sx := (DrawRect.Right - DrawRect.Left) / PrnInfo.Pgw;
+      sy := (DrawRect.Bottom - DrawRect.Top) / PrnInfo.Pgh;
+      h := Canvas.Handle;
+      for i := 0 to Pred(Page.Objects.Count) do
       begin
-        t.ScaleX := sx; t.ScaleY := sy;
-        t.OffsX := DrawRect.Left; t.OffsY := DrawRect.Top;
-        t.IsPrinting := IsPrinting;
-        t.Draw(Canvas);
+        t := Page.Objects[i];
+        V := True;
+        if not IsPrinting then
+          with t, DrawRect do
+            V := RectVisible(h, Rect(Round(x * sx) + Left - 10, Round(y * sy) + Top - 10,
+              Round((x + dx) * sx) + Left + 10, Round((y + dy) * sy) + Top + 10));
+        if V then
+        begin
+          t.ScaleX := sx;
+          t.ScaleY := sy;
+          t.OffsX := DrawRect.Left;
+          t.OffsY := DrawRect.Top;
+          t.IsPrinting := IsPrinting;
+          t.Draw(Canvas);
+        end;
       end;
+    end else begin
+      Page.Free;
+      Page := nil;
     end;
-  end
-  else
-  begin
-    Page.Free;
-    Page := nil;
-  end;
 end;
 
 procedure TfrEMFPages.ExportData(Index: Integer);
@@ -5129,13 +5217,17 @@ begin
     begin
       Stream.Read(b, 1);
       if b = gtAddIn then
-        s := ReadString(Stream) else
-        s := '';
+        s := ReadString(Stream)
+      else
+        s := EmptyStr;
       t := frCreateObject(b, s);
-      t.StreamMode := smPrinting;
-      t.LoadFromStream(Stream);
-      t.ExportData;
-      t.Free;
+      try
+        t.StreamMode := smPrinting;
+        t.LoadFromStream(Stream);
+        t.ExportData;
+      finally
+        t.Free;
+      end;
     end;
   end;
 end;
@@ -5159,8 +5251,9 @@ begin
     begin
       Stream.Read(b, 1);
       if b = gtAddIn then
-        s := ReadString(Stream) else
-        s := '';
+        s := ReadString(Stream)
+      else
+        s := EmptyStr;
       t := frCreateObject(b, s);
       t.StreamMode := smPrinting;
       t.LoadFromStream(Stream);
@@ -5182,7 +5275,7 @@ begin
     Stream.Clear;
     frVersion := frCurrentVersion;
     Stream.Write(frVersion, 1);
-    for i := 0 to Page.Objects.Count - 1 do
+    for i := 0 to Pred(Page.Objects.Count) do
     begin
       t := Page.Objects[i];
       t.StreamMode := smPrinting;
@@ -5202,7 +5295,8 @@ begin
   GetMem(p, SizeOf(TfrPageInfo));
   FillChar(p^, SizeOf(TfrPageInfo), 0);
   if Index >= FPages.Count then
-    FPages.Add(p) else
+    FPages.Add(p)
+  else
     FPages.Insert(Index, p);
   with p^ do
   begin
@@ -5223,15 +5317,16 @@ begin
   Insert(FPages.Count, APage);
   if (CurReport <> nil) and Assigned(CurReport.FOnBeginPage) then
     CurReport.FOnBeginPage(PageNo);
-  if (MasterReport <> CurReport) and (MasterReport <> nil) and
-    Assigned(MasterReport.FOnBeginPage) then
+  if (MasterReport <> CurReport) and (MasterReport <> nil) and Assigned(MasterReport.FOnBeginPage) then
     MasterReport.FOnBeginPage(PageNo);
 end;
 
 procedure TfrEMFPages.Delete(Index: Integer);
 begin
-  if Pages[Index]^.Page <> nil then Pages[Index]^.Page.Free;
-  if Pages[Index]^.Stream <> nil then Pages[Index]^.Stream.Free;
+  if Pages[Index]^.Page <> nil then
+    Pages[Index]^.Page.Free;
+  if Pages[Index]^.Stream <> nil then
+    Pages[Index]^.Stream.Free;
   FreeMem(Pages[Index], SizeOf(TfrPageInfo));
   FPages.Delete(Index);
 end;
@@ -5270,16 +5365,18 @@ var
         Prn.FillPrnInfo(PrnInfo);
 
         Pict := TfrPictureView.Create;
-        Pict.SetBounds(0, 0, PrnInfo.PgW, PrnInfo.PgH);
-        Pict.Picture.Metafile.LoadFromStream(AStream);
-
-        Stream := TMemoryStream.Create;
-        b := frCurrentVersion;
-        Stream.Write(b, 1);
-        Pict.StreamMode := smPrinting;
-        Stream.Write(Pict.Typ, 1);
-        Pict.SaveToStream(Stream);
-        Pict.Free;
+        try
+          Pict.SetBounds(0, 0, PrnInfo.Pgw, PrnInfo.Pgh);
+          Pict.Picture.Metafile.LoadFromStream(AStream);
+          Stream := TMemoryStream.Create;
+          b := frCurrentVersion;
+          Stream.Write(b, 1);
+          Pict.StreamMode := smPrinting;
+          Stream.Write(Pict.Typ, 1);
+          Pict.SaveToStream(Stream);
+        finally
+          Pict.Free;
+        end;
       end;
       AStream.Seek(o, soFromBeginning);
       Inc(i);
@@ -5315,13 +5412,14 @@ begin
       if compr <> 0 then
       begin
         s := TMemoryStream.Create;
-        s.CopyFrom(AStream, o - AStream.Position);
-        Stream := TMemoryStream.Create;
-        frCompressor.DeCompress(s, Stream);
-        s.Free;
-      end
-      else
-      begin
+        try
+          s.CopyFrom(AStream, o - AStream.Position);
+          Stream := TMemoryStream.Create;
+          frCompressor.DeCompress(s, Stream);
+        finally
+          s.Free;
+        end;
+      end else begin
         Stream := TMemoryStream.Create;
         Stream.CopyFrom(AStream, o - AStream.Position);
       end;
@@ -5361,9 +5459,12 @@ begin
       if frCompressor.Enabled then
       begin
         s := TMemoryStream.Create;
-        frCompressor.Compress(Stream, s);
-        AStream.CopyFrom(s, s.Size);
-        s.Free;
+        try
+          frCompressor.Compress(Stream, s);
+          AStream.CopyFrom(s, s.Size);
+        finally
+          s.Free;
+        end;
       end
       else
         AStream.CopyFrom(Stream, Stream.Size);
@@ -5376,7 +5477,7 @@ begin
   until i >= Count;
 end;
 
-{-----------------------------------------------------------------------}
+{ ----------------------------------------------------------------------- }
 constructor TfrValues.Create;
 begin
   inherited Create;
@@ -5400,7 +5501,7 @@ var
   begin
     n := Length(s);
     Stream.Write(n, 1);
-    Stream.Write(s[1], n);
+    Stream.Write(Pointer(s)^, n * SizeOf(char));
   end;
 
 begin
@@ -5409,14 +5510,14 @@ begin
     n := FItems.Count;
     WriteBuffer(n, SizeOf(n));
     for i := 0 to n - 1 do
-    with Objects[i] do
-    begin
-      WriteBuffer(Typ, SizeOf(Typ));
-      WriteBuffer(OtherKind, SizeOf(OtherKind));
-      WriteStr(DataSet);
-      WriteStr(Field);
-      WriteStr(FItems[i]);
-    end;
+      with Objects[i] do
+      begin
+        WriteBuffer(Typ, SizeOf(Typ));
+        WriteBuffer(OtherKind, SizeOf(OtherKind));
+        WriteStr(DataSet);
+        WriteStr(Field);
+        WriteStr(FItems[i]);
+      end;
   end;
 end;
 
@@ -5439,7 +5540,7 @@ begin
   with Stream do
   begin
     ReadBuffer(n, SizeOf(n));
-    for i := 0 to n - 1 do
+    for i := 0 to Pred(n) do
     begin
       j := AddValue;
       with Objects[j] do
@@ -5461,14 +5562,14 @@ end;
 
 function TfrValues.AddValue: Integer;
 begin
-  Result := FItems.AddObject('', TfrValue.Create);
+  Result := FItems.AddObject(EmptyStr, TfrValue.Create);
 end;
 
 procedure TfrValues.Clear;
 var
   i: Integer;
 begin
-  for i := 0 to FItems.Count - 1 do
+  for i := 0 to Pred(FItems.Count) do
     TfrValue(FItems.Objects[i]).Free;
   FItems.Clear;
 end;
@@ -5479,11 +5580,11 @@ var
 begin
   Result := nil;
   i := FItems.IndexOf(s);
-  if i <> -1 then
+  if i <> - 1 then
     Result := Objects[i];
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrReport.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -5525,12 +5626,15 @@ begin
   if FStoreInDFM then
   begin
     Stream1 := TMemoryStream.Create;
-    SaveToStream(Stream1);
-    Stream1.Position := 0;
-    n := Stream1.Size;
-    Stream.Write(n, 4);
-    Stream.CopyFrom(Stream1, n);
-    Stream1.Free;
+    try
+      SaveToStream(Stream1);
+      Stream1.Position := 0;
+      n := Stream1.Size;
+      Stream.Write(n, 4);
+      Stream.CopyFrom(Stream1, n);
+    finally
+      Stream1.Free;
+    end;
   end;
 end;
 
@@ -5544,18 +5648,21 @@ begin
   begin
     Stream.Read(n, 4);
     Stream1 := TMemoryStream.Create;
-    Stream1.CopyFrom(Stream, n);
-    Stream1.Position := 0;
-    LoadFromStream(Stream1);
-    Stream1.Free;
+    try
+      Stream1.CopyFrom(Stream, n);
+      Stream1.Position := 0;
+      LoadFromStream(Stream1);
+    finally
+      Stream1.Free;
+    end;
   end;
 end;
 
 procedure TfrReport.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = Dataset) then
-    Dataset := nil;
+  if (Operation = opRemove) and (AComponent = DataSet) then
+    DataSet := nil;
   if (Operation = opRemove) and (AComponent = Preview) then
     Preview := nil;
 end;
@@ -5565,17 +5672,17 @@ procedure TfrReport.InternalOnProgress(Percent: Integer);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Percent)
-  else if FShowProgress then
-  with frProgressForm do
-  begin
-    if (MasterReport.DoublePass and MasterReport.FinalPass) or
-       (FCurrentFilter <> nil) then
-      Label1.Caption := FirstCaption + '  ' + IntToStr(Percent) + ' ' +
-        LoadStr(SFrom) + ' ' + IntToStr(SavedAllPages)
-    else
-      Label1.Caption := FirstCaption + '  ' + IntToStr(Percent);
-    Application.ProcessMessages;
-  end;
+  else
+    if FShowProgress then
+      with frProgressForm do
+      begin
+        if (MasterReport.DoublePass and MasterReport.FinalPass) or (FCurrentFilter <> nil) then
+          Label1.Caption := FirstCaption + '  ' + IntToStr(Percent) + ' ' + LoadStr(SFrom) + ' ' +
+            IntToStr(SavedAllPages)
+        else
+          Label1.Caption := FirstCaption + '  ' + IntToStr(Percent);
+        Application.ProcessMessages;
+      end;
 end;
 
 procedure TfrReport.InternalOnGetValue(ParName: String; var ParValue: String);
@@ -5583,7 +5690,7 @@ var
   i, j, Format: Integer;
   FormatStr: String;
 begin
-  SubValue := '';
+  SubValue := EmptyStr;
   Format := CurView.Format;
   FormatStr := CurView.FormatStr;
   i := Pos(' #', ParName);
@@ -5592,25 +5699,25 @@ begin
     FormatStr := Copy(ParName, i + 2, Length(ParName) - i - 1);
     ParName := Copy(ParName, 1, i - 1);
 
-    if FormatStr[1] in ['0'..'9', 'N', 'n'] then
+    if CharInSet(FormatStr[1], ['0' .. '9', 'N', 'n']) then
     begin
-      if FormatStr[1] in ['0'..'9'] then
+      if CharInSet(FormatStr[1], ['0' .. '9']) then
         FormatStr := 'N' + FormatStr;
       Format := $01000000;
-      if FormatStr[2] in ['0'..'9'] then
+      if CharInSet(FormatStr[2], ['0' .. '9']) then
         Format := Format + $00010000;
       i := Length(FormatStr);
       while i > 1 do
       begin
-        if FormatStr[i] in ['.', ',', '-'] then
+        if CharInSet(FormatStr[i], ['.', ',', '-']) then
         begin
           Format := Format + Ord(FormatStr[i]);
           FormatStr[i] := '.';
-          if FormatStr[2] in ['0'..'9'] then
+          if CharInSet(FormatStr[2], ['0' .. '9']) then
           begin
             Inc(i);
             j := i;
-            while (i <= Length(FormatStr)) and (FormatStr[i] in ['0'..'9']) do
+            while (i <= Length(FormatStr)) and (CharInSet(FormatStr[i], ['0' .. '9'])) do
               Inc(i);
             Format := Format + 256 * StrToInt(Copy(FormatStr, j, i - j));
           end;
@@ -5618,18 +5725,16 @@ begin
         end;
         Dec(i);
       end;
-      if not (FormatStr[2] in ['0'..'9']) then
+      if not CharInSet(FormatStr[2], ['0' .. '9']) then
       begin
         FormatStr := Copy(FormatStr, 2, 255);
         Format := Format + $00040000;
       end;
-    end
-    else if FormatStr[1] in ['D', 'T', 'd', 't'] then
+    end else if CharInSet(FormatStr[1], ['D', 'T', 'd', 't']) then
     begin
       Format := $02040000;
       FormatStr := Copy(FormatStr, 2, 255);
-    end
-    else if FormatStr[1] in ['B', 'b'] then
+    end else if CharInSet(FormatStr[1], ['B', 'b']) then
     begin
       Format := $04040000;
       FormatStr := Copy(FormatStr, 2, 255);
@@ -5647,7 +5752,8 @@ begin
   with View do
     if (FDataSet <> nil) and frIsBlob(TfrTField(FDataSet.FindField(FField))) then
       GetBlob(TfrTField(FDataSet.FindField(FField)));
-  if Assigned(FOnEnterRect) then FOnEnterRect(Memo, View);
+  if Assigned(FOnEnterRect) then
+    FOnEnterRect(Memo, View);
 end;
 
 procedure TfrReport.InternalOnExportData(View: TfrView);
@@ -5655,74 +5761,87 @@ begin
   FCurrentFilter.OnData(View.x, View.y, View);
 end;
 
-procedure TfrReport.InternalOnExportText(x, y: Integer; const text: String;
-  View: TfrView);
+procedure TfrReport.InternalOnExportText(x, y: Integer; const text: String; View: TfrView);
 begin
   FCurrentFilter.OnText(x, y, text, View);
 end;
 
 procedure TfrReport.InternalOnBeginColumn(Band: TfrBand);
 begin
-  if Assigned(FOnBeginColumn) then FOnBeginColumn(Band);
+  if Assigned(FOnBeginColumn) then
+    FOnBeginColumn(Band);
 end;
 
 procedure TfrReport.InternalOnPrintColumn(ColNo: Integer; var ColWidth: Integer);
 begin
-  if Assigned(FOnPrintColumn) then FOnPrintColumn(ColNo, ColWidth);
+  if Assigned(FOnPrintColumn) then
+    FOnPrintColumn(ColNo, ColWidth);
 end;
 
-function TfrReport.FormatValue(V: Variant; Format: Integer;
-  const FormatStr: String): String;
+function TfrReport.FormatValue(V: Variant; Format: Integer; const FormatStr: String): String;
 var
   f1, f2: Integer;
-  c: Char;
+  c: char;
   s: String;
 begin
-  if (TVarData(v).VType = varEmpty) or (v = Null) then
+  if (TVarData(V).VType = varEmpty) or (V = Null) then
   begin
     Result := ' ';
     Exit;
   end;
-  c := DecimalSeparator;
+  c := FormatSettings.DecimalSeparator;
   f1 := (Format div $01000000) and $0F;
   f2 := (Format div $00010000) and $FF;
   try
     case f1 of
-      0: Result := v;
+      0:
+        Result := V;
       1:
         begin
-          DecimalSeparator := Chr(Format and $FF);
+          FormatSettings.DecimalSeparator := Chr(Format and $FF);
           case f2 of
-            0: Result := FormatFloat('###.##', v);
-            1: Result := FloatToStrF(v, ffFixed, 15, (Format div $0100) and $FF);
-            2: Result := FormatFloat('#,###.##', v);
-            3: Result := FloatToStrF(v, ffNumber, 15, (Format div $0100) and $FF);
-            4: Result := FormatFloat(FormatStr, v);
+            0:
+              Result := FormatFloat('###.##', V);
+            1:
+              Result := FloatToStrF(V, ffFixed, 15, (Format div $0100) and $FF);
+            2:
+              Result := FormatFloat('#,###.##', V);
+            3:
+              Result := FloatToStrF(V, ffNumber, 15, (Format div $0100) and $FF);
+            4:
+              Result := FormatFloat(FormatStr, V);
           end;
         end;
-      2: if f2 = 4 then
-           Result := FormatDateTime(FormatStr, v) else
-           Result := FormatDateTime(frDateFormats[f2], v);
-      3: if f2 = 4 then
-           Result := FormatDateTime(FormatStr, v) else
-           Result := FormatDateTime(frTimeFormats[f2], v);
+      2:
+        if f2 = 4 then
+          Result := FormatDateTime(FormatStr, V)
+        else
+          Result := FormatDateTime(frDateFormats[f2], V);
+      3:
+        if f2 = 4 then
+          Result := FormatDateTime(FormatStr, V)
+        else
+          Result := FormatDateTime(frTimeFormats[f2], V);
       4:
-         begin
-           if f2 = 4 then
-             s := FormatStr else
-             s := BoolStr[f2];
-           if Integer(v) = 0 then
-             Result := Copy(s, 1, Pos(';', s) - 1) else
-             Result := Copy(s, Pos(';', s) + 1, 255);
-         end;
+        begin
+          if f2 = 4 then
+            s := FormatStr
+          else
+            s := BoolStr[f2];
+          if Integer(V) = 0 then
+            Result := Copy(s, 1, Pos(';', s) - 1)
+          else
+            Result := Copy(s, Pos(';', s) + 1, 255);
+        end;
     end;
   except
-    on exception do Result := v;
+    on exception do
+      Result := V;
   end;
-  DecimalSeparator := c;
+  FormatSettings.DecimalSeparator := c;
 end;
 
-procedure TfrReport.GetVariableValue(const s: String; var v: Variant);
+procedure TfrReport.GetVariableValue(const s: String; var V: Variant);
 var
   Value: TfrValue;
   D: TfrTDataSet;
@@ -5737,34 +5856,36 @@ var
   end;
 
 begin
-  TVarData(v).VType := varEmpty;
-  if Assigned(FOnGetValue) then FOnGetValue(s, v);
-  if TVarData(v).VType = varEmpty then
+  TVarData(V).VType := varEmpty;
+  if Assigned(FOnGetValue) then
+    FOnGetValue(s, V);
+  if TVarData(V).VType = varEmpty then
   begin
     Value := Values.FindVariable(s);
     if Value <> nil then
       with Value do
-      case Typ of
-        vtNotAssigned:
-          v := '';
-        vtDBField:
-          begin
-            F := TfrTField(DSet.FindField(Field));
-            if not F.DataSet.Active then
-              F.DataSet.Open;
-            if Assigned(F.OnGetText) then
-              v := F.DisplayText else
-              v := F.AsVariant;
-          end;
-        vtFRVar:
-          v := frParser.Calc(Field);
-        vtOther:
-          if OtherKind = 1 then
-            v := frParser.Calc(Field) else
-            v := frParser.Calc(frSpecFuncs[OtherKind]);
-      end
-    else
-    begin
+        case Typ of
+          vtNotAssigned:
+            V := EmptyStr;
+          vtDBField:
+            begin
+              F := TfrTField(DSet.FindField(Field));
+              if not F.DataSet.Active then
+                F.DataSet.Open;
+              if Assigned(F.OnGetText) then
+                V := F.DisplayText
+              else
+                V := F.AsVariant;
+            end;
+          vtFRVar:
+            V := frParser.Calc(Field);
+          vtOther:
+            if OtherKind = 1 then
+              V := frParser.Calc(Field)
+            else
+              V := frParser.Calc(frSpecFuncs[OtherKind]);
+        end
+    else begin
       D := GetDefaultDataSet;
       frGetDataSetAndField(s, D, F);
       if F <> nil then
@@ -5772,57 +5893,66 @@ begin
         if not F.DataSet.Active then
           F.DataSet.Open;
         if Assigned(F.OnGetText) then
-           v := F.DisplayText else
-           v := F.AsVariant
-      end
-      else if s = 'VALUE' then
-        v := CurValue
-      else if s = frSpecFuncs[0] then
-        v := PageNo + 1
-      else if s = frSpecFuncs[2] then
-        v := CurDate
-      else if s = frSpecFuncs[3] then
-        v := CurTime
-      else if s = frSpecFuncs[4] then
-        v := MasterBand.Positions[psLocal]
-      else if s = frSpecFuncs[5] then
-        v := MasterBand.Positions[psGlobal]
-      else if s = frSpecFuncs[6] then
-        v := CurPage.ColPos
-      else if s = frSpecFuncs[7] then
-        v := CurPage.CurPos
-      else if s = frSpecFuncs[8] then
-        v := SavedAllPages
+          V := F.DisplayText
+        else
+          V := F.AsVariant
+      end else if s = 'VALUE' then
+        V := CurValue
       else
-      begin
-        if frVariables.IndexOf(s) <> -1 then
-        begin
-          v := frVariables[s];
-          Exit;
-        end;
-        if s <> SubValue then
-        begin
-          SubValue := s;
-          v := frParser.Calc(s);
-          SubValue := '';
-        end
-        else raise(EParserError.Create('Undefined symbol "' + SubValue + '"'));
-      end;
+        if s = frSpecFuncs[0] then
+          V := PageNo + 1
+        else
+          if s = frSpecFuncs[2] then
+            V := CurDate
+          else
+            if s = frSpecFuncs[3] then
+              V := CurTime
+            else
+              if s = frSpecFuncs[4] then
+                V := MasterBand.Positions[psLocal]
+              else
+                if s = frSpecFuncs[5] then
+                  V := MasterBand.Positions[psGlobal]
+                else
+                  if s = frSpecFuncs[6] then
+                    V := CurPage.ColPos
+                  else
+                    if s = frSpecFuncs[7] then
+                      V := CurPage.CurPos
+                    else
+                      if s = frSpecFuncs[8] then
+                        V := SavedAllPages
+                      else
+                      begin
+                        if frVariables.IndexOf(s) <> - 1 then
+                        begin
+                          V := frVariables[s];
+                          Exit;
+                        end;
+                        if s <> SubValue then
+                        begin
+                          SubValue := s;
+                          V := frParser.Calc(s);
+                          SubValue := EmptyStr;
+                        end
+                        else
+                          raise (EParserError.Create('Undefined symbol "' + SubValue + '"'));
+                      end;
     end;
   end;
 end;
 
-procedure TfrReport.OnGetParsFunction(const name: String; p1, p2, p3: Variant;
-   var val: String);
+procedure TfrReport.OnGetParsFunction(const Name: String; p1, p2, p3: Variant; var val: String);
 var
   i: Integer;
 begin
   val := '0';
   for i := 0 to frFunctionsCount - 1 do
     if frFunctions[i].FunctionLibrary.OnFunction(name, p1, p2, p3, val) then
-      exit;
+      Exit;
   if AggrBand.Visible then
-    if Assigned(FOnFunction) then FOnFunction(name, p1, p2, p3, val);
+    if Assigned(FOnFunction) then
+      FOnFunction(name, p1, p2, p3, val);
 end;
 
 // load/save methods
@@ -5836,21 +5966,19 @@ begin
     Stream.Position := 0;
   end;
   if frVersion <= frCurrentVersion then
-  try
+    try
 {$IFDEF FREEREP2217READ}
-    if FRE_COMPATIBLE_READ and (frVersion = 23) then
-      frVersion := 22;
+      if FRE_COMPATIBLE_READ and (frVersion = 23) then
+        frVersion := 22;
 {$ENDIF}
-    Pages.LoadFromStream(Stream);
-  except
-    Pages.Clear;
-    Pages.Add;
-    MessageBox(0, PChar(LoadStr(SFRFError)), PChar(LoadStr(SError)),
-      mb_Ok + mb_IconError);
-  end
+      Pages.LoadFromStream(Stream);
+    except
+      Pages.Clear;
+      Pages.Add;
+      MessageBox(0, PChar(LoadStr(SFRFError)), PChar(LoadStr(SError)), mb_Ok + mb_IconError);
+    end
   else
-    MessageBox(0, PChar(SFRFError), PChar(LoadStr(SError)),
-      mb_Ok + mb_IconError);
+    MessageBox(0, PChar(SFRFError), PChar(LoadStr(SError)), mb_Ok + mb_IconError);
 end;
 
 procedure TfrReport.SaveToStream(Stream: TStream);
@@ -5871,8 +5999,11 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FName, fmOpenRead);
-  LoadFromStream(Stream);
-  Stream.Free;
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
   FileName := FName;
 end;
 
@@ -5881,8 +6012,11 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FName, fmCreate);
-  SaveToStream(Stream);
-  Stream.Free;
+  try
+    SaveToStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TfrReport.SaveToFR3File(FName: String);
@@ -5900,8 +6034,10 @@ begin
 end;
 
 {$IFDEF IBO}
+
 procedure TfrReport.LoadFromDB(Table: TIB_DataSet; DocN: Integer);
 {$ELSE}
+
 procedure TfrReport.LoadFromDB(Table: TDataSet; DocN: Integer);
 {$ENDIF}
 var
@@ -5913,23 +6049,28 @@ begin
     if Table.Fields[0].AsInteger = DocN then
     begin
       Stream := TMemoryStream.Create;
+      try
 {$IFDEF IBO}
-      TfrTBlobField(Table.Fields[1]).AssignTo(Stream);
+        TfrTBlobField(Table.Fields[1]).AssignTo(Stream);
 {$ELSE}
-      TfrTBlobField(Table.Fields[1]).SaveToStream(Stream);
+        TfrTBlobField(Table.Fields[1]).SaveToStream(Stream);
 {$ENDIF}
-      Stream.Position := 0;
-      LoadFromStream(Stream);
-      Stream.Free;
-      Exit;
+        Stream.Position := 0;
+        LoadFromStream(Stream);
+      finally
+        Stream.Free;
+      end;
+      break;
     end;
     Table.Next;
   end;
 end;
 
 {$IFDEF IBO}
+
 procedure TfrReport.SaveToDB(Table: TIB_DataSet; DocN: Integer);
 {$ELSE}
+
 procedure TfrReport.SaveToDB(Table: TDataSet; DocN: Integer);
 {$ENDIF}
 var
@@ -5949,18 +6090,22 @@ begin
   end;
 
   if Found then
-    Table.Edit else
+    Table.Edit
+  else
     Table.Append;
   Table.Fields[0].AsInteger := DocN;
   Stream := TMemoryStream.Create;
-  SaveToStream(Stream);
-  Stream.Position := 0;
+  try
+    SaveToStream(Stream);
+    Stream.Position := 0;
 {$IFDEF IBO}
-  TfrTBlobField(Table.Fields[1]).Assign(Stream);
+    TfrTBlobField(Table.Fields[1]).Assign(Stream);
 {$ELSE}
-  TfrTBlobField(Table.Fields[1]).LoadFromStream(Stream);
+    TfrTBlobField(Table.Fields[1]).LoadFromStream(Stream);
 {$ENDIF}
-  Stream.Free;
+  finally
+    Stream.Free;
+  end;
   Table.Post;
 end;
 
@@ -5969,8 +6114,11 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FName, fmOpenRead);
-  EMFPages.LoadFromStream(Stream);
-  Stream.Free;
+  try
+    EMFPages.LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
   CanRebuild := False;
 end;
 
@@ -5979,71 +6127,84 @@ var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FName, fmCreate);
-  EMFPages.SaveToStream(Stream);
-  Stream.Free;
+  try
+    EMFPages.SaveToStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
-procedure TfrReport.LoadTemplate(FName: String; comm: TStrings;
-  Bmp: TBitmap; Load: Boolean);
+procedure TfrReport.LoadTemplate(FName: String; comm: TStrings; Bmp: TBitmap; Load: Boolean);
 var
   Stream: TFileStream;
   b: Byte;
   fb: TBitmap;
   fm: TStringList;
-  pos: Integer;
+  Pos: Integer;
 begin
   fb := TBitmap.Create;
-  fm := TStringList.Create;
-  Stream := TFileStream.Create(FName, fmOpenRead);
-  if Load then
-  begin
-    ReadMemo(Stream, fm);
-    Stream.Read(pos, 4);
-    Stream.Read(b, 1);
-    if b <> 0 then
-      fb.LoadFromStream(Stream);
-    Stream.Position := pos;
-    Pages.LoadFromStream(Stream);
-  end
-  else
-  begin
-    ReadMemo(Stream, Comm);
-    Stream.Read(pos, 4);
-    Bmp.Assign(nil);
-    Stream.Read(b, 1);
-    if b <> 0 then
-      Bmp.LoadFromStream(Stream);
+  try
+    fm := TStringList.Create;
+    try
+      Stream := TFileStream.Create(FName, fmOpenRead);
+      try
+        if Load then
+        begin
+          ReadMemo(Stream, fm);
+          Stream.Read(Pos, 4);
+          Stream.Read(b, 1);
+          if b <> 0 then
+            fb.LoadFromStream(Stream);
+          Stream.Position := Pos;
+          Pages.LoadFromStream(Stream);
+        end else begin
+          ReadMemo(Stream, comm);
+          Stream.Read(Pos, 4);
+          Bmp.Assign(nil);
+          Stream.Read(b, 1);
+          if b <> 0 then
+            Bmp.LoadFromStream(Stream);
+        end;
+      finally
+        Stream.Free;
+      end;
+    finally
+      fm.Free;
+    end;
+  finally
+    fb.Free;
   end;
-  fm.Free; fb.Free;
-  Stream.Free;
 end;
 
-procedure TfrReport.SaveTemplate(FName: String; Comm: TStrings; Bmp: TBitmap);
+procedure TfrReport.SaveTemplate(FName: String; comm: TStrings; Bmp: TBitmap);
 var
   Stream: TFileStream;
   b: Byte;
-  pos, lpos: Integer;
+  Pos, lpos: Integer;
 begin
   Stream := TFileStream.Create(FName, fmCreate);
-  frWriteMemo(Stream, Comm);
-  b := 0;
-  pos := Stream.Position;
-  lpos := 0;
-  Stream.Write(lpos, 4);
-  if Bmp.Empty then
-    Stream.Write(b, 1)
-  else
-  begin
-    b := 1;
-    Stream.Write(b, 1);
-    Bmp.SaveToStream(Stream);
+  try
+    frWriteMemo(Stream, comm);
+    b := 0;
+    Pos := Stream.Position;
+    lpos := 0;
+    Stream.Write(lpos, 4);
+    if Bmp.Empty then
+      Stream.Write(b, 1)
+    else
+    begin
+      b := 1;
+      Stream.Write(b, 1);
+      Bmp.SaveToStream(Stream);
+    end;
+    lpos := Stream.Position;
+    Stream.Position := Pos;
+    Stream.Write(lpos, 4);
+    Stream.Position := lpos;
+    Pages.SaveToStream(Stream);
+  finally
+    Stream.Free;
   end;
-  lpos := Stream.Position;
-  Stream.Position := pos;
-  Stream.Write(lpos, 4);
-  Stream.Position := lpos;
-  Pages.SaveToStream(Stream);
-  Stream.Free;
 end;
 
 // report manipulation methods
@@ -6051,12 +6212,16 @@ procedure TfrReport.DesignReport;
 var
   HF: String;
 begin
-  if Pages.Count = 0 then Pages.Add;
+  if Pages.Count = 0 then
+    Pages.Add;
   CurReport := Self;
   HF := Application.HelpFile;
   Application.HelpFile := 'FRuser.hlp';
   if frDesigner <> nil then
+  begin
+    frDesigner.PopUpParent := screen.ActiveCustomForm;
     frDesigner.ShowModal;
+  end;
   Application.HelpFile := HF;
 end;
 
@@ -6068,7 +6233,8 @@ begin
   DoBuildReport;
   if FinalPass then
     if Terminated then
-      frProgressForm.ModalResult := mrCancel else
+      frProgressForm.ModalResult := mrCancel
+    else
       frProgressForm.ModalResult := mrOk
   else
   begin
@@ -6086,13 +6252,15 @@ var
   ParamOk: Boolean;
 begin
   DocMode := dmPrinting;
-  CurDate := Date; CurTime := Time;
+  CurDate := Date;
+  CurTime := Time;
   MasterReport := Self;
   CurReport := Self;
   Values.Items.Sorted := True;
   frParser.OnGetValue := GetVariableValue;
   frParser.OnFunction := OnGetParsFunction;
-  if Assigned(FOnBeginDoc) then FOnBeginDoc;
+  if Assigned(FOnBeginDoc) then
+    FOnBeginDoc;
 
   Result := False;
   ParamOk := True;
@@ -6106,7 +6274,8 @@ begin
   FinalPass := False;
   if frDataManager <> nil then
     frDataManager.AfterParamsDialog;
-  if Assigned(FOnEndDoc) then FOnEndDoc;
+  if Assigned(FOnEndDoc) then
+    FOnEndDoc;
 end;
 
 function TfrReport.DoPrepareReport: Boolean;
@@ -6130,8 +6299,9 @@ begin
     if not Assigned(FOnProgress) and FShowProgress then
       with frProgressForm do
       begin
-        if Title = '' then
-          Caption := s else
+        if Title = EmptyStr then
+          Caption := s
+        else
           Caption := s + ' - ' + Title;
         FirstCaption := LoadStr(SFirstPass);
         Label1.Caption := FirstCaption + '  1';
@@ -6145,19 +6315,19 @@ begin
   if not Assigned(FOnProgress) and FShowProgress then
     with frProgressForm do
     begin
-      if Title = '' then
-        Caption := s else
+      if Title = EmptyStr then
+        Caption := s
+      else
         Caption := s + ' - ' + Title;
       FirstCaption := LoadStr(SPagePreparing);
       Label1.Caption := FirstCaption + '  1';
       OnBeforeModal := BuildBeforeModal;
       if Visible then
       begin
-        if not FirstPassTerminated then DoublePass := True;
+        if not FirstPassTerminated then
+          DoublePass := True;
         BuildBeforeModal(nil);
-      end
-      else
-      begin
+      end else begin
         SavedAllPages := 0;
         if Show_Modal(Self) = mrCancel then
           Result := False;
@@ -6176,7 +6346,7 @@ var
   i: Integer;
 begin
   Application.ProcessMessages;
-  for i := 0 to EMFPages.Count - 1 do
+  for i := 0 to Pred(EMFPages.Count) do
   begin
     FCurrentFilter.OnBeginPage;
     EMFPages.ExportData(i);
@@ -6193,28 +6363,32 @@ var
   s: String;
 begin
   ExportStream := TFileStream.Create(FileName, fmCreate);
-  FCurrentFilter := TfrExportFilter(Filter.NewInstance);
-  FCurrentFilter.Create(ExportStream);
-  FCurrentFilter.OnBeginDoc;
-
-  CurReport := Self;
-  MasterReport := Self;
-  SavedAllPages := EMFPages.Count;
-  with frProgressForm do
-  begin
-    s := LoadStr(SReportPreparing);
-    if Title = '' then
-      Caption := s else
-      Caption := s + ' - ' + Title;
-    FirstCaption := LoadStr(SPagePreparing);
-    Label1.Caption := FirstCaption + '  1';
-    OnBeforeModal := ExportBeforeModal;
-    Show_Modal(Self);
+  try
+    FCurrentFilter := TfrExportFilter(Filter.NewInstance);
+    FCurrentFilter.Create(ExportStream);
+    try
+      FCurrentFilter.OnBeginDoc;
+      CurReport := Self;
+      MasterReport := Self;
+      SavedAllPages := EMFPages.Count;
+      with frProgressForm do
+      begin
+        s := LoadStr(SReportPreparing);
+        if Title = EmptyStr then
+          Caption := s
+        else
+          Caption := s + ' - ' + Title;
+        FirstCaption := LoadStr(SPagePreparing);
+        Label1.Caption := FirstCaption + '  1';
+        OnBeforeModal := ExportBeforeModal;
+        Show_Modal(Self);
+      end;
+    finally
+      FreeAndNil(FCurrentFilter);
+    end;
+  finally
+    ExportStream.Free;
   end;
-
-  FCurrentFilter.Free;
-  FCurrentFilter := nil;
-  ExportStream.Free;
 end;
 
 procedure TfrReport.FillQueryParams;
@@ -6223,16 +6397,18 @@ var
   t: TfrView;
   procedure PrepareDS(ds: TfrDataSet);
   begin
-    if (ds <> nil) and (ds is TfrDBDataSet) then
-      frDataManager.PrepareDataSet(TfrTDataSet((ds as TfrDBDataSet).GetDataSet));
+    if (ds <> nil) and (ds is TfrDBDataset) then
+      frDataManager.PrepareDataSet(TfrTDataSet((ds as TfrDBDataset).GetDataSet));
   end;
+
 begin
-  if frDataManager = nil then Exit;
+  if frDataManager = nil then
+    Exit;
   frDataManager.BeforePreparing;
-  if Dataset <> nil then
+  if DataSet <> nil then
     PrepareDS(DataSet);
-  for i := 0 to Pages.Count - 1 do
-    for j := 0 to Pages[i].Objects.Count-1 do
+  for i := 0 to Pred(Pages.Count) do
+    for j := 0 to Pred(Pages[i].Objects.Count) do
     begin
       t := Pages[i].Objects[j];
       if t is TfrBandView then
@@ -6254,34 +6430,36 @@ begin
   frParser.OnGetValue := GetVariableValue;
   frParser.OnFunction := OnGetParsFunction;
   ErrorFlag := False;
-  b := (Dataset <> nil) and (ReportType = rtMultiple);
+  b := (DataSet <> nil) and (ReportType = rtMultiple);
   if b then
   begin
-    Dataset.Init;
-    Dataset.First;
+    DataSet.Init;
+    DataSet.First;
   end;
-  for i := 0 to Pages.Count - 1 do
+  for i := 0 to Pred(Pages.Count) do
     Pages[i].Skip := False;
-  for i := 0 to Pages.Count - 1 do
+  for i := 0 to Pred(Pages.Count) do
     Pages[i].InitReport;
   PrepareDataSets;
-  for i := 0 to Pages.Count - 1 do
+  for i := 0 to Pred(Pages.Count) do
     Pages[i].PrepareObjects;
 
   repeat
     InternalOnProgress(PageNo + 1);
-    for i := 0 to Pages.Count - 1 do
+    for i := 0 to Pred(Pages.Count) do
     begin
       FCurPage := Pages[i];
-      if FCurPage.Skip then continue;
+      if FCurPage.Skip then
+        continue;
       FCurPage.Mode := pmNormal;
       if Assigned(FOnManualBuild) then
-        FOnManualBuild(FCurPage) else
+        FOnManualBuild(FCurPage)
+      else
         FCurPage.FormPage;
 
       Append := False;
-      if ((i = Pages.Count - 1) and CompositeMode and (not b or Dataset.Eof)) or
-         ((i <> Pages.Count - 1) and Pages[i + 1].PrintToPrevPage) then
+      if ((i = Pred(Pages.Count)) and CompositeMode and (not b or DataSet.Eof)) or
+        ((i <> Pred(Pages.Count)) and Pages[i + 1].PrintToPrevPage) then
       begin
         Dec(PageNo);
         Append := True;
@@ -6291,16 +6469,18 @@ begin
         PageNo := MasterReport.EMFPages.Count;
         InternalOnProgress(PageNo);
       end;
-      if MasterReport.Terminated then break;
+      if MasterReport.Terminated then
+        break;
     end;
     InternalOnProgress(PageNo);
-    if b then Dataset.Next;
-  until MasterReport.Terminated or not b or Dataset.Eof;
+    if b then
+      DataSet.Next;
+  until MasterReport.Terminated or not b or DataSet.Eof;
 
-  for i := 0 to Pages.Count - 1 do
+  for i := 0 to Pred(Pages.Count) do
     Pages[i].DoneReport;
   if b then
-    Dataset.Exit;
+    DataSet.Exit;
   if (frDataManager <> nil) and FinalPass then
     frDataManager.AfterPreparing;
   Values.Items.Sorted := False;
@@ -6311,8 +6491,7 @@ begin
   PrepareReport;
   if ErrorFlag then
   begin
-    MessageBox(0, PChar(ErrorStr), PChar(LoadStr(SError)),
-      mb_Ok + mb_IconError);
+    MessageBox(0, PChar(ErrorStr), PChar(LoadStr(SError)), mb_Ok + mb_IconError);
     EMFPages.Clear;
   end
   else
@@ -6327,9 +6506,11 @@ begin
   CurReport := Self;
   MasterReport := Self;
   DocMode := dmPrinting;
-  if EMFPages.Count = 0 then Exit;
+  if EMFPages.Count = 0 then
+    Exit;
   s := LoadStr(SPreview);
-  if Title <> '' then s := s + ' - ' + Title;
+  if Title <> EmptyStr then
+    s := s + ' - ' + Title;
   if not (csDesigning in ComponentState) and Assigned(Preview) then
     Preview.Connect(Self)
   else
@@ -6359,8 +6540,9 @@ begin
   if not Assigned(FOnProgress) and FShowProgress then
     with frProgressForm do
     begin
-      if Title = '' then
-        Caption := s else
+      if Title = EmptyStr then
+        Caption := s
+      else
         Caption := s + ' - ' + Title;
       FirstCaption := LoadStr(SPagePrinting);
       Label1.Caption := FirstCaption;
@@ -6372,12 +6554,10 @@ begin
   Terminated := False;
 end;
 
-{$IFDEF Trial}
-{$HINTS OFF}
 procedure TfrReport.DoPrintReport(PageNumbers: String; Copies: Integer);
 var
   i, j: Integer;
-  f: Boolean;
+  F: Boolean;
   pgList: TStringList;
 
   procedure ParsePageNumbers;
@@ -6389,10 +6569,12 @@ var
     s := PageNumbers;
     while Pos(' ', s) <> 0 do
       Delete(s, Pos(' ', s), 1);
-    if s = '' then Exit;
-
+    if s = EmptyStr then
+      Exit;
     s := s + ',';
-    i := 1; j := 1; n1 := 1;
+    i := 1;
+    j := 1;
+    n1 := 1;
     IsRange := False;
     while i <= Length(s) do
     begin
@@ -6409,8 +6591,7 @@ var
         else
           pgList.Add(IntToStr(n2));
         IsRange := False;
-      end
-      else if s[i] = '-' then
+      end else if s[i] = '-' then
       begin
         IsRange := True;
         n1 := StrToInt(Copy(s, j, i - j));
@@ -6421,8 +6602,6 @@ var
   end;
 
   procedure PrintPage(n: Integer);
-  var
-    s: String[40];
   begin
     with Printer, EMFPages[n]^ do
     begin
@@ -6431,199 +6610,68 @@ var
         EndDoc;
         Prn.SetPrinterInfo(pgSize, pgWidth, pgHeight, pgOr);
         BeginDoc;
-      end
-      else if not f then NewPage;
+      end else if not F then
+        NewPage;
       Prn.FillPrnInfo(PrnInfo);
       Visible := True;
 
       with PrnInfo do
         if pgMargins then
-          EMFPages.Draw(n, Printer.Canvas, Rect(-POfx, -POfy, PPgw - POfx, PPgh - POfy))
+          EMFPages.Draw(n, Printer.Canvas, Rect( - POfx, - POfy, PPgw - POfx, PPgh - POfy))
         else
           EMFPages.Draw(n, Printer.Canvas, Rect(0, 0, PPw, PPh));
 
       Visible := False;
       EMFPages.Draw(n, Printer.Canvas, Rect(0, 0, 0, 0));
-
-      s[0] := #25;
-      s[1] := 'F';
-      s[2] := 'a';
-      s[3] := 's';
-      s[4] := 't';
-      s[5] := 'R';
-      s[6] := 'e';
-      s[7] := 'p';
-      s[8] := 'o';
-      s[9] := LowerCase(s[5])[1];
-      s[10] := s[4];
-      s[11] := ' ';
-      s[12] := '-';
-      s[13] := s[11];
-      s[14] := 'u';
-      s[15] := 'n';
-      s[16] := s[9];
-      s[17] := s[6];
-      s[18] := 'g';
-      s[19] := 'i';
-      s[20] := s[3];
-      s[21] := s[4];
-      s[22] := s[6];
-      s[23] := s[9];
-      s[24] := s[6];
-      s[25] := 'd';
-      Canvas.TextOut(10, 10, s);
     end;
     InternalOnProgress(n + 1);
     Application.ProcessMessages;
-    f := False;
+    F := False;
+  end;
+
+begin
+  Prn.Printer := Printer;
+  pgList := TStringList.Create;
+  try
+    ParsePageNumbers;
+    if Copies <= 0 then
+      Copies := 1;
+
+    with EMFPages[0]^ do
+    begin
+      Prn.SetPrinterInfo(pgSize, pgWidth, pgHeight, pgOr);
+      Prn.FillPrnInfo(PrnInfo);
+    end;
+    if Title <> EmptyStr then
+      Printer.Title := 'FastReport: ' + Title
+    else
+      Printer.Title := 'FastReport: ' + LoadStr(SUntitled);
+    Printer.BeginDoc;
+    F := True;
+    for i := 0 to Pred(EMFPages.Count) do
+      if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> - 1) then
+        for j := 0 to Pred(Copies) do
+        begin
+          PrintPage(i);
+          if Terminated then
+          begin
+            Printer.Abort;
+            pgList.Free;
+            Exit;
+          end;
+        end;
     Printer.EndDoc;
+  finally
     pgList.Free;
   end;
-
-begin
-  Prn.Printer := Printer;
-  pgList := TStringList.Create;
-
-  ParsePageNumbers;
-  if Copies <= 0 then
-    Copies := 1;
-
-  with EMFPages[0]^ do
-  begin
-    Prn.SetPrinterInfo(pgSize, pgWidth, pgHeight, pgOr);
-    Prn.FillPrnInfo(PrnInfo);
-  end;
-  if Title <> '' then
-    Printer.Title := 'FastReport: ' + Title else
-    Printer.Title := 'FastReport: ' + LoadStr(SUntitled);
-
-  Printer.BeginDoc;
-  f := True;
-  for i := 0 to EMFPages.Count - 1 do
-    if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
-    begin
-      PrintPage(i);
-      Exit;
-    end;
 end;
-{$HINTS ON}
-{$ELSE}
-procedure TfrReport.DoPrintReport(PageNumbers: String; Copies: Integer);
-var
-  i, j: Integer;
-  f: Boolean;
-  pgList: TStringList;
-
-  procedure ParsePageNumbers;
-  var
-    i, j, n1, n2: Integer;
-    s: String;
-    IsRange: Boolean;
-  begin
-    s := PageNumbers;
-    while Pos(' ', s) <> 0 do
-      Delete(s, Pos(' ', s), 1);
-    if s = '' then Exit;
-
-    s := s + ',';
-    i := 1; j := 1; n1 := 1;
-    IsRange := False;
-    while i <= Length(s) do
-    begin
-      if s[i] = ',' then
-      begin
-        n2 := StrToInt(Copy(s, j, i - j));
-        j := i + 1;
-        if IsRange then
-          while n1 <= n2 do
-          begin
-            pgList.Add(IntToStr(n1));
-            Inc(n1);
-          end
-        else
-          pgList.Add(IntToStr(n2));
-        IsRange := False;
-      end
-      else if s[i] = '-' then
-      begin
-        IsRange := True;
-        n1 := StrToInt(Copy(s, j, i - j));
-        j := i + 1;
-      end;
-      Inc(i);
-    end;
-  end;
-
-  procedure PrintPage(n: Integer);
-  begin
-    with Printer, EMFPages[n]^ do
-    begin
-      if not Prn.IsEqual(pgSize, pgWidth, pgHeight, pgOr) then
-      begin
-        EndDoc;
-        Prn.SetPrinterInfo(pgSize, pgWidth, pgHeight, pgOr);
-        BeginDoc;
-      end
-      else if not f then NewPage;
-      Prn.FillPrnInfo(PrnInfo);
-      Visible := True;
-
-      with PrnInfo do
-        if pgMargins then
-          EMFPages.Draw(n, Printer.Canvas, Rect(-POfx, -POfy, PPgw - POfx, PPgh - POfy))
-        else
-          EMFPages.Draw(n, Printer.Canvas, Rect(0, 0, PPw, PPh));
-
-      Visible := False;
-      EMFPages.Draw(n, Printer.Canvas, Rect(0, 0, 0, 0));
-    end;
-    InternalOnProgress(n + 1);
-    Application.ProcessMessages;
-    f := False;
-  end;
-
-begin
-  Prn.Printer := Printer;
-  pgList := TStringList.Create;
-
-  ParsePageNumbers;
-  if Copies <= 0 then
-    Copies := 1;
-
-  with EMFPages[0]^ do
-  begin
-    Prn.SetPrinterInfo(pgSize, pgWidth, pgHeight, pgOr);
-    Prn.FillPrnInfo(PrnInfo);
-  end;
-  if Title <> '' then
-    Printer.Title := 'FastReport: ' + Title else
-    Printer.Title := 'FastReport: ' + LoadStr(SUntitled);
-
-  Printer.BeginDoc;
-  f := True;
-  for i := 0 to EMFPages.Count - 1 do
-    if (pgList.Count = 0) or (pgList.IndexOf(IntToStr(i + 1)) <> -1) then
-      for j := 0 to Copies - 1 do
-      begin
-        PrintPage(i);
-        if Terminated then
-        begin
-          Printer.Abort;
-          pgList.Free;
-          Exit;
-        end;
-      end;
-  Printer.EndDoc;
-  pgList.Free;
-end;
-{$ENDIF}
 
 // printer manipulation methods
 
 procedure TfrReport.SetPrinterTo(PrnName: String);
 begin
   if not PrintToDefault then
-    if Prn.Printers.IndexOf(PrnName) <> -1 then
+    if Prn.Printers.IndexOf(PrnName) <> - 1 then
       Prn.PrinterIndex := Prn.Printers.IndexOf(PrnName);
 end;
 
@@ -6632,21 +6680,21 @@ function TfrReport.ChangePrinter(OldIndex, NewIndex: Integer): Boolean;
   var
     i: Integer;
   begin
-    for i := 0 to Pages.Count - 1 do
+    for i := 0 to Pred(Pages.Count) do
       with Pages[i] do
         ChangePaper(pgSize, pgWidth, pgHeight, pgOr);
   end;
+
 begin
   Result := True;
   try
     Prn.PrinterIndex := NewIndex;
-    Prn.PaperSize := -1;
+    Prn.PaperSize := - 1;
     ChangePages;
   except
-    on Exception do
+    on exception do
     begin
-      MessageBox(0, PChar(LoadStr(SPrinterError)),
-        PChar(LoadStr(SError)), mb_IconError + mb_Ok);
+      MessageBox(0, PChar(LoadStr(SPrinterError)), PChar(LoadStr(SError)), mb_IconError + mb_Ok);
       Prn.PrinterIndex := OldIndex;
       ChangePages;
       Result := False;
@@ -6661,8 +6709,9 @@ var
   Designer: TfrReportDesigner;
   DesName: String;
 begin
-  if frDesigner = nil then Exit;
-  Screen.Cursor := crHourGlass;
+  if frDesigner = nil then
+    Exit;
+  screen.Cursor := crHourGlass;
   Designer := frDesigner;
   DesName := Designer.Name;
   Designer.Name := DesName + '__';
@@ -6670,32 +6719,34 @@ begin
   frDesigner := TfrReportDesigner(frDesigner.ClassType.NewInstance);
   frDesigner.Create(nil);
   Stream := TMemoryStream.Create;
-  SaveToStream(Stream);
-  Pages.Clear;
-  EMFPages.ObjectsToPage(PageIndex);
-  p := EMFPages[PageIndex];
-  Pages.FPages.Add(p^.Page);
-  CurReport := Self;
-  Screen.Cursor := crDefault;
   try
-    frDesigner.ShowModal;
-    if frDesigner.Modified then
-      if MessageBox(0, PChar(LoadStr(SSaveChanges) + '?'),
-        PChar(LoadStr(SConfirm)), mb_YesNo + mb_IconQuestion) = mrYes then
-        EMFPages.PageToObjects(PageIndex);
+    SaveToStream(Stream);
+    Pages.Clear;
+    EMFPages.ObjectsToPage(PageIndex);
+    p := EMFPages[PageIndex];
+    Pages.FPages.Add(p^.Page);
+    CurReport := Self;
+    screen.Cursor := crDefault;
+    try
+      frDesigner.ShowModal;
+      if frDesigner.Modified then
+        if MessageBox(0, PChar(LoadStr(SSaveChanges) + '?'), PChar(LoadStr(SConfirm)), mb_YesNo + mb_IconQuestion) = mrYes
+        then
+          EMFPages.PageToObjects(PageIndex);
+    finally
+      Pages.FPages.Clear;
+      Stream.Position := 0;
+      LoadFromStream(Stream);
+      frDesigner.Free;
+      frDesigner := Designer;
+      frDesigner.Name := DesName;
+      frDesigner.Page := Pages[0];
+      frDesigner.RedrawPage;
+    end;
   finally
-    Pages.FPages.Clear;
-    Stream.Position := 0;
-    LoadFromStream(Stream);
     Stream.Free;
-    frDesigner.Free;
-    frDesigner := Designer;
-    frDesigner.Name := DesName;
-    frDesigner.Page := Pages[0];
-    frDesigner.RedrawPage;
   end;
 end;
-
 
 // miscellaneous methods
 procedure TfrReport.PrepareDataSets;
@@ -6703,10 +6754,10 @@ var
   i: Integer;
 begin
   with Values do
-  for i := 0 to Items.Count - 1 do
-    with Objects[i] do
-    if Typ = vtDBField then
-      DSet := frGetDataSet(DataSet);
+    for i := 0 to Pred(Items.Count) do
+      with Objects[i] do
+        if Typ = vtDBField then
+          DSet := frGetDataSet(DataSet);
 end;
 
 procedure TfrReport.SetVars(Value: TStrings);
@@ -6720,19 +6771,22 @@ var
   s: String;
 begin
   List.Clear;
-  i := 0; n := 0;
+  i := 0;
+  n := 0;
   if FVars.Count > 0 then
     repeat
       s := FVars[i];
       if Length(s) > 0 then
-        if s[1] <> ' ' then Inc(n);
+        if s[1] <> ' ' then
+          Inc(n);
       Inc(i);
     until n > CatNo;
   while i < FVars.Count do
   begin
     s := FVars[i];
-    if (s <> '') and (s[1] = ' ') then
-      List.Add(Copy(s, 2, Length(s) - 1)) else
+    if (s <> EmptyStr) and (s[1] = ' ') then
+      List.Add(Copy(s, 2, Pred(Length(s))))
+    else
       break;
     Inc(i);
   end;
@@ -6744,10 +6798,11 @@ var
   s: String;
 begin
   List.Clear;
-  for i := 0 to FVars.Count - 1 do
+  for i := 0 to Pred(FVars.Count) do
   begin
     s := FVars[i];
-    if (s <> '') and (s[1] <> ' ') then List.Add(s);
+    if (s <> EmptyStr) and (s[1] <> ' ') then
+      List.Add(s);
   end;
 end;
 
@@ -6755,9 +6810,9 @@ function TfrReport.FindVariable(Variable: String): Integer;
 var
   i: Integer;
 begin
-  Result := -1;
+  Result := - 1;
   Variable := ' ' + Variable;
-  for i := 0 to FVars.Count - 1 do
+  for i := 0 to Pred(FVars.Count) do
     if Variable = FVars[i] then
     begin
       Result := i;
@@ -6770,8 +6825,8 @@ var
   i, j: Integer;
 begin
   Result := nil;
-  for i := 0 to Pages.Count - 1 do
-    for j := 0 to Pages[i].Objects.Count - 1 do
+  for i := 0 to Pred(Pages.Count) do
+    for j := 0 to Pred(Pages[i].Objects.Count) do
       if AnsiCompareText(TfrView(Pages[i].Objects[j]).Name, Name) = 0 then
       begin
         Result := Pages[i].Objects[j];
@@ -6779,8 +6834,7 @@ begin
       end;
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrCompositeReport.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -6801,13 +6855,12 @@ var
 begin
   CanRebuild := True;
   PageNo := 0;
-  for i := 0 to Reports.Count - 1 do
+  for i := 0 to Pred(Reports.Count) do
   begin
     Doc := TfrReport(Reports[i]);
     CompositeMode := False;
-    if i <> Reports.Count - 1 then
-      if (TfrReport(Reports[i + 1]).Pages.Count > 0) and
-        TfrReport(Reports[i + 1]).Pages[0].PrintToPrevPage then
+    if i <> Pred(Reports.Count) then
+      if (TfrReport(Reports[i + 1]).Pages.Count > 0) and TfrReport(Reports[i + 1]).Pages[0].PrintToPrevPage then
         CompositeMode := True;
     if Assigned(Doc.FOnBeginDoc) and FirstTime then
       Doc.FOnBeginDoc;
@@ -6825,19 +6878,18 @@ begin
       Doc.FOnEndDoc;
     Append := CompositeMode;
     CompositeMode := False;
-    if Terminated then break;
+    if Terminated then
+      break;
   end;
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 procedure TfrObjEditorForm.ShowEditor(t: TfrView);
 begin
 // abstract method
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrExportFilter.Create(AStream: TStream);
 begin
   inherited Create;
@@ -6857,7 +6909,7 @@ var
   i: Integer;
   p, p1: PfrTextRec;
 begin
-  for i := 0 to Lines.Count - 1 do
+  for i := 0 to Pred(Lines.Count) do
   begin
     p := PfrTextRec(Lines[i]);
     while p <> nil do
@@ -6900,8 +6952,7 @@ begin
 // abstract method
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrFunctionLibrary.Create;
 begin
   inherited Create;
@@ -6915,8 +6966,7 @@ begin
   inherited Destroy;
 end;
 
-function TfrFunctionLibrary.OnFunction(const FName: String; p1, p2, p3: Variant;
-  var val: String): Boolean;
+function TfrFunctionLibrary.OnFunction(const FName: String; p1, p2, p3: Variant; var val: String): Boolean;
 var
   i: Integer;
 begin
@@ -6928,8 +6978,7 @@ begin
   end;
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrStdFunctionLibrary.Create;
 begin
   inherited Create;
@@ -6951,124 +7000,158 @@ begin
   end;
 end;
 
-procedure TfrStdFunctionLibrary.DoFunction(FNo: Integer; p1, p2, p3: Variant;
-  var val: String);
+procedure TfrStdFunctionLibrary.DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: String);
 var
   DataSet: TfrTDataSet;
   Field: TfrTField;
   s1, s2, VarName: String;
-  min, max, avg, sum, count, d, v: Double;
+  min, max, avg, sum, Count, D, V: Double;
   dk: (dkNone, dkSum, dkMin, dkMax, dkAvg, dkCount);
   vv: Variant;
 begin
   dk := dkNone;
   val := '0';
   case FNo of
-    0: dk := dkAvg;
-    1: dk := dkCount;
-    2: val := '''' + FormatDateTime(frParser.Calc(p1), frParser.Calc(p2)) + '''';
-    3: val := '''' + FormatFloat(frParser.Calc(p1), frParser.Calc(p2)) + '''';
+    0:
+      dk := dkAvg;
+    1:
+      dk := dkCount;
+    2:
+      val := QuotedStr(FormatDateTime(frParser.Calc(p1), frParser.Calc(p2)));
+    3:
+      val := QuotedStr(FormatFloat(frParser.Calc(p1), frParser.Calc(p2)));
     4:
       begin
         s1 := InputBox('', frParser.Calc(p1), frParser.Calc(p2));
-        val := '''' + s1 + '''';
+        val := QuotedStr(s1);
       end;
-    5: val := '''' + AnsiLowerCase(frParser.Calc(p1)) + '''';
-    6: dk := dkMax;
-    7: dk := dkMin;
+    5:
+      val := QuotedStr(AnsiLowerCase(frParser.Calc(p1)));
+    6:
+      dk := dkMax;
+    7:
+      dk := dkMin;
     8:
       begin
         s1 := AnsiLowerCase(frParser.Calc(p1));
         if Length(s1) > 0 then
-          val := '''' + AnsiUpperCase(s1[1]) + Copy(s1, 2, Length(s1) - 1) + ''''
+          val := QuotedStr(AnsiUpperCase(s1[1]) + Copy(s1, 2, Length(s1) - 1))
         else
-          val := '''' + '''';
+          val := QuotedStr('');
       end;
-    9: val := '%d''' + frParser.Calc(p1) + '''';
-    10: val := '%t''' + frParser.Calc(p1) + '''';
-    11: dk := dkSum;
-    12: val := '''' + AnsiUpperCase(frParser.Calc(p1)) + '''';
+    9:
+      val := '%d''' + frParser.Calc(p1) + '''';
+    10:
+      val := '%t''' + frParser.Calc(p1) + '''';
+    11:
+      dk := dkSum;
+    12:
+      val := QuotedStr(AnsiUpperCase(frParser.Calc(p1)));
   end;
   if dk <> dkNone then
   begin
     if dk = dkCount then
-      DataSet := frGetDataSet(p1) else
+      DataSet := frGetDataSet(p1)
+    else
       frGetDataSetAndField(p1, DataSet, Field);
     if (DataSet <> nil) and AggrBand.Visible then
     begin
-      min := 1e200; max := -1e200; sum := 0; count := 0; avg := 0;
+      min := 1E200;
+      max := - 1E200;
+      sum := 0;
+      Count := 0;
+      avg := 0;
       DataSet.First;
       while not DataSet.Eof do
       begin
-        v := 0;
+        V := 0;
         if dk <> dkCount then
           if Field.Value <> Null then
-            v := Field.AsFloat else
-            v := 0;
-        if v > max then max := v;
-        if v < min then min := v;
-        sum := sum + v;
-        count := count + 1;
+            V := Field.AsFloat
+          else
+            V := 0;
+        if V > max then
+          max := V;
+        if V < min then
+          min := V;
+        sum := sum + V;
+        Count := Count + 1;
         DataSet.Next;
       end;
-      if count > 0 then
-        avg := sum / count;
-      d := 0;
+      if Count > 0 then
+        avg := sum / Count;
+      D := 0;
       case dk of
-        dkSum: d := sum;
-        dkMin: d := min;
-        dkMax: d := max;
-        dkAvg: d := avg;
-        dkCount: d := count;
+        dkSum:
+          D := sum;
+        dkMin:
+          D := min;
+        dkMax:
+          D := max;
+        dkAvg:
+          D := avg;
+        dkCount:
+          D := Count;
       end;
-      val := FloatToStr(d);
-    end
-    else if DataSet = nil then
+      val := FloatToStr(D);
+    end else if DataSet = nil then
     begin
       s1 := Trim(p2);
-      if s1 = '' then
+      if s1 = EmptyStr then
         s1 := CurBand.View.Name;
       if dk <> dkCount then
-        s2 := Trim(p3) else
+        s2 := Trim(p3)
+      else
         s2 := Trim(p2);
-      if (AggrBand.Typ in [btPageFooter, btMasterFooter, btDetailFooter,
-        btSubDetailFooter, btGroupFooter, btCrossFooter, btReportSummary]) and
-         ((s2 = '1') or ((s2 <> '1') and CurBand.Visible)) then
+      if (AggrBand.Typ in [btPageFooter, btMasterFooter, btDetailFooter, btSubDetailFooter, btGroupFooter,
+        btCrossFooter, btReportSummary]) and ((s2 = '1') or ((s2 <> '1') and CurBand.Visible)) then
       begin
         VarName := List[FNo] + p1;
         if IsColumns then
           if AggrBand.Typ = btCrossFooter then
-            VarName := VarName + '00' else
+            VarName := VarName + '00'
+          else
             VarName := VarName + IntToStr(CurPage.ColPos);
         if not AggrBand.Visible and (AnsiCompareText(CurBand.View.Name, s1) = 0) then
         begin
           s1 := AggrBand.Values.Values[VarName];
-          if s1 <> '' then
+          if s1 <> EmptyStr then
             if s1[1] = '1' then
-              Exit else
+              Exit
+            else
               s1 := Copy(s1, 2, 255);
           vv := 0;
           if dk <> dkCount then
             vv := frParser.Calc(p1);
           if vv = Null then
             vv := 0;
-          d := vv;
-          if s1 = '' then
-            if dk = dkMin then s1 := '1e200'
-            else if dk = dkMax then s1 := '-1e200'
-            else s1 := '0';
-          v := StrToFloat(s1);
+          D := vv;
+          if s1 = EmptyStr then
+            if dk = dkMin then
+              s1 := '1e200'
+            else
+              if dk = dkMax then
+                s1 := '-1e200'
+              else
+                s1 := '0';
+          V := StrToFloat(s1);
           case dk of
-            dkAvg: v := v + d;
-            dkCount: v := v + 1;
-            dkMax: if v < d then v := d;
-            dkMin: if v > d then v := d;
-            dkSum: v := v + d;
+            dkAvg:
+              V := V + D;
+            dkCount:
+              V := V + 1;
+            dkMax:
+              if V < D then
+                V := D;
+            dkMin:
+              if V > D then
+                V := D;
+            dkSum:
+              V := V + D;
           end;
-          AggrBand.Values.Values[VarName] := '1' + FloatToStr(v);
+          AggrBand.Values.Values[VarName] := '1' + FloatToStr(V);
           Exit;
-        end
-        else if AggrBand.Visible then
+        end else if AggrBand.Visible then
         begin
           val := Copy(AggrBand.Values.Values[VarName], 2, 255);
           if dk = dkAvg then
@@ -7080,20 +7163,16 @@ begin
   end;
 end;
 
-
-{-----------------------------------------------------------------------------}
+{ ----------------------------------------------------------------------------- }
 const
   PropCount = 16;
-  PropNames: Array[0..PropCount - 1] of String =
-    ('Left', 'Top', 'Width', 'Height', 'Flags', 'Visible', 'FrameTyp',
-     'FrameWidth', 'FrameColor', 'FillColor', 'Text',
-     'FontName', 'FontSize', 'FontStyle', 'FontColor', 'Adjust');
-  ColNames: Array[0..16] of String =
-    ('clWhite', 'clBlack', 'clMaroon', 'clGreen', 'clOlive', 'clNavy',
-     'clPurple', 'clTeal', 'clGray', 'clSilver', 'clRed', 'clLime',
-     'clYellow', 'clBlue', 'clFuchsia', 'clAqua', 'clTransparent');
+  PropNames: Array [0 .. PropCount - 1] of String = ('Left', 'Top', 'Width', 'Height', 'Flags', 'Visible', 'FrameTyp',
+    'FrameWidth', 'FrameColor', 'FillColor', 'Text', 'FontName', 'FontSize', 'FontStyle', 'FontColor', 'Adjust');
+  ColNames: Array [0 .. 16] of String = ('clWhite', 'clBlack', 'clMaroon', 'clGreen', 'clOlive', 'clNavy', 'clPurple',
+    'clTeal', 'clGray', 'clSilver', 'clRed', 'clLime', 'clYellow', 'clBlue', 'clFuchsia', 'clAqua', 'clTransparent');
 
 {$WARNINGS OFF}
+
 procedure TInterpretator.GetValue(const Name: String; var Value: Variant);
 var
   i: Integer;
@@ -7105,7 +7184,7 @@ begin
   Value := 0;
   t := CurView;
   Prop := Name;
-  if frVariables.IndexOf(Name) <> -1 then
+  if frVariables.IndexOf(Name) <> - 1 then
   begin
     Value := frVariables[Name];
     Exit;
@@ -7137,7 +7216,8 @@ begin
       if AnsiCompareText(ColNames[i], Prop) = 0 then
       begin
         if i <> 16 then
-          Value := frColors[i] else
+          Value := frColors[i]
+        else
           Value := clNone;
         Exit;
       end;
@@ -7151,31 +7231,52 @@ begin
   begin
     b := t.Parent;
     case i of
-       0: Value := b.x;
-       1: Value := b.y;
-       2: Value := b.dx;
-       3: Value := b.dy;
-       5: Value := b.Visible;
+      0:
+        Value := b.x;
+      1:
+        Value := b.y;
+      2:
+        Value := b.dx;
+      3:
+        Value := b.dy;
+      5:
+        Value := b.Visible;
     end;
   end
   else
     case i of
-       0: Value := t.x;
-       1: Value := t.y;
-       2: Value := t.dx;
-       3: Value := t.dy;
-       4: Value := t.Flags;
-       5: Value := t.Visible;
-       6: Value := t.FrameTyp;
-       7: Value := t.FrameWidth;
-       8: Value := t.FrameColor;
-       9: Value := t.FillColor;
-      10: Value := t.Memo.Text;
-      11: Value := TfrMemoView(t).Font.Name;
-      12: Value := TfrMemoView(t).Font.Size;
-      13: Value := frGetFontStyle(TfrMemoView(t).Font.Style);
-      14: Value := TfrMemoView(t).Font.Color;
-      15: Value := TfrMemoView(t).Adjust;
+      0:
+        Value := t.x;
+      1:
+        Value := t.y;
+      2:
+        Value := t.dx;
+      3:
+        Value := t.dy;
+      4:
+        Value := t.Flags;
+      5:
+        Value := t.Visible;
+      6:
+        Value := t.FrameTyp;
+      7:
+        Value := t.FrameWidth;
+      8:
+        Value := t.FrameColor;
+      9:
+        Value := t.FillColor;
+      10:
+        Value := t.Memo.text;
+      11:
+        Value := TfrMemoView(t).Font.Name;
+      12:
+        Value := TfrMemoView(t).Font.Size;
+      13:
+        Value := frGetFontStyle(TfrMemoView(t).Font.Style);
+      14:
+        Value := TfrMemoView(t).Font.Color;
+      15:
+        Value := TfrMemoView(t).Adjust;
     end;
 end;
 {$WARNINGS ON}
@@ -7195,9 +7296,8 @@ begin
     t := CurPage.FindRTObject(Copy(Name, 1, Pos('.', Name) - 1));
     Prop := Copy(Name, Pos('.', Name) + 1, 255);
   end;
-//  if t = nil then Exit;
   Flag := False;
-  for i := 0 to PropCount - 1 do
+  for i := 0 to Pred(PropCount) do
     if AnsiCompareText(PropNames[i], Prop) = 0 then
     begin
       Flag := True;
@@ -7208,58 +7308,77 @@ begin
     frVariables[Name] := Value;
     Exit;
   end;
-  if (i >= 11) and not (t is TfrMemoView) then Exit;
+  if (i >= 11) and not (t is TfrMemoView) then
+    Exit;
   if t is TfrBandView then
   begin
     b := t.Parent;
     case i of
-       0: b.x := Value;
-       1: b.y := Value;
-       2: b.dx := Value;
-       3: b.dy := Value;
-       5: b.Visible := Value;
+      0:
+        b.x := Value;
+      1:
+        b.y := Value;
+      2:
+        b.dx := Value;
+      3:
+        b.dy := Value;
+      5:
+        b.Visible := Value;
     end;
   end
   else
     case i of
-       0: t.x := Value;
-       1: t.y := Value;
-       2: t.dx := Value;
-       3: t.dy := Value;
-       4: t.Flags := Value;
-       5: t.Visible := Value;
-       6: t.FrameTyp := Value;
-       7: t.FrameWidth := Value;
-       8: t.FrameColor := Value;
-       9: t.FillColor := Value;
-      10: t.Memo.Text := Value;
-      11: TfrMemoView(t).Font.Name := Value;
-      12: TfrMemoView(t).Font.Size := Value;
-      13: TfrMemoView(t).Font.Style := frSetFontStyle(Value);
-      14: TfrMemoView(t).Font.Color := Value;
-      15: TfrMemoView(t).Adjust := Value;
+      0:
+        t.x := Value;
+      1:
+        t.y := Value;
+      2:
+        t.dx := Value;
+      3:
+        t.dy := Value;
+      4:
+        t.Flags := Value;
+      5:
+        t.Visible := Value;
+      6:
+        t.FrameTyp := Value;
+      7:
+        t.FrameWidth := Value;
+      8:
+        t.FrameColor := Value;
+      9:
+        t.FillColor := Value;
+      10:
+        t.Memo.text := Value;
+      11:
+        TfrMemoView(t).Font.Name := Value;
+      12:
+        TfrMemoView(t).Font.Size := Value;
+      13:
+        TfrMemoView(t).Font.Style := frSetFontStyle(Value);
+      14:
+        TfrMemoView(t).Font.Color := Value;
+      15:
+        TfrMemoView(t).Adjust := Value;
     end;
 end;
 
-procedure TInterpretator.DoFunction(const Name: String; p1, p2, p3: Variant;
-  var val: String);
+procedure TInterpretator.DoFunction(const Name: String; p1, p2, p3: Variant; var val: String);
 begin
   if Name = 'NEWPAGE' then
   begin
     CurBand.ForceNewPage := True;
-    Val := '0';
-  end
-  else if Name = 'NEWCOLUMN' then
+    val := '0';
+  end else if Name = 'NEWCOLUMN' then
   begin
     CurBand.ForceNewColumn := True;
-    Val := '0';
+    val := '0';
   end
   else
     frParser.OnFunction(Name, p1, p2, p3, val);
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 procedure TfrCompressor.Compress(StreamIn, StreamOut: TStream);
 begin
 // abstract method
@@ -7270,28 +7389,29 @@ begin
 // abstract method
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 procedure DoInit;
 const
-  Clr: Array[0..1] of TColor = (clWhite, clSilver);
+  Clr: Array [0 .. 1] of TColor = (clWhite, clBtnShadow);
 var
   i, j: Integer;
 begin
   SMemo := TStringList.Create;
   SBmp := TBitmap.Create;
   TempBmp := TBitmap.Create;
-  SBmp.Width := 8; SBmp.Height := 8;
-  TempBmp.Width := 8; TempBmp.Height := 8;
+  SBmp.Width := 8;
+  SBmp.Height := 8;
+  TempBmp.Width := 8;
+  TempBmp.Height := 8;
   for j := 0 to 7 do
     for i := 0 to 7 do
       SBmp.Canvas.Pixels[i, j] := Clr[(j + i) mod 2];
   frRegisterFunctionLibrary(TfrStdFunctionLibrary);
   frProgressForm := TfrProgressForm.Create(nil);
   frCharset := StrToInt(LoadStr(SCharset));
-
   for i := 0 to 21 do
     frBandNames[i] := LoadStr(SBand1 + i);
-  for i := 0 to frSpecCount - 1 do
+  for i := 0 to Pred(frSpecCount) do
     frSpecArr[i] := LoadStr(SVar1 + i);
   for i := 0 to 3 do
     BoolStr[i] := LoadStr(SFormat51 + i);
@@ -7315,7 +7435,7 @@ begin
   TempBmp.Free;
   SMemo.Free;
   frProgressForm.Free;
-  for i := 0 to frFunctionsCount - 1 do
+  for i := 0 to Pred(frFunctionsCount) do
     frFunctions[i].FunctionLibrary.Free;
   frParser.Free;
   frInterpretator.Free;
@@ -7324,12 +7444,12 @@ begin
   HookList.Free;
 end;
 
-
 initialization
-  DoInit;
+
+DoInit;
 
 finalization
-  DoExit;
+
+DoExit;
 
 end.
-

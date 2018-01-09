@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{             Report preview              }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ Report preview }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_View;
 
@@ -15,7 +11,7 @@ interface
 {$I FR.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Types, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, UITypes,
   ExtCtrls, Buttons, StdCtrls, Menus, FR_Ctrls, FR_Const;
 
 type
@@ -27,14 +23,14 @@ type
   TfrPreview = class(TPanel)
   private
     FWindow: TfrPreviewForm;
-    FScrollBars: TScrollStyle;
+    FScrollBars: UITypes.TScrollStyle;
     procedure WMSize(var Message: TMessage); message WM_WINDOWPOSCHANGED;
     function GetPage: Integer;
     procedure SetPage(Value: Integer);
     function GetZoom: Double;
     procedure SetZoom(Value: Double);
     function GetAllPages: Integer;
-    procedure SetScrollBars(Value: TScrollStyle);
+    procedure SetScrollBars(Value: UITypes.TScrollStyle);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -55,7 +51,7 @@ type
     property Page: Integer read GetPage write SetPage;
     property Zoom: Double read GetZoom write SetZoom;
   published
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property ScrollBars: UITypes.TScrollStyle read FScrollBars write SetScrollBars;
   end;
 
   TfrPBox = class(TPanel)
@@ -63,16 +59,14 @@ type
     Preview: TfrPreviewForm;
     LastClick: Integer;
     Down: boolean;
-    DFlag: Boolean;
-    LastX: integer;
-    LastY: integer;
+    DFlag: boolean;
+    LastX: Integer;
+    LastY: Integer;
     procedure WMEraseBackground(var Message: TMessage); message WM_ERASEBKGND;
     procedure Paint; override;
-    procedure MouseDown(Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
   end;
 
@@ -121,10 +115,8 @@ type
     ExitBtn: TfrTBButton;
     frTBSeparator4: TfrTBSeparator;
     frTBButton1: TfrTBButton;
-    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
-    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
-      MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: boolean);
+    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: boolean);
     procedure FormResize(Sender: TObject);
     procedure VScrollBarChange(Sender: TObject);
     procedure HScrollBarChange(Sender: TObject);
@@ -133,8 +125,7 @@ type
     procedure ZoomBtnClick(Sender: TObject);
     procedure N3Click(Sender: TObject);
     procedure ExitBtnClick(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure LoadBtnClick(Sender: TObject);
     procedure SaveBtnClick(Sender: TObject);
     procedure PrintBtnClick(Sender: TObject);
@@ -146,13 +137,14 @@ type
     procedure DelPageBtnClick(Sender: TObject);
     procedure NewPageBtnClick(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure frTBButton1MouseEnter(Sender: TObject);
     procedure frTBButton1MouseLeave(Sender: TObject);
     procedure frTBButton1Click(Sender: TObject);
+    procedure RPanelResize(Sender: TObject);
+    procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer);
   private
     { Private declarations }
     Doc: Pointer;
@@ -162,10 +154,10 @@ type
     ofx, ofy, OldV, OldH: Integer;
     per: Double;
     mode: TfrScaleMode;
-    PaintAllowed: Boolean;
+    PaintAllowed: boolean;
     FindStr: String;
-    CaseSensitive: Boolean;
-    StrFound: Boolean;
+    CaseSensitive: boolean;
+    StrFound: boolean;
     StrBounds: TRect;
     LastFoundPage, LastFoundObject: Integer;
     HF: String;
@@ -178,7 +170,7 @@ type
     procedure SaveToFile(name: String);
     procedure FindInEMF(emf: TMetafile);
     procedure FindText;
-    procedure SetGrayedButtons(Value: Boolean);
+    procedure SetGrayedButtons(Value: boolean);
     procedure Connect(ADoc: Pointer);
     procedure ConnectBack;
   public
@@ -186,12 +178,12 @@ type
     procedure Show_Modal(ADoc: Pointer);
   end;
 
-
 implementation
 
 {$R *.DFM}
 
-uses FR_Class, Printers, FR_Prntr, FR_Srch, Registry, FR_PrDlg, FR_Utils, ShellApi;
+uses
+  FR_Class, Printers, FR_Prntr, FR_Srch, Registry, FR_PrDlg, FR_Utils, ShellApi;
 
 type
   THackControl = class(TControl)
@@ -203,8 +195,7 @@ var
   CurPreview: TfrPreviewForm;
   RecordNum: Integer;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 constructor TfrPreview.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -250,20 +241,21 @@ end;
 
 procedure TfrPreview.SetPage(Value: Integer);
 begin
-  if (Value < 1) or (Value > AllPages) then Exit;
+  if (Value < 1) or (Value > AllPages) then
+    Exit;
   FWindow.CurPage := Value;
   FWindow.SetToCurPage;
 end;
 
 function TfrPreview.GetZoom: Double;
 begin
-  Result := FWindow.Per * 100;
+  Result := FWindow.per * 100;
 end;
 
 procedure TfrPreview.SetZoom(Value: Double);
 begin
-  FWindow.Per := Value / 100;
-  FWindow.Mode := mdNone;
+  FWindow.per := Value / 100;
+  FWindow.mode := mdNone;
   FWindow.FormResize(nil);
   FWindow.PBox.Paint;
 end;
@@ -275,7 +267,7 @@ begin
     Result := TfrEMFPages(FWindow.EMFPages).Count;
 end;
 
-procedure TfrPreview.SetScrollBars(Value: TScrollStyle);
+procedure TfrPreview.SetScrollBars(Value: UITypes.TScrollStyle);
 begin
   FScrollBars := Value;
   FWindow.RPanel.Visible := (Value = ssBoth) or (Value = ssVertical);
@@ -284,21 +276,21 @@ end;
 
 procedure TfrPreview.OnePage;
 begin
-  FWindow.Mode := mdOnePage;
+  FWindow.mode := mdOnePage;
   FWindow.FormResize(nil);
   FWindow.PBox.Paint;
 end;
 
 procedure TfrPreview.TwoPages;
 begin
-  FWindow.Mode := mdTwoPages;
+  FWindow.mode := mdTwoPages;
   FWindow.FormResize(nil);
   FWindow.PBox.Paint;
 end;
 
 procedure TfrPreview.PageWidth;
 begin
-  FWindow.Mode := mdPageWidth;
+  FWindow.mode := mdPageWidth;
   FWindow.FormResize(nil);
   FWindow.PBox.Paint;
 end;
@@ -348,7 +340,7 @@ begin
   FWindow.FindBtnClick(nil);
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 procedure TfrPBox.WMEraseBackground(var Message: TMessage);
 begin
 end;
@@ -360,7 +352,8 @@ var
   Pages: TfrEMFPages;
   h: HRGN;
 begin
-  if not Preview.PaintAllowed then Exit;
+  if not Preview.PaintAllowed then
+    Exit;
   if Preview.EMFPages = nil then
   begin
     Canvas.Brush.Color := clBtnFace;
@@ -371,12 +364,13 @@ begin
   h := CreateRectRgn(0, 0, Width, Height);
   GetClipRgn(Canvas.Handle, h);
 
-  for i := 0 to Pages.Count - 1 do            // drawing window background
+  for i := 0 to Pages.Count - 1 do // drawing window background
   begin
     r := Pages[i].r;
     OffsetRect(r, Preview.ofx, Preview.ofy);
     if (r.Top > 2000) or (r.Bottom < 0) then
-      Pages[i].Visible := False else
+      Pages[i].Visible := False
+    else
       Pages[i].Visible := RectVisible(Canvas.Handle, r);
     if Pages[i].Visible then
       ExcludeClipRect(Canvas.Handle, r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1);
@@ -387,24 +381,22 @@ begin
     FillRect(Rect(0, 0, Width, Height));
     Pen.Color := clBlack;
     Pen.Width := 1;
-    Pen.Mode := pmCopy;
+    Pen.mode := pmCopy;
     Pen.Style := psSolid;
     Brush.Color := clWhite;
   end;
 
   SelectClipRgn(Canvas.Handle, h);
-  for i := 0 to Pages.Count - 1 do            // drawing page background
+  for i := 0 to Pages.Count - 1 do // drawing page background
     if Pages[i].Visible then
     begin
       r := Pages[i].r;
       OffsetRect(r, Preview.ofx, Preview.ofy);
       Canvas.Rectangle(r.Left, r.Top, r.Right, r.Bottom);
-      Canvas.Polyline([Point(r.Left + 1, r.Bottom),
-                       Point(r.Right, r.Bottom),
-                       Point(r.Right, r.Top + 1)]);
+      Canvas.Polyline([Point(r.Left + 1, r.Bottom), Point(r.Right, r.Bottom), Point(r.Right, r.Top + 1)]);
     end;
 
-  for i := 0 to Pages.Count - 1 do           // drawing page content
+  for i := 0 to Pages.Count - 1 do // drawing page content
   begin
     if Pages[i].Visible then
     begin
@@ -416,12 +408,14 @@ begin
       begin
         with Preview, Pages[i].PrnInfo do
         begin
-          r1.Left := Round(Ofx * per);
-          r1.Top := Round(Ofy * per);
+          r1.Left := Round(ofx * per);
+          r1.Top := Round(ofy * per);
           r1.Right := r1.Left + Round(Pw * per);
           r1.Bottom := r1.Top + Round(Ph * per);
-          Inc(r1.Left, r.Left); Inc(r1.Right, r.Left);
-          Inc(r1.Top, r.Top); Inc(r1.Bottom, r.Top);
+          Inc(r1.Left, r.Left);
+          Inc(r1.Right, r.Left);
+          Inc(r1.Top, r.Top);
+          Inc(r1.Bottom, r.Top);
         end;
         Pages.Draw(i, Canvas, r1);
       end;
@@ -436,48 +430,51 @@ procedure TfrPBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Inte
 var
   pt: TPoint;
 begin
-  if Preview.EMFPages = nil then Exit;
+  if Preview.EMFPages = nil then
+    Exit;
   if DFlag then
   begin
     DFlag := False;
     Exit;
   end;
   with Preview do
-  if Button = mbLeft then
-  begin
-    LastClick := CurPage;
-    pt := Point(x - ofx, y - ofy);
-    Down := True;
-    LastX := X; LastY := Y;
-    CurPage := LastClick;
-    ShowPageNum;
-  end
-  else if Button = mbRight then
-  begin
-    pt := Self.ClientToScreen(Point(X, Y));
-    if frDesigner <> nil then
+    if Button = mbLeft then
     begin
-      N4.Visible := True;
-      N5.Visible := True;
-      N6.Visible := True;
-      N7.Visible := True;
+      LastClick := CurPage;
+      pt := Point(X - ofx, Y - ofy);
+      Down := True;
+      LastX := X;
+      LastY := Y;
+      CurPage := LastClick;
+      ShowPageNum;
+    end else if Button = mbRight then
+    begin
+      pt := Self.ClientToScreen(Point(X, Y));
+      if frDesigner <> nil then
+      begin
+        N4.Visible := True;
+        N5.Visible := True;
+        N6.Visible := True;
+        N7.Visible := True;
+      end;
+      if THackControl(Preview.PreviewPanel.Parent).PopupMenu = nil then
+        ProcMenu.Popup(pt.X, pt.Y)
+      else
+        THackControl(Preview.PreviewPanel.Parent).PopupMenu.Popup(pt.X, pt.Y);
     end;
-    if THackControl(Preview.PreviewPanel.Parent).PopupMenu = nil then
-      ProcMenu.Popup(pt.x, pt.y) else
-      THackControl(Preview.PreviewPanel.Parent).PopupMenu.Popup(pt.x, pt.y);
-  end;
 end;
 
 procedure TfrPBox.DblClick;
 begin
-  if Preview.EMFPages = nil then Exit;
+  if Preview.EMFPages = nil then
+    Exit;
   DFlag := True;
   with Preview do
-    if N5.Visible then EditBtnClick(nil);
+    if N5.Visible then
+      EditBtnClick(nil);
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 procedure TfrPreviewForm.FormCreate(Sender: TObject);
 begin
   PBox := TfrPBox.Create(Self);
@@ -523,9 +520,15 @@ begin
   Action := caFree;
 end;
 
+procedure TfrPreviewForm.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer);
+begin
+  FormResize(Sender);
+end;
+
 procedure TfrPreviewForm.FormActivate(Sender: TObject);
 begin
   Application.HelpFile := 'FRuser.hlp';
+  RPanelResize(RPanel);
 end;
 
 procedure TfrPreviewForm.FormDeactivate(Sender: TObject);
@@ -536,7 +539,7 @@ end;
 procedure TfrPreviewForm.Show_Modal(ADoc: Pointer);
 var
   Ini: TRegIniFile;
-  GrayedButtons: Boolean;
+  GrayedButtons: boolean;
 begin
   Connect(ADoc);
 
@@ -564,11 +567,13 @@ begin
   end;
 
   case TfrReport(Doc).InitialZoom of
-    pzPageWidth: LastScaleMode := mdPageWidth;
-    pzOnePage: LastScaleMode := mdOnePage;
-    pzTwoPages:  LastScaleMode := mdTwoPages;
+    pzPageWidth:
+      LastScaleMode := mdPageWidth;
+    pzOnePage:
+      LastScaleMode := mdOnePage;
+    pzTwoPages:
+      LastScaleMode := mdTwoPages;
   end;
-
 
   RedrawAll;
   HScrollBar.Position := 0;
@@ -578,14 +583,15 @@ begin
   if frDesigner <> nil then
   begin
     Ini := TRegIniFile.Create('Software\FastReport\' + Application.Title);
-    GrayedButtons := Ini.ReadBool('Form\' + frDesigner.Name, 'GrayButtons', False);
+    GrayedButtons := Ini.ReadBool('Form\' + frDesigner.name, 'GrayButtons', False);
     Ini.Free;
   end;
   SetGrayedButtons(GrayedButtons);
 
   HF := Application.HelpFile;
   if TfrReport(Doc).ModalPreview then
-    ShowModal else
+    ShowModal
+  else
     Show;
 end;
 
@@ -609,14 +615,14 @@ procedure TfrPreviewForm.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 begin
   with Msg.MinMaxInfo^ do
   begin
-    ptMaxSize.x := Screen.Width;
-    ptMaxSize.y := Screen.Height;
-    ptMaxPosition.x := 0;
-    ptMaxPosition.y := 0;
+    ptMaxSize.X := Screen.Width;
+    ptMaxSize.Y := Screen.Height;
+    ptMaxPosition.X := 0;
+    ptMaxPosition.Y := 0;
   end;
 end;
 
-procedure TfrPreviewForm.SetGrayedButtons(Value: Boolean);
+procedure TfrPreviewForm.SetGrayedButtons(Value: boolean);
 var
   i: Integer;
   c: TControl;
@@ -633,23 +639,29 @@ procedure TfrPreviewForm.RedrawAll;
 var
   i: Integer;
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   per := LastScale;
   mode := LastScaleMode;
   if mode = mdPageWidth then
     N1.Checked := True
-  else if mode = mdOnePage then
-    N2.Checked := True
-  else if mode = mdTwoPages then
-    N3.Checked := True
   else
-    for i := 0 to ProcMenu.Items.Count - 1 do
-      if ProcMenu.Items[i].Tag = per * 100 then
-        ProcMenu.Items[i].Checked := True;
+    if mode = mdOnePage then
+      N2.Checked := True
+    else
+      if mode = mdTwoPages then
+        N3.Checked := True
+      else
+        for i := 0 to ProcMenu.Items.Count - 1 do
+          if ProcMenu.Items[i].Tag = per * 100 then
+            ProcMenu.Items[i].Checked := True;
 
   CurPage := 1;
   ShowPageNum;
-  ofx := 0; ofy := 0; OldH := 0; OldV := 0;
+  ofx := 0;
+  ofy := 0;
+  OldH := 0;
+  OldV := 0;
   HScrollBar.Position := 0;
   VScrollBar.Position := 0;
   FormResize(nil);
@@ -661,52 +673,78 @@ begin
   PBox.Repaint;
 end;
 
+procedure TfrPreviewForm.RPanelResize(Sender: TObject);
+begin
+  PgDown.Top := RPanel.Height - 16;
+  PgUp.Top := PgDown.Top - 16;
+  VScrollBar.Height := PgUp.Top - 1;
+  if RPanel.Visible then
+    HScrollBar.Width := BPanel.Width - HScrollBar.Left - VScrollBar.Width
+  else
+    HScrollBar.Width := BPanel.Width - HScrollBar.Left;
+end;
+
 procedure TfrPreviewForm.FormResize(Sender: TObject);
 var
-  i, j, y, d, nx, dwx, dwy, maxx, maxy, maxdy, curx: Integer;
+  i, j, Y, d, nx, dwx, dwy, maxx, maxy, maxdy, curx: Integer;
   Pages: TfrEMFPages;
 begin
-  if EMFPages = nil then Exit;
+  RPanelResize(Sender);
+  if EMFPages = nil then
+    Exit;
   Pages := TfrEMFPages(EMFPages);
   PaintAllowed := False;
   with Pages[CurPage - 1].PrnInfo do
   begin
-    dwx := Pgw; dwy := Pgh;
+    dwx := Pgw;
+    dwy := Pgh;
   end;
   case mode of
-    mdNone:;
-    mdPageWidth: per := (PBox.Width - 20) / dwx;
-    mdOnePage: per := (PBox.Height - 20) / dwy;
-    mdTwoPages: per := (PBox.Width - 30) / (2 * dwx);
+    mdNone:
+      ;
+    mdPageWidth:
+      per := (PBox.Width - 20) / dwx;
+    mdOnePage:
+      per := (PBox.Height - 20) / dwy;
+    mdTwoPages:
+      per := (PBox.Width - 30) / (2 * dwx);
   end;
   ZoomBtn.Caption := IntToStr(Round(per * 100)) + '%';
-  nx := 0; maxx := 10; j := 0;
+  nx := 0;
+  maxx := 10;
+  j := 0;
   for i := 0 to Pages.Count - 1 do
   begin
     d := maxx + 10 + Round(Pages[i].PrnInfo.Pgw * per);
     if d > PBox.Width then
     begin
-      if nx < j then nx := j;
+      if nx < j then
+        nx := j;
       j := 0;
       maxx := 10;
-    end
-    else
-    begin
+    end else begin
       maxx := d;
       Inc(j);
       if i = Pages.Count - 1 then
-        if nx < j then nx := j;
+        if nx < j then
+          nx := j;
     end;
   end;
-  if nx = 0 then nx := 1;
-  if mode = mdOnePage then nx := 1;
-  if mode = mdTwoPages then nx := 2;
-  y := 10;
+  if nx = 0 then
+    nx := 1;
+  if mode = mdOnePage then
+    nx := 1;
+  if mode = mdTwoPages then
+    nx := 2;
+  Y := 10;
   i := 0;
-  maxx := 0; maxy := 0;
+  maxx := 0;
+  maxy := 0;
   while i < Pages.Count do
   begin
-    j := 0; maxdy := 0; curx := 10;
+    j := 0;
+    maxdy := 0;
+    curx := 10;
     while (j < nx) and (i + j < Pages.Count) do
     begin
       dwx := Round(Pages[i + j].PrnInfo.Pgw * per);
@@ -714,32 +752,34 @@ begin
       if (nx = 1) and (dwx < PBox.Width) then
       begin
         d := (PBox.Width - dwx) div 2;
-        Pages[i + j].r := Rect(d, y, d + dwx, y + dwy);
+        Pages[i + j].r := Rect(d, Y, d + dwx, Y + dwy);
       end
       else
-        Pages[i + j].r := Rect(curx, y, curx + dwx, y + dwy);
+        Pages[i + j].r := Rect(curx, Y, curx + dwx, Y + dwy);
       if maxx < Pages[i + j].r.Right then
         maxx := Pages[i + j].r.Right;
       if maxy < Pages[i + j].r.Bottom then
         maxy := Pages[i + j].r.Bottom;
       Inc(j);
-      if maxdy < dwy then maxdy := dwy;
+      if maxdy < dwy then
+        maxdy := dwy;
       Inc(curx, dwx + 10);
     end;
-    Inc(y, maxdy + 10);
+    Inc(Y, maxdy + 10);
     Inc(i, nx);
   end;
-  PgDown.Top := RPanel.Height - 16;
-  PgUp.Top := PgDown.Top - 16;
-  VScrollBar.Height := PgUp.Top - 1;
-  if RPanel.Visible then
-    HScrollBar.Width := BPanel.Width - HScrollBar.Left - VScrollBar.Width else
-    HScrollBar.Width := BPanel.Width - HScrollBar.Left;
   maxx := maxx - PBox.Width;
   maxy := maxy - PBox.Height;
-  if maxx < 0 then maxx := 0 else Inc(maxx, 10);
-  if maxy < 0 then maxy := 0 else Inc(maxy, 10);
-  HScrollBar.Max := maxx; VScrollBar.Max := maxy;
+  if maxx < 0 then
+    maxx := 0
+  else
+    Inc(maxx, 10);
+  if maxy < 0 then
+    maxy := 0
+  else
+    Inc(maxy, 10);
+  HScrollBar.Max := maxx;
+  VScrollBar.Max := maxy;
   HScrollBar.Enabled := maxx <> 0;
   VScrollBar.Enabled := maxy <> 0;
   SetToCurPage;
@@ -748,16 +788,17 @@ end;
 
 procedure TfrPreviewForm.SetToCurPage;
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   if ofy <> TfrEMFPages(EMFPages)[CurPage - 1].r.Top - 10 then
     VScrollBar.Position := TfrEMFPages(EMFPages)[CurPage - 1].r.Top - 10;
 end;
 
 procedure TfrPreviewForm.ShowPageNum;
 begin
-  if EMFPages = nil then Exit;
-  Label1.Caption := LoadStr(SPg) + ' ' + IntToStr(CurPage) + '/' +
-    IntToStr(TfrEMFPages(EMFPages).Count);
+  if EMFPages = nil then
+    Exit;
+  Label1.Caption := LoadStr(SPg) + ' ' + IntToStr(CurPage) + '/' + IntToStr(TfrEMFPages(EMFPages).Count);
 end;
 
 procedure TfrPreviewForm.VScrollBarChange(Sender: TObject);
@@ -766,18 +807,18 @@ var
   r: TRect;
   Pages: TfrEMFPages;
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   Pages := TfrEMFPages(EMFPages);
   p := VScrollBar.Position;
   pp := OldV - p;
   OldV := p;
-  ofy := -p;
+  ofy := - p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
   ScrollWindow(PBox.Handle, 0, pp, @r, @r);
 
-  for i := 0 to Pages.Count-1 do
-    if (Pages[i].r.Top < -ofy + 11) and
-      (Pages[i].r.Bottom > -ofy + 11) then
+  for i := 0 to Pages.Count - 1 do
+    if (Pages[i].r.Top < - ofy + 11) and (Pages[i].r.Bottom > - ofy + 11) then
     begin
       CurPage := i + 1;
       ShowPageNum;
@@ -790,93 +831,122 @@ var
   p, pp: Integer;
   r: TRect;
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   p := HScrollBar.Position;
   pp := OldH - p;
   OldH := p;
-  ofx := -p;
+  ofx := - p;
   r := Rect(0, 0, PBox.Width, PBox.Height);
   ScrollWindow(PBox.Handle, pp, 0, @r, @r);
 end;
 
-procedure TfrPreviewForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TfrPreviewForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   if Key in [vk_Up, vk_Down, vk_Prior, vk_Next] then
-    if VScrollBar.Enabled then VScrollBar.SetFocus;
+    if VScrollBar.Enabled then
+      VScrollBar.SetFocus;
   if Key in [vk_Left, vk_Right] then
-    if HScrollBar.Enabled then HScrollBar.SetFocus;
+    if HScrollBar.Enabled then
+      HScrollBar.SetFocus;
   if Key = vk_Up then
     VScrollBar.Position := VScrollBar.Position - VScrollBar.SmallChange
-  else if Key = vk_Down then
-    VScrollBar.Position := VScrollBar.Position + VScrollBar.SmallChange
-  else if Key = vk_Left then
-    HScrollBar.Position := HScrollBar.Position - HScrollBar.SmallChange
-  else if Key = vk_Right then
-    HScrollBar.Position := HScrollBar.Position + HScrollBar.SmallChange
-  else if Key = vk_Prior then
-    if ssCtrl in Shift then
-      PgUpClick(nil) else
-      VScrollBar.Position := VScrollBar.Position - VScrollBar.LargeChange
-  else if Key = vk_Next then
-    if ssCtrl in Shift then
-      PgDownClick(nil) else
-      VScrollBar.Position := VScrollBar.Position + VScrollBar.LargeChange
-  else if Key = vk_Space then
-    ZoomBtnClick(nil)
-  else if Key = vk_Escape then
-    ExitBtnClick(nil)
-  else if Key = vk_Home then
-    if ssCtrl in Shift then
-      VScrollBar.Position := 0 else
-      Exit
-  else if Key = vk_End then
-    if ssCtrl in Shift then
-    begin
-      CurPage := TfrEMFPages(EMFPages).Count;
-      SetToCurPage;
-    end
-    else Exit
-  else if ssCtrl in Shift then
-  begin
-    if Chr(Key) = 'O' then LoadBtnClick(nil)
-    else if Chr(Key) = 'S' then SaveBtnClick(nil)
-    else if (Chr(Key) = 'P') and PrintBtn.Enabled then PrintBtnClick(nil)
-    else if Chr(Key) = 'F' then FindBtnClick(nil)
-    else if (Chr(Key) = 'E') and N5.Visible then EditBtnClick(nil)
-  end
-  else if Key = vk_F3 then
-  begin
-    if FindStr <> '' then
-    begin
-      if LastFoundPage <> CurPage - 1 then
-      begin
-        LastFoundPage := CurPage - 1;
-        LastFoundObject := 0;
-      end;
-      FindText;
-    end;
-  end
-  else if (Key = vk_Delete) and N5.Visible then
-    DelPageBtnClick(nil)
-  else if (Key = vk_Insert) and N5.Visible then
-    NewPageBtnClick(nil)
-  else Exit;
+  else
+    if Key = vk_Down then
+      VScrollBar.Position := VScrollBar.Position + VScrollBar.SmallChange
+    else
+      if Key = vk_Left then
+        HScrollBar.Position := HScrollBar.Position - HScrollBar.SmallChange
+      else
+        if Key = vk_Right then
+          HScrollBar.Position := HScrollBar.Position + HScrollBar.SmallChange
+        else
+          if Key = vk_Prior then
+            if ssCtrl in Shift then
+              PgUpClick(nil)
+            else
+              VScrollBar.Position := VScrollBar.Position - VScrollBar.LargeChange
+          else
+            if Key = vk_Next then
+              if ssCtrl in Shift then
+                PgDownClick(nil)
+              else
+                VScrollBar.Position := VScrollBar.Position + VScrollBar.LargeChange
+            else
+              if Key = vk_Space then
+                ZoomBtnClick(nil)
+              else
+                if Key = vk_Escape then
+                  ExitBtnClick(nil)
+                else
+                  if Key = vk_Home then
+                    if ssCtrl in Shift then
+                      VScrollBar.Position := 0
+                    else
+                      Exit
+                  else
+                    if Key = vk_End then
+                      if ssCtrl in Shift then
+                      begin
+                        CurPage := TfrEMFPages(EMFPages).Count;
+                        SetToCurPage;
+                      end
+                      else
+                        Exit
+                    else
+                      if ssCtrl in Shift then
+                      begin
+                        if Chr(Key) = 'O' then
+                          LoadBtnClick(nil)
+                        else
+                          if Chr(Key) = 'S' then
+                            SaveBtnClick(nil)
+                          else
+                            if (Chr(Key) = 'P') and PrintBtn.Enabled then
+                              PrintBtnClick(nil)
+                            else
+                              if Chr(Key) = 'F' then
+                                FindBtnClick(nil)
+                              else
+                                if (Chr(Key) = 'E') and N5.Visible then
+                                  EditBtnClick(nil)
+                      end else if Key = vk_F3 then
+                      begin
+                        if FindStr <> '' then
+                        begin
+                          if LastFoundPage <> CurPage - 1 then
+                          begin
+                            LastFoundPage := CurPage - 1;
+                            LastFoundObject := 0;
+                          end;
+                          FindText;
+                        end;
+                      end else if (Key = vk_Delete) and N5.Visible then
+                        DelPageBtnClick(nil)
+                      else
+                        if (Key = vk_Insert) and N5.Visible then
+                          NewPageBtnClick(nil)
+                        else
+                          Exit;
   Key := 0;
 end;
 
 procedure TfrPreviewForm.PgUpClick(Sender: TObject);
 begin
-  if CurPage > 1 then Dec(CurPage);
+  if CurPage > 1 then
+    Dec(CurPage);
   ShowPageNum;
   SetToCurPage;
 end;
 
 procedure TfrPreviewForm.PgDownClick(Sender: TObject);
 begin
-  if EMFPages = nil then Exit;
-  if CurPage < TfrEMFPages(EMFPages).Count then Inc(CurPage);
+  if EMFPages = nil then
+    Exit;
+  if CurPage < TfrEMFPages(EMFPages).Count then
+    Inc(CurPage);
   ShowPageNum;
   SetToCurPage;
 end;
@@ -890,24 +960,28 @@ begin
   N5.Visible := False;
   N6.Visible := False;
   N7.Visible := False;
-  ProcMenu.Popup(pt.x + 4, pt.y + 6);
+  ProcMenu.Popup(pt.X + 4, pt.Y + 6);
 end;
 
 procedure TfrPreviewForm.N3Click(Sender: TObject);
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   ofx := 0;
   with Sender as TMenuItem do
   begin
     case Tag of
-      1: mode := mdPageWidth;
-      2: mode := mdOnePage;
-      3: mode := mdTwoPages;
-    else
-      begin
-        mode := mdNone;
-        per := Tag / 100;
-      end;
+      1:
+        mode := mdPageWidth;
+      2:
+        mode := mdOnePage;
+      3:
+        mode := mdTwoPages;
+      else
+        begin
+          mode := mdNone;
+          per := Tag / 100;
+        end;
     end;
     Checked := True;
   end;
@@ -920,11 +994,12 @@ end;
 
 procedure TfrPreviewForm.LoadBtnClick(Sender: TObject);
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   OpenDialog.Filter := LoadStr(SRepFile) + ' (*.frp)|*.frp';
   with OpenDialog do
-   if Execute then
-     LoadFromFile(FileName);
+    if Execute then
+      LoadFromFile(FileName);
 end;
 
 procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
@@ -932,9 +1007,10 @@ var
   i: Integer;
   s: String;
 begin
-  if EMFPages = nil then Exit;
+  if EMFPages = nil then
+    Exit;
   s := LoadStr(SRepFile) + ' (*.frp)|*.frp';
-  for i := 0 to frFiltersCount-1 do
+  for i := 0 to frFiltersCount - 1 do
     s := s + '|' + frFilters[i].FilterDesc + '|' + frFilters[i].FilterExt;
   with SaveDialog do
   begin
@@ -951,6 +1027,7 @@ begin
         Connect(Doc);
       end;
   end;
+  Invalidate;
 end;
 
 procedure TfrPreviewForm.PrintBtnClick(Sender: TObject);
@@ -958,7 +1035,8 @@ var
   Pages: String;
   ind: Integer;
 begin
-  if (EMFPages = nil) or (Printer.Printers.Count = 0) then Exit;
+  if (EMFPages = nil) or (Printer.Printers.Count = 0) then
+    Exit;
   ind := Printer.PrinterIndex;
   frPrintForm := TfrPrintForm.Create(nil);
   with frPrintForm do
@@ -978,10 +1056,11 @@ begin
             Exit;
       if RB1.Checked then
         Pages := ''
-      else if RB2.Checked then
-        Pages := IntToStr(CurPage)
       else
-        Pages := E2.Text;
+        if RB2.Checked then
+          Pages := IntToStr(CurPage)
+        else
+          Pages := E2.Text;
       ConnectBack;
       TfrReport(Doc).PrintPreparedReport(Pages, StrToInt(E1.Text));
       Connect(Doc);
@@ -993,15 +1072,18 @@ end;
 
 procedure TfrPreviewForm.ExitBtnClick(Sender: TObject);
 begin
-  if Doc = nil then Exit;
+  if Doc = nil then
+    Exit;
   if TfrReport(Doc).ModalPreview then
-    ModalResult := mrOk else
+    ModalResult := mrOk
+  else
     Close;
 end;
 
 procedure TfrPreviewForm.LoadFromFile(name: String);
 begin
-  if Doc = nil then Exit;
+  if Doc = nil then
+    Exit;
   TfrEMFPages(EMFPages).Free;
   EMFPages := nil;
   TfrReport(Doc).LoadPreparedReport(name);
@@ -1015,18 +1097,18 @@ begin
   PBox.Repaint;
 end;
 
-procedure TfrPreviewForm.SaveToFile(name:String);
+procedure TfrPreviewForm.SaveToFile(name: String);
 begin
-  if Doc = nil then Exit;
+  if Doc = nil then
+    Exit;
   name := ChangeFileExt(name, '.frp');
   ConnectBack;
   TfrReport(Doc).SavePreparedReport(name);
   Connect(Doc);
 end;
 
-
-function EnumEMFRecordsProc(DC: HDC; HandleTable: PHandleTable;
-  EMFRecord: PEnhMetaRecord; nObj: Integer; OptData: Pointer): Bool; stdcall;
+function EnumEMFRecordsProc(DC: HDC; HandleTable: PHandleTable; EMFRecord: PEnhMetaRecord; nObj: Integer;
+  OptData: Pointer): Bool; stdcall;
 var
   Typ: Byte;
   s: String;
@@ -1037,9 +1119,9 @@ begin
   if Typ in [83, 84] then
   begin
     t := PEMRExtTextOut(EMFRecord)^;
-    s := WideCharLenToString(PWideChar(PChar(EMFRecord) + t.EMRText.offString),
-      t.EMRText.nChars);
-    if not CurPreview.CaseSensitive then s := AnsiUpperCase(s);
+    s := WideCharLenToString(PWideChar(PChar(EMFRecord) + t.EMRText.offString), t.EMRText.nChars);
+    if not CurPreview.CaseSensitive then
+      s := AnsiUpperCase(s);
     CurPreview.StrFound := Pos(CurPreview.FindStr, s) <> 0;
     if CurPreview.StrFound and (RecordNum >= CurPreview.LastFoundObject) then
     begin
@@ -1059,7 +1141,7 @@ end;
 
 procedure TfrPreviewForm.FindText;
 var
-  EMF: TMetafile;
+  emf: TMetafile;
   EMFCanvas: TMetafileCanvas;
   PageInfo: PfrPageInfo;
 begin
@@ -1068,17 +1150,16 @@ begin
   while LastFoundPage < TfrEMFPages(EMFPages).Count do
   begin
     PageInfo := TfrEMFPages(EMFPages)[LastFoundPage];
-    EMF := TMetafile.Create;
-    EMF.Width := PageInfo.PrnInfo.PgW;
-    EMF.Height := PageInfo.PrnInfo.PgH;
-    EMFCanvas := TMetafileCanvas.Create(EMF, 0);
+    emf := TMetafile.Create;
+    emf.Width := PageInfo.PrnInfo.Pgw;
+    emf.Height := PageInfo.PrnInfo.Pgh;
+    EMFCanvas := TMetafileCanvas.Create(emf, 0);
     PageInfo.Visible := True;
-    TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas,
-      Rect(0, 0, PageInfo.PrnInfo.PgW, PageInfo.PrnInfo.PgH));
+    TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas, Rect(0, 0, PageInfo.PrnInfo.Pgw, PageInfo.PrnInfo.Pgh));
     EMFCanvas.Free;
 
-    FindInEMF(EMF);
-    EMF.Free;
+    FindInEMF(emf);
+    emf.Free;
     if StrFound then
     begin
       CurPage := LastFoundPage + 1;
@@ -1087,12 +1168,9 @@ begin
       HScrollBar.Position := PageInfo.r.Left + Round(StrBounds.Left * per) - 10;
       LastFoundObject := RecordNum;
       break;
-    end
-    else
-    begin
+    end else begin
       PageInfo.Visible := False;
-      TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas,
-        Rect(0, 0, PageInfo.PrnInfo.PgW, PageInfo.PrnInfo.PgH));
+      TfrEMFPages(EMFPages).Draw(LastFoundPage, EMFCanvas, Rect(0, 0, PageInfo.PrnInfo.Pgw, PageInfo.PrnInfo.Pgh));
     end;
     LastFoundObject := 0;
     Inc(LastFoundPage);
@@ -1104,32 +1182,34 @@ procedure TfrPreviewForm.FindBtnClick(Sender: TObject);
 var
   p: TfrPreviewSearchForm;
 begin
-  if Doc = nil then Exit;
+  if Doc = nil then
+    Exit;
   p := TfrPreviewSearchForm.Create(nil);
   with p do
-  if ShowModal = mrOk then
-  begin
-    FindStr := Edit1.Text;
-    CaseSensitive := CB1.Checked;
-    if not CaseSensitive then FindStr := AnsiUpperCase(FindStr);
-    if RB1.Checked then
+    if ShowModal = mrOk then
     begin
-      LastFoundPage := 0;
-      LastFoundObject := 0;
-    end
-    else if LastFoundPage <> CurPage - 1 then
-    begin
-      LastFoundPage := CurPage - 1;
-      LastFoundObject := 0;
+      FindStr := Edit1.Text;
+      CaseSensitive := CB1.Checked;
+      if not CaseSensitive then
+        FindStr := AnsiUpperCase(FindStr);
+      if RB1.Checked then
+      begin
+        LastFoundPage := 0;
+        LastFoundObject := 0;
+      end else if LastFoundPage <> CurPage - 1 then
+      begin
+        LastFoundPage := CurPage - 1;
+        LastFoundObject := 0;
+      end;
+      Free;
+      FindText;
     end;
-    Free;
-    FindText;
-  end;
 end;
 
 procedure TfrPreviewForm.EditBtnClick(Sender: TObject);
 begin
-  if (Doc = nil) or not TfrReport(Doc).ModifyPrepared then Exit;
+  if (Doc = nil) or not TfrReport(Doc).ModifyPrepared then
+    Exit;
   ConnectBack;
   TfrReport(Doc).EditPreparedReport(CurPage - 1);
   Connect(Doc);
@@ -1138,10 +1218,10 @@ end;
 
 procedure TfrPreviewForm.DelPageBtnClick(Sender: TObject);
 begin
-  if Doc = nil then Exit;
+  if Doc = nil then
+    Exit;
   if TfrEMFPages(EMFPages).Count > 1 then
-    if MessageBox(0, PChar(LoadStr(SRemovePg)), PChar(LoadStr(SConfirm)),
-      mb_YesNo + mb_IconQuestion) = mrYes then
+    if MessageBox(0, PChar(LoadStr(SRemovePg)), PChar(LoadStr(SConfirm)), mb_YesNo + mb_IconQuestion) = mrYes then
     begin
       TfrEMFPages(EMFPages).Delete(CurPage - 1);
       RedrawAll;
@@ -1150,7 +1230,8 @@ end;
 
 procedure TfrPreviewForm.NewPageBtnClick(Sender: TObject);
 begin
-  if Doc = nil then Exit;
+  if Doc = nil then
+    Exit;
   TfrEMFPages(EMFPages).Insert(CurPage - 1, TfrReport(Doc).Pages[0]);
   RedrawAll;
 end;
@@ -1167,8 +1248,7 @@ begin
   HelpBtn.Invalidate;
 end;
 
-procedure TfrPreviewForm.FormMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TfrPreviewForm.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   c: TControl;
 begin
@@ -1179,14 +1259,13 @@ begin
     Application.HelpCommand(HELP_CONTEXTPOPUP, c.Tag);
 end;
 
-procedure TfrPreviewForm.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
+procedure TfrPreviewForm.FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint;
+  var Handled: boolean);
 begin
   VScrollBar.Position := VScrollBar.Position + VScrollBar.SmallChange * KWheel;
 end;
 
-procedure TfrPreviewForm.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
-  MousePos: TPoint; var Handled: Boolean);
+procedure TfrPreviewForm.FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: boolean);
 begin
   VScrollBar.Position := VScrollBar.Position - VScrollBar.SmallChange * KWheel;
 end;
@@ -1197,32 +1276,33 @@ var
   pt: TPoint;
   r: TRect;
 begin
-  if Preview.EMFPages = nil then Exit;
+  if Preview.EMFPages = nil then
+    Exit;
   if Down then
   begin
     Preview.HScrollBar.Position := Preview.HScrollBar.Position - (X - LastX);
     Preview.VScrollBar.Position := Preview.VScrollBar.Position - (Y - LastY);
-    LastX := X; LastY := Y;
+    LastX := X;
+    LastY := Y;
   end
   else
-  with Preview do
-  if (Doc <> nil) {and Assigned(TfrReport(Doc).OnMouseOverObject }then
-  begin
-    pt := Point(x - ofx, y - ofy);
-    for i := 0 to TfrEMFPages(EMFPages).Count - 1 do
-    begin
-      r := TfrEMFPages(EMFPages)[i].r;
-      if PtInRect(r, pt) then
+    with Preview do
+      if (Doc <> nil) { and Assigned(TfrReport(Doc).OnMouseOverObject } then
       begin
-        pt := Point(Round((pt.X - r.Left) / per), Round((pt.Y - r.Top) / per));
-        break;
+        pt := Point(X - ofx, Y - ofy);
+        for i := 0 to TfrEMFPages(EMFPages).Count - 1 do
+        begin
+          r := TfrEMFPages(EMFPages)[i].r;
+          if PtInRect(r, pt) then
+          begin
+            pt := Point(Round((pt.X - r.Left) / per), Round((pt.Y - r.Top) / per));
+            break;
+          end;
+        end;
       end;
-    end;
-  end;
 end;
 
-procedure TfrPBox.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TfrPBox.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   Down := False;
 end;
@@ -1243,4 +1323,3 @@ begin
 end;
 
 end.
-

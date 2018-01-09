@@ -109,7 +109,7 @@ begin
       if p^.FontStyle <> 0 then
         s2 := GetHTMLFontStyle(p^.FontStyle);
       if s1 <> '' then s1 := '<Font ' + s1 + '>';
-      s := s + '<td>' + s1 + s2 + p^.Text + '</td>';
+      s := s + '<td>' + s1 + s2 + String(p^.Text) + '</td>';
       p := p^.Next;
     end;
     s := s + '</tr>'#13#10;

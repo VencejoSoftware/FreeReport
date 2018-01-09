@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{             Report Designer             }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ Report Designer }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_Desgn;
 
@@ -15,16 +11,15 @@ interface
 {$I FR.inc}
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, ExtCtrls, Printers, ComCtrls,
-  Menus {$IFDEF Delphi4}, ImgList {$ENDIF}, FR_Class, FR_Color,
-  FR_Ctrls, FR_Dock, FR_Insp
+  Windows, Types, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Buttons, ExtCtrls, Printers,
+  ComCtrls, UITypes,
+  Menus, ImgList, ImageList, Dialogs,
+  FR_Class, FR_Color, FR_Ctrls, FR_Dock, FR_Insp
 {$IFDEF SYNTMEMO}
-,  FR_SntxE
+    , FR_SntxE
 {$ELSE}
-,  FR_Edit
+    , FR_Edit
 {$ENDIF};
-
 
 const
   MaxUndoBuffer = 100;
@@ -32,7 +27,8 @@ const
 
 type
   TfrDesignerForm = class;
-  TfrDesigner = class(TComponent)  // fake component
+
+  TfrDesigner = class(TComponent)// fake component
   private
     FTemplDir: String;
   public
@@ -48,6 +44,7 @@ type
 
   TfrUndoAction = (acInsert, acDelete, acEdit, acZOrder);
   PfrUndoObj = ^TfrUndoObj;
+
   TfrUndoObj = record
     Next: PfrUndoObj;
     ObjID: Integer;
@@ -62,19 +59,21 @@ type
   end;
 
   PfrUndoRec1 = ^TfrUndoRec1;
+
   TfrUndoRec1 = record
     ObjPtr: TfrView;
     Int: Integer;
   end;
 
   PfrUndoBuffer = ^TfrUndoBuffer;
-  TfrUndoBuffer = Array[0..MaxUndoBuffer - 1] of TfrUndoRec;
+  TfrUndoBuffer = Array [0 .. MaxUndoBuffer - 1] of TfrUndoRec;
 
   TfrMenuItemInfo = class(TObject)
   private
     MenuItem: TMenuItem;
     Btn: TfrSpeedButton;
   end;
+
   TfrDesignerDrawMode = (dmAll, dmSelection, dmShape);
 
   TfrSplitInfo = record
@@ -85,13 +84,13 @@ type
 
   TfrDesignerPage = class(TPanel)
   private
-    Down,                          // mouse button was pressed
-    Moved,                         // mouse was moved (with pressed btn)
-    DFlag,                         // was double click
-    RFlag: Boolean;                // selecting objects by framing
-    Mode: (mdInsert, mdSelect);    // current mode
-    CT: (ctNone, ct1, ct2, ct3, ct4, ct5, ct6, ct7, ct8);  // cursor type
-    LastX, LastY: Integer;         // here stored last mouse coords
+    Down,                                                 // mouse button was pressed
+    Moved,                                                // mouse was moved (with pressed btn)
+    DFlag,                                                // was double click
+    RFlag: Boolean;                                       // selecting objects by framing
+    Mode: (mdInsert, mdSelect);                           // current mode
+    CT: (ctNone, ct1, ct2, ct3, ct4, ct5, ct6, ct7, ct8); // cursor type
+    LastX, LastY: Integer;                                // here stored last mouse coords
     SplitInfo: TfrSplitInfo;
     RightBottom: Integer;
     LeftTop: TPoint;
@@ -108,9 +107,9 @@ type
     procedure DrawHSplitter(Rect: TRect);
     procedure DrawSelection(t: TfrView);
     procedure DrawShape(t: TfrView);
-    procedure MDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure MUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure MMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure MDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
+    procedure MUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
+    procedure MMove(Sender: TObject; Shift: TShiftState; x, y: Integer);
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure DClick(Sender: TObject);
   protected
@@ -293,7 +292,7 @@ type
     wwwfastreportcom1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;  Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure DoClick(Sender: TObject);
     procedure ClB1Click(Sender: TObject);
     procedure GB1Click(Sender: TObject);
@@ -301,8 +300,7 @@ type
     procedure ZB2Click(Sender: TObject);
     procedure PgB1Click(Sender: TObject);
     procedure PgB2Click(Sender: TObject);
-    procedure OB2MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure OB2MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
     procedure OB1Click(Sender: TObject);
     procedure CutBClick(Sender: TObject);
     procedure CopyBClick(Sender: TObject);
@@ -320,8 +318,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure N8Click(Sender: TObject);
-    procedure C2DrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState);
+    procedure C2DrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
     procedure HlB1Click(Sender: TObject);
     procedure FileBtn4Click(Sender: TObject);
     procedure N42Click(Sender: TObject);
@@ -350,11 +347,9 @@ type
     procedure SB1Click(Sender: TObject);
     procedure SB2Click(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
     procedure N22Click(Sender: TObject);
-    procedure Tab1MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure Tab1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
     procedure frSpeedButton1Click(Sender: TObject);
     procedure StB1Click(Sender: TObject);
     procedure wwwfastreportcom1Click(Sender: TObject);
@@ -376,7 +371,7 @@ type
     FUndoBufferLength, FRedoBufferLength: Integer;
     FirstTime: Boolean;
     MaxItemWidth, MaxShortCutWidth: Integer;
-    fld: Array[0..6] of String[100];
+    fld: Array [0 .. 6] of String[100];
     FirstInstance: Boolean;
     EditAfterInsert: Boolean;
     FCurDocName, FCaption: String;
@@ -398,7 +393,7 @@ type
     procedure ResetSelection;
     procedure DeleteObjects;
     procedure AddPage;
-    procedure RemovePage(n: Integer);
+    procedure RemovePage(N: Integer);
     procedure SetPageTitles;
     procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
     procedure FillInspFields;
@@ -425,15 +420,12 @@ type
     procedure ReleaseAction(ActionRec: TfrUndoRec);
     procedure AddAction(Buffer: PfrUndoBuffer; a: TfrUndoAction; List: TList);
     procedure AddUndoAction(a: TfrUndoAction);
-    procedure DoDrawText(Canvas: TCanvas; Caption: string;
-      Rect: TRect; Selected, Enabled: Boolean; Flags: Longint);
-    procedure MeasureItem(AMenuItem: TMenuItem; ACanvas: TCanvas;
-      var AWidth, AHeight: Integer);
-    procedure DrawItem(AMenuItem: TMenuItem; ACanvas: TCanvas;
-      ARect: TRect; Selected: Boolean);
+    procedure DoDrawText(Canvas: TCanvas; Caption: String; Rect: TRect; Selected, Enabled: Boolean; Flags: Longint);
+    procedure MeasureItem(AMenuItem: TMenuItem; ACanvas: TCanvas; var AWidth, AHeight: Integer);
+    procedure DrawItem(AMenuItem: TMenuItem; ACanvas: TCanvas; ARect: TRect; Selected: Boolean);
     procedure InsFieldsClick(Sender: TObject);
     function FindMenuItem(AMenuItem: TMenuItem): TfrMenuItemInfo;
-    procedure SetMenuItemBitmap(AMenuItem: TMenuItem; ABtn:TfrSpeedButton);
+    procedure SetMenuItemBitmap(AMenuItem: TMenuItem; ABtn: TfrSpeedButton);
     procedure FillMenuItems(MenuItem: TMenuItem);
     procedure DeleteMenuItems(MenuItem: TMenuItem);
     procedure OnActivateApp(Sender: TObject);
@@ -443,10 +435,8 @@ type
   public
     { Public declarations }
     procedure WndProc(var Message: TMessage); override;
-    procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String;
-      ButtonTag: Integer); override;
-    procedure RegisterTool(MenuCaption: String; ButtonBmp: TBitmap;
-      OnClick: TNotifyEvent); override;
+    procedure RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String; ButtonTag: Integer); override;
+    procedure RegisterTool(MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent); override;
     procedure BeforeChange; override;
     procedure AfterChange; override;
     procedure ShowMemoEditor;
@@ -464,12 +454,11 @@ type
     property GrayedButtons: Boolean read FGrayedButtons write SetGrayedButtons;
   end;
 
-procedure frSetGlyph(Color: TColor; sb: TfrSpeedButton; n: Integer);
+procedure frSetGlyph(Color: TColor; sb: TfrSpeedButton; N: Integer);
 function frCheckBand(b: TfrBandType): Boolean;
 
 var
   frTemplateDir: String;
-
 
 implementation
 
@@ -484,7 +473,7 @@ uses
   FR_BTyp, FR_Utils, FR_GrpEd, FR_About, FR_IFlds, FR_Pars, FR_DBRel,
   FR_DBSet, Registry
 {$IFNDEF IBO}
-  , DB
+    , DB
 {$ENDIF};
 
 type
@@ -501,12 +490,12 @@ function TopSelected: Integer; forward;
 var
   FirstInst: Boolean = True;
   FirstSelected: TfrView;
-  SelNum: Integer;               // number of objects currently selected
-  MRFlag,                        // several objects was selected
-  ObjRepeat,                     // was pressed Shift + Insert Object
-  WasOk: Boolean;                // was Ok pressed in dialog
-  OldRect, OldRect1: TRect;      // object rect after mouse was clicked
-  Busy: Boolean;                 // busy flag. need!
+  SelNum: Integer;          // number of objects currently selected
+  MRFlag,                   // several objects was selected
+  ObjRepeat,                // was pressed Shift + Insert Object
+  WasOk: Boolean;           // was Ok pressed in dialog
+  OldRect, OldRect1: TRect; // object rect after mouse was clicked
+  Busy: Boolean;            // busy flag. need!
   ShowSizes: Boolean;
   LastFontName: String;
   LastFontSize, LastAdjust: Integer;
@@ -516,27 +505,25 @@ var
   ClrButton: TfrSpeedButton;
   FirstChange: Boolean;
   ClipRgn: HRGN;
-
 // globals
-  ClipBd: TList;                 // clipboard
-  GridBitmap: TBitmap;           // for drawing grid in design time
+  ClipBd: TList;       // clipboard
+  GridBitmap: TBitmap; // for drawing grid in design time
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 procedure TfrDesigner.Loaded;
 begin
   inherited Loaded;
   frTemplateDir := TemplateDir;
 end;
 
-{--------------------------------------------------}
+{ -------------------------------------------------- }
 constructor TfrDesignerPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Parent := AOwner as TWinControl;
   BevelInner := bvNone;
   BevelOuter := bvNone;
-  Color  := clWhite;
+  Color := clWhite;
   BorderStyle := bsNone;
   OnMouseDown := MDown;
   OnMouseUp := MUp;
@@ -546,23 +533,27 @@ end;
 
 procedure TfrDesignerPage.Init;
 begin
-  Down := False; DFlag := False; RFlag := False;
-  Cursor := crDefault; CT := ctNone;
+  Down := False;
+  DFlag := False;
+  RFlag := False;
+  Cursor := crDefault;
+  CT := ctNone;
 end;
 
 procedure TfrDesignerPage.SetPage;
 var
-  Pgw,Pgh: Integer;
+  Pgw, Pgh: Integer;
 begin
   if Assigned(FDesigner.Page) then
   begin
-  Pgw := FDesigner.Page.PrnInfo.Pgw;
-  Pgh := FDesigner.Page.PrnInfo.Pgh;
-  if Pgw > Parent.Width then
-    SetBounds(10, 10, Pgw, Pgh) else
-    SetBounds((Parent.Width - Pgw) div 2, 10, Pgw, Pgh);
-  FDesigner.BPanel.Top := Top + Height + 10;
-  FDesigner.RPanel.Left := Left + Width + 10;
+    Pgw := FDesigner.Page.PrnInfo.Pgw;
+    Pgh := FDesigner.Page.PrnInfo.Pgh;
+    if Pgw > Parent.Width then
+      SetBounds(10, 10, Pgw, Pgh)
+    else
+      SetBounds((Parent.Width - Pgw) div 2, 10, Pgw, Pgh);
+    FDesigner.BPanel.Top := Top + Height + 10;
+    FDesigner.RPanel.Left := Left + Width + 10;
   end;
 end;
 
@@ -575,12 +566,12 @@ procedure TfrDesignerPage.NormalizeCoord(t: TfrView);
 begin
   if t.dx < 0 then
   begin
-    t.dx := -t.dx;
+    t.dx := - t.dx;
     t.x := t.x - t.dx;
   end;
   if t.dy < 0 then
   begin
-    t.dy := -t.dy;
+    t.dy := - t.dy;
     t.y := t.y - t.dy;
   end;
 end;
@@ -591,8 +582,18 @@ var
 begin
   with r do
   begin
-    if Left > Right then begin i := Left; Left := Right; Right := i end;
-    if Top > Bottom then begin i := Top; Top := Bottom; Bottom := i end;
+    if Left > Right then
+    begin
+      i := Left;
+      Left := Right;
+      Right := i
+    end;
+    if Top > Bottom then
+    begin
+      i := Top;
+      Top := Bottom;
+      Bottom := i
+    end;
   end;
 end;
 
@@ -621,9 +622,7 @@ begin
       begin
         MoveTo(Left, Top);
         LineTo(Right, Top);
-      end
-      else
-      begin
+      end else begin
         MoveTo(Left, Top);
         LineTo(Left, Bottom);
       end;
@@ -643,7 +642,8 @@ begin
     if (Rect.Right = Rect.Left + 1) or (Rect.Bottom = Rect.Top + 1) then
     begin
       if Rect.Right = Rect.Left + 1 then
-        Dec(Rect.Right, 1) else
+        Dec(Rect.Right, 1)
+      else
         Dec(Rect.Bottom, 1);
       MoveTo(Rect.Left, Rect.Top);
       LineTo(Rect.Right, Rect.Bottom);
@@ -663,42 +663,46 @@ var
     Canvas.MoveTo(x, y);
     Canvas.LineTo(x, y);
   end;
+
 begin
   if t.Selected then
-  with t, Canvas do
-  begin
-    Pen.Width := 5;
-    Pen.Mode := pmXor;
-    Pen.Color := clWhite;
-    px := x + dx div 2;
-    py := y + dy div 2;
-    DrawPoint(x, y); DrawPoint(x + dx, y);
-    DrawPoint(x, y + dy);
-    if Objects.IndexOf(t) = RightBottom then
-      Pen.Color := clTeal;
-    DrawPoint(x + dx, y + dy);
-    Pen.Color := clWhite;
-    if SelNum = 1 then
+    with t, Canvas do
     begin
-      DrawPoint(px, y); DrawPoint(px, y + dy);
-      DrawPoint(x, py); DrawPoint(x + dx, py);
+      Pen.Width := 5;
+      Pen.Mode := pmXor;
+      Pen.Color := clWhite;
+      px := x + dx div 2;
+      py := y + dy div 2;
+      DrawPoint(x, y);
+      DrawPoint(x + dx, y);
+      DrawPoint(x, y + dy);
+      if Objects.IndexOf(t) = RightBottom then
+        Pen.Color := clTeal;
+      DrawPoint(x + dx, y + dy);
+      Pen.Color := clWhite;
+      if SelNum = 1 then
+      begin
+        DrawPoint(px, y);
+        DrawPoint(px, y + dy);
+        DrawPoint(x, py);
+        DrawPoint(x + dx, py);
+      end;
+      Pen.Mode := pmCopy;
     end;
-    Pen.Mode := pmCopy;
-  end;
 end;
 
 procedure TfrDesignerPage.DrawShape(t: TfrView);
 begin
   if t.Selected then
-  with t do
-    DrawFocusRect(Rect(x, y, x + dx + 1, y + dy + 1))
+    with t do
+      DrawFocusRect(Rect(x, y, x + dx + 1, y + dy + 1))
 end;
 
 procedure TfrDesignerPage.Draw(N: Integer; ClipRgn: HRGN);
 var
   i: Integer;
   t: TfrView;
-  R, R1: HRGN;
+  r, R1: HRGN;
   Objects: TList;
   procedure DrawBackground;
   var
@@ -721,13 +725,11 @@ var
           end;
         end;
         Brush.Bitmap := GridBitmap;
-      end
-      else
-      begin
+      end else begin
         Brush.Color := clWhite;
         Brush.Style := bsSolid;
       end;
-      FillRgn(Handle, R, Brush.Handle);
+      FillRgn(Handle, r, Brush.Handle);
       if FDesigner.ShowGrid and (FDesigner.GridSize = 18) then
       begin
         i := 0;
@@ -759,7 +761,7 @@ var
           j := LeftMargin;
           for i := 1 to ColCount do
           begin
-            Rectangle(j, -1, j + ColWidth + 1,  PrnInfo.Pgh + 1);
+            Rectangle(j, - 1, j + ColWidth + 1, PrnInfo.Pgh + 1);
             Inc(j, ColWidth + ColGap);
           end;
           Pen.Style := psSolid;
@@ -769,44 +771,46 @@ var
   end;
   function IsVisible(t: TfrView): Boolean;
   var
-    R: HRGN;
+    r: HRGN;
   begin
-    R := t.GetClipRgn(rtNormal);
-    Result := CombineRgn(R, R, ClipRgn, RGN_AND) <> NULLREGION;
-    DeleteObject(R);
+    r := t.GetClipRgn(rtNormal);
+    Result := CombineRgn(r, r, ClipRgn, RGN_AND) <> NULLREGION;
+    DeleteObject(r);
   end;
 
 begin
-  if FDesigner.Page = nil then Exit;
+  if FDesigner.Page = nil then
+    Exit;
   DocMode := dmDesigning;
   Objects := FDesigner.Page.Objects;
   if ClipRgn = 0 then
     with Canvas.ClipRect do
       ClipRgn := CreateRectRgn(Left, Top, Right, Bottom);
-  R := CreateRectRgn(0, 0, Width, Height);
+  r := CreateRectRgn(0, 0, Width, Height);
   for i := Objects.Count - 1 downto 0 do
   begin
     t := Objects[i];
     if i <= N then
       if t.Selected then
         t.Draw(Canvas)
-      else if IsVisible(t) then
-      begin
-        R1 := CreateRectRgn(0, 0, 1, 1);
-        CombineRgn(R1, ClipRgn, R, RGN_AND);
-        SelectClipRgn(Canvas.Handle, R1);
-        DeleteObject(R1);
-        t.Draw(Canvas);
-      end;
+      else
+        if IsVisible(t) then
+        begin
+          R1 := CreateRectRgn(0, 0, 1, 1);
+          CombineRgn(R1, ClipRgn, r, RGN_AND);
+          SelectClipRgn(Canvas.Handle, R1);
+          DeleteObject(R1);
+          t.Draw(Canvas);
+        end;
     R1 := t.GetClipRgn(rtNormal);
-    CombineRgn(R, R, R1, RGN_DIFF);
+    CombineRgn(r, r, R1, RGN_DIFF);
     DeleteObject(R1);
-    SelectClipRgn(Canvas.Handle, R);
+    SelectClipRgn(Canvas.Handle, r);
   end;
-  CombineRgn(R, R, ClipRgn, RGN_AND);
+  CombineRgn(r, r, ClipRgn, RGN_AND);
   DrawBackground;
 
-  DeleteObject(R);
+  DeleteObject(r);
   DeleteObject(ClipRgn);
   SelectClipRgn(Canvas.Handle, 0);
   if not Down then
@@ -818,14 +822,18 @@ var
   i: Integer;
   t: TfrView;
 begin
-  if DocMode <> dmDesigning then Exit;
+  if DocMode <> dmDesigning then
+    Exit;
   for i := 0 to Objects.Count - 1 do
   begin
     t := Objects[i];
     case DrawMode of
-      dmAll: t.Draw(Canvas);
-      dmSelection: DrawSelection(t);
-      dmShape: DrawShape(t);
+      dmAll:
+        t.Draw(Canvas);
+      dmSelection:
+        DrawSelection(t);
+      dmShape:
+        DrawShape(t);
     end;
   end;
 end;
@@ -853,6 +861,7 @@ var
       end;
     end;
   end;
+
 begin
   Result := False;
   min := FDesigner.GridSize;
@@ -860,11 +869,11 @@ begin
   for i := 0 to Objects.Count - 1 do
   begin
     t := Objects[i];
-    if DoMin([Point(t.x, t.y), Point(t.x + t.dx, t.y),
-         Point(t.x + t.dx, t.y + t.dy),  Point(t.x, t.y + t.dy)]) then
+    if DoMin([Point(t.x, t.y), Point(t.x + t.dx, t.y), Point(t.x + t.dx, t.y + t.dy), Point(t.x, t.y + t.dy)]) then
       Result := True;
   end;
-  x := p.x; y := p.y;
+  x := p.x;
+  y := p.y;
 end;
 
 procedure TfrDesignerPage.RoundCoord(var x, y: Integer);
@@ -882,13 +891,14 @@ var
   i, j, k: Integer;
   t: TfrView;
 begin
-  j := 0; k := 0;
+  j := 0;
+  k := 0;
   LeftTop := Point(10000, 10000);
-  RightBottom := -1;
+  RightBottom := - 1;
   MRFlag := False;
-  if SelNum > 1 then                  {find right-bottom element}
+  if SelNum > 1 then { find right-bottom element }
   begin
-    for i := 0 to Objects.Count-1 do
+    for i := 0 to Objects.Count - 1 do
     begin
       t := Objects[i];
       if t.Selected then
@@ -900,8 +910,10 @@ begin
           k := t.y + t.dy;
           RightBottom := i;
         end;
-        if t.x < LeftTop.x then LeftTop.x := t.x;
-        if t.y < LeftTop.y then LeftTop.y := t.y;
+        if t.x < LeftTop.x then
+          LeftTop.x := t.x;
+        if t.y < LeftTop.y then
+          LeftTop.y := t.y;
       end;
     end;
     t := Objects[RightBottom];
@@ -911,8 +923,7 @@ begin
   end;
 end;
 
-procedure TfrDesignerPage.MDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TfrDesignerPage.MDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
 var
   i: Integer;
   f, DontChange, v: Boolean;
@@ -944,24 +955,23 @@ begin
       OldRect := Rect(x, y, x, y);
       FDesigner.Unselect;
       SelNum := 0;
-      RightBottom := -1;
+      RightBottom := - 1;
       MRFlag := False;
       FirstSelected := nil;
       Exit;
-    end
-    else if Cursor = crPencil then
+    end else if Cursor = crPencil then
     begin
       with FDesigner do
-      if GridAlign then
-        if not FindNearestEdge(x, y) then
-        begin
-          x := Round(x / GridSize) * GridSize;
-          y := Round(y / GridSize) * GridSize;
-        end;
+        if GridAlign then
+          if not FindNearestEdge(x, y) then
+          begin
+            x := Round(x / GridSize) * GridSize;
+            y := Round(y / GridSize) * GridSize;
+          end;
       OldRect := Rect(x, y, x, y);
       FDesigner.Unselect;
       SelNum := 0;
-      RightBottom := -1;
+      RightBottom := - 1;
       MRFlag := False;
       FirstSelected := nil;
       LastX := x;
@@ -975,29 +985,36 @@ begin
     begin
       t := Objects[i];
       Rgn := t.GetClipRgn(rtNormal);
-      v := PtInRegion(Rgn, X, Y);
+      v := PtInRegion(Rgn, x, y);
       DeleteObject(Rgn);
       if v then
       begin
         if ssShift in Shift then
         begin
           t.Selected := not t.Selected;
-          if t.Selected then Inc(SelNum) else Dec(SelNum);
-        end
-        else
-        begin
+          if t.Selected then
+            Inc(SelNum)
+          else
+            Dec(SelNum);
+        end else begin
           if not t.Selected then
           begin
             FDesigner.Unselect;
             SelNum := 1;
             t.Selected := True;
           end
-          else DontChange := True;
+          else
+            DontChange := True;
         end;
-        if SelNum = 0 then FirstSelected := nil
-        else if SelNum = 1 then FirstSelected := t
-        else if FirstSelected <> nil then
-          if not FirstSelected.Selected then FirstSelected := nil;
+        if SelNum = 0 then
+          FirstSelected := nil
+        else
+          if SelNum = 1 then
+            FirstSelected := t
+          else
+            if FirstSelected <> nil then
+              if not FirstSelected.Selected then
+                FirstSelected := nil;
         f := True;
         break;
       end;
@@ -1015,11 +1032,12 @@ begin
       end;
     end;
     GetMultipleSelected;
-    if not DontChange then FDesigner.SelectionChanged;
+    if not DontChange then
+      FDesigner.SelectionChanged;
   end;
   if SelNum = 0 then
   begin // reset multiple selection
-    RightBottom := -1;
+    RightBottom := - 1;
     MRFlag := False;
   end;
   LastX := x;
@@ -1033,22 +1051,19 @@ begin
     Down := False;
     GetCursorPos(p);
     FDesigner.Popup1Popup(nil);
-    TrackPopupMenu(FDesigner.Popup1.Handle,
-      TPM_LEFTALIGN or TPM_RIGHTBUTTON, p.X, p.Y, 0, FDesigner.Handle, nil);
-  end
-  else if FDesigner.ShapeMode = smFrame then
+    TrackPopupMenu(FDesigner.Popup1.Handle, TPM_LEFTALIGN or TPM_RIGHTBUTTON, p.x, p.y, 0, FDesigner.Handle, nil);
+  end else if FDesigner.ShapeMode = smFrame then
     DrawPage(dmShape);
 end;
 
-procedure TfrDesignerPage.MUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TfrDesignerPage.MUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
 var
   i, k, dx, dy: Integer;
   t: TfrView;
   ObjectInserted: Boolean;
   procedure AddObject(ot: Byte);
   begin
-    Objects.Add(frCreateObject(ot, ''));
+    Objects.Add(frCreateObject(ot, EmptyStr));
     t := Objects.Last;
   end;
   procedure CreateSection;
@@ -1056,6 +1071,7 @@ var
     s: String;
   begin
     frBandTypesForm := TfrBandTypesForm.Create(nil);
+    frBandTypesForm.PopUpParent := frDesigner;
     ObjectInserted := frBandTypesForm.ShowModal = mrOk;
     if ObjectInserted then
     begin
@@ -1082,7 +1098,8 @@ var
   end;
 
 begin
-  if Button <> mbLeft then Exit;
+  if Button <> mbLeft then
+    Exit;
   Down := False;
   if FDesigner.ShapeMode = smFrame then
     DrawPage(dmShape);
@@ -1097,45 +1114,50 @@ begin
     RFlag := False;
     ObjectInserted := True;
     with FDesigner.Panel4 do
-    for i := 0 to ControlCount - 1 do
-      if Controls[i] is TfrSpeedButton then
-      with Controls[i] as TfrSpeedButton do
-        if Down then
-        begin
-          if Tag = gtBand then
-            if GetUnusedBand <> btNone then
-              CreateSection else
-              Exit
-          else if Tag = gtSubReport then
-            CreateSubReport
-          else if Tag >= gtAddIn then
-          begin
-            k := Tag - gtAddIn;
-            Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName));
-            t := Objects.Last;
-          end
-          else
-            AddObject(Tag);
-          break;
-        end;
+      for i := 0 to ControlCount - 1 do
+        if Controls[i] is TfrSpeedButton then
+          with Controls[i] as TfrSpeedButton do
+            if Down then
+            begin
+              if Tag = gtBand then
+                if GetUnusedBand <> btNone then
+                  CreateSection
+                else
+                  Exit
+              else
+                if Tag = gtSubReport then
+                  CreateSubReport
+                else
+                  if Tag >= gtAddIn then
+                  begin
+                    k := Tag - gtAddIn;
+                    Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName));
+                    t := Objects.Last;
+                  end
+                  else
+                    AddObject(Tag);
+              break;
+            end;
     if ObjectInserted then
     begin
       t.CreateUniqueName;
       with OldRect do
         if (Left = Right) or (Top = Bottom) then
         begin
-          dx := 40; dy := 40;
+          dx := 40;
+          dy := 40;
           if t is TfrMemoView then
             FDesigner.GetDefaultSize(dx, dy);
           OldRect := Rect(Left, Top, Left + dx, Top + dy);
         end;
       FDesigner.Unselect;
-      t.x := OldRect.Left; t.y := OldRect.Top;
-      t.dx := OldRect.Right - OldRect.Left; t.dy := OldRect.Bottom - OldRect.Top;
-      if (t is TfrBandView) and
-         (TfrBandType(t.FrameTyp) in [btCrossHeader..btCrossFooter]) and
-         (t.dx > Width - 10) then
-         t.dx := 40;
+      t.x := OldRect.Left;
+      t.y := OldRect.Top;
+      t.dx := OldRect.Right - OldRect.Left;
+      t.dy := OldRect.Bottom - OldRect.Top;
+      if (t is TfrBandView) and (TfrBandType(t.FrameTyp) in [btCrossHeader .. btCrossFooter]) and (t.dx > Width - 10)
+      then
+        t.dx := 40;
       t.FrameWidth := LastFrameWidth;
       t.FrameColor := LastFrameColor;
       t.FillColor := LastFillColor;
@@ -1168,7 +1190,8 @@ begin
       end;
     end;
     if not ObjRepeat then
-      FDesigner.OB1.Down := True else
+      FDesigner.OB1.Down := True
+    else
       DrawFocusRect(OldRect);
     Exit;
   end;
@@ -1178,15 +1201,21 @@ begin
     DrawRectLine(OldRect);
     AddObject(gtLine);
     t.CreateUniqueName;
-    t.x := OldRect.Left; t.y := OldRect.Top;
-    t.dx := OldRect.Right - OldRect.Left; t.dy := OldRect.Bottom - OldRect.Top;
+    t.x := OldRect.Left;
+    t.y := OldRect.Top;
+    t.dx := OldRect.Right - OldRect.Left;
+    t.dy := OldRect.Bottom - OldRect.Top;
     if t.dx < 0 then
     begin
-      t.dx := -t.dx; if Abs(t.dx) > Abs(t.dy) then t.x := OldRect.Right;
+      t.dx := - t.dx;
+      if Abs(t.dx) > Abs(t.dy) then
+        t.x := OldRect.Right;
     end;
     if t.dy < 0 then
     begin
-      t.dy := -t.dy; if Abs(t.dy) > Abs(t.dx) then t.y := OldRect.Bottom;
+      t.dy := - t.dy;
+      if Abs(t.dy) > Abs(t.dx) then
+        t.y := OldRect.Bottom;
     end;
     t.Selected := True;
     t.FrameWidth := LastLineWidth;
@@ -1209,13 +1238,12 @@ begin
     begin
       t := Objects[i];
       with OldRect do
-      if t.Typ <> gtBand then
-        if not ((t.x > Right) or (t.x + t.dx < Left) or
-                (t.y > Bottom) or (t.y + t.dy < Top)) then
-        begin
-          t.Selected := True;
-          Inc(SelNum);
-        end;
+        if t.Typ <> gtBand then
+          if not ((t.x > Right) or (t.x + t.dx < Left) or (t.y > Bottom) or (t.y + t.dy < Top)) then
+          begin
+            t.Selected := True;
+            Inc(SelNum);
+          end;
     end;
     GetMultipleSelected;
     FDesigner.SelectionChanged;
@@ -1246,19 +1274,19 @@ begin
     Exit;
   end;
 // redrawing all moved or resized objects
-  if not Moved then DrawPage(dmSelection);
+  if not Moved then
+    DrawPage(dmSelection);
   if (SelNum >= 1) and Moved then
     if SelNum > 1 then
     begin
       Draw(TopSelected, ClipRgn);
       GetMultipleSelected;
       FDesigner.ShowPosition;
-    end
-    else
-    begin
+    end else begin
       t := Objects[TopSelected];
       NormalizeCoord(t);
-      if Cursor <> crDefault then t.Resized;
+      if Cursor <> crDefault then
+        t.Resized;
       Draw(TopSelected, ClipRgn);
       FDesigner.ShowPosition;
     end;
@@ -1266,7 +1294,7 @@ begin
   CT := ctNone;
 end;
 
-procedure TfrDesignerPage.MMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TfrDesignerPage.MMove(Sender: TObject; Shift: TShiftState; x, y: Integer);
 var
   i, j, kx, ky, w, dx, dy: Integer;
   t, t1, Bnd: TfrView;
@@ -1275,15 +1303,13 @@ var
 
   function Cont(px, py, x, y: Integer): Boolean;
   begin
-    Result := (x >= px - w) and (x <= px + w + 1) and
-      (y >= py - w) and (y <= py + w + 1);
+    Result := (x >= px - w) and (x <= px + w + 1) and (y >= py - w) and (y <= py + w + 1);
   end;
-  function GridCheck:Boolean;
+  function GridCheck: Boolean;
   begin
     with FDesigner do
     begin
-      Result := (kx >= GridSize) or (kx <= -GridSize) or
-                (ky >= GridSize) or (ky <= -GridSize);
+      Result := (kx >= GridSize) or (kx <= - GridSize) or (ky >= GridSize) or (ky <= - GridSize);
       if Result then
       begin
         kx := kx - kx mod GridSize;
@@ -1292,15 +1318,14 @@ var
     end;
   end;
 
-  procedure AddRgn(var HR: HRGN; T: TfrView);
+  procedure AddRgn(var hr: HRGN; t: TfrView);
   var
     tr: HRGN;
   begin
     tr := t.GetClipRgn(rtExtended);
-    CombineRgn(HR, HR, TR, RGN_OR);
-    DeleteObject(TR);
+    CombineRgn(hr, hr, tr, RGN_OR);
+    DeleteObject(tr);
   end;
-
 
 begin
   Moved := True;
@@ -1321,19 +1346,17 @@ begin
     begin
       Mode := mdSelect;
       Cursor := crPencil;
-    end
-    else if FDesigner.OB1.Down then
+    end else if FDesigner.OB1.Down then
     begin
       Mode := mdSelect;
       Cursor := crDefault;
-    end
-    else
-    begin
+    end else begin
       Mode := mdInsert;
       if Cursor <> crCross then
       begin
         RoundCoord(x, y);
-        kx := Width; ky := 40;
+        kx := Width;
+        ky := 40;
         if not FDesigner.OB3.Down then
           FDesigner.GetDefaultSize(kx, ky);
         OldRect := Rect(x, y, x + kx, y + ky);
@@ -1354,20 +1377,22 @@ begin
   end;
 
  // cursor shapes
-  if not Down and (SelNum = 1) and (Mode = mdSelect) and
-    not FDesigner.OB6.Down then
+  if not Down and (SelNum = 1) and (Mode = mdSelect) and not FDesigner.OB6.Down then
   begin
     t := Objects[TopSelected];
     if Cont(t.x, t.y, x, y) or Cont(t.x + t.dx, t.y + t.dy, x, y) then
       Cursor := crSizeNWSE
-    else if Cont(t.x + t.dx, t.y, x, y) or Cont(t.x, t.y + t.dy, x, y)then
-      Cursor := crSizeNESW
-    else if Cont(t.x + t.dx div 2, t.y, x, y) or Cont(t.x + t.dx div 2, t.y + t.dy, x, y) then
-      Cursor := crSizeNS
-    else if Cont(t.x, t.y + t.dy div 2, x, y) or Cont(t.x + t.dx, t.y + t.dy div 2, x, y) then
-      Cursor := crSizeWE
     else
-      Cursor := crDefault;
+      if Cont(t.x + t.dx, t.y, x, y) or Cont(t.x, t.y + t.dy, x, y) then
+        Cursor := crSizeNESW
+      else
+        if Cont(t.x + t.dx div 2, t.y, x, y) or Cont(t.x + t.dx div 2, t.y + t.dy, x, y) then
+          Cursor := crSizeNS
+        else
+          if Cont(t.x, t.y + t.dy div 2, x, y) or Cont(t.x + t.dx, t.y + t.dy div 2, x, y) then
+            Cursor := crSizeWE
+          else
+            Cursor := crDefault;
   end;
   // selecting a lot of objects
   if Down and RFlag then
@@ -1388,7 +1413,8 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then
+      Exit;
     DrawRectLine(OldRect);
     OldRect := Rect(OldRect.Left, OldRect.Top, OldRect.Right + kx, OldRect.Bottom + ky);
     DrawRectLine(OldRect);
@@ -1406,7 +1432,7 @@ begin
   // split checking
   if not Down and (SelNum > 1) and (Mode = mdSelect) then
   begin
-    for i := 0 to Objects.Count-1 do
+    for i := 0 to Objects.Count - 1 do
     begin
       t := Objects[i];
       if (t.Typ <> gtBand) and t.Selected then
@@ -1417,7 +1443,7 @@ begin
             t1 := Objects[j];
             if (t1.Typ <> gtBand) and (t1 <> t) and t1.Selected then
               if ((t.x = t1.x + t1.dx) and ((x >= t.x) and (x <= t.x + 2))) or
-              ((t1.x = t.x + t.dx) and ((x >= t1.x - 2) and (x <= t.x))) then
+                ((t1.x = t.x + t.dx) and ((x >= t1.x - 2) and (x <= t.x))) then
               begin
                 Cursor := crHSplit;
                 with SplitInfo do
@@ -1428,9 +1454,7 @@ begin
                     SplX := t.x;
                     View1 := t1;
                     View2 := t;
-                  end
-                  else
-                  begin
+                  end else begin
                     SplX := t1.x;
                     View1 := t;
                     View2 := t1;
@@ -1448,7 +1472,8 @@ begin
   begin
     kx := x - LastX;
     ky := 0;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then
+      Exit;
     with SplitInfo do
     begin
       DrawHSplitter(SplRect);
@@ -1463,7 +1488,8 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then
+      Exit;
 
     if FDesigner.ShapeMode = smFrame then
       DrawPage(dmShape)
@@ -1485,12 +1511,14 @@ begin
         x1 := (t.OriginalRect.Left - LeftTop.x) * nx;
         x2 := t.OriginalRect.Right * nx;
         dx := Round(x1 + x2) - (Round(x1) + Round(x2));
-        t.x := LeftTop.x + Round(x1); t.dx := Round(x2) + dx;
+        t.x := LeftTop.x + Round(x1);
+        t.dx := Round(x2) + dx;
 
         y1 := (t.OriginalRect.Top - LeftTop.y) * ny;
         y2 := t.OriginalRect.Bottom * ny;
         dy := Round(y1 + y2) - (Round(y1) + Round(y2));
-        t.y := LeftTop.y + Round(y1); t.dy := Round(y2) + dy;
+        t.y := LeftTop.y + Round(y1);
+        t.dy := Round(y2) + dy;
         if FDesigner.ShapeMode = smAll then
           AddRgn(hr1, t);
       end;
@@ -1512,18 +1540,18 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
-    if FirstBandMove and (SelNum = 1) and ((kx <> 0) or (ky <> 0)) and
-      not (ssAlt in Shift) then
+    if FDesigner.GridAlign and not GridCheck then
+      Exit;
+    if FirstBandMove and (SelNum = 1) and ((kx <> 0) or (ky <> 0)) and not (ssAlt in Shift) then
       if TfrView(Objects[TopSelected]).Typ = gtBand then
       begin
         Bnd := Objects[TopSelected];
-        for i := 0 to Objects.Count-1 do
+        for i := 0 to Objects.Count - 1 do
         begin
           t := Objects[i];
           if t.Typ <> gtBand then
-            if (t.x >= Bnd.x) and (t.x + t.dx <= Bnd.x + Bnd.dx) and
-               (t.y >= Bnd.y) and (t.y + t.dy <= Bnd.y + Bnd.dy) then
+            if (t.x >= Bnd.x) and (t.x + t.dx <= Bnd.x + Bnd.dx) and (t.y >= Bnd.y) and (t.y + t.dy <= Bnd.y + Bnd.dy)
+            then
             begin
               t.Selected := True;
               Inc(SelNum);
@@ -1543,7 +1571,8 @@ begin
     for i := 0 to Objects.Count - 1 do
     begin
       t := Objects[i];
-      if not t.Selected then continue;
+      if not t.Selected then
+        continue;
       if FDesigner.ShapeMode = smAll then
         AddRgn(hr, t);
       t.x := t.x + kx;
@@ -1568,10 +1597,12 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then
+      Exit;
     t := Objects[TopSelected];
     if FDesigner.ShapeMode = smFrame then
-      DrawPage(dmShape) else
+      DrawPage(dmShape)
+    else
       hr := t.GetClipRgn(rtExtended);
     w := 3;
     if Cursor = crSizeNWSE then
@@ -1582,9 +1613,7 @@ begin
         t.y := t.y + ky;
         t.dy := t.dy - ky;
         CT := ct1;
-      end
-      else
-      begin
+      end else begin
         t.dx := t.dx + kx;
         t.dy := t.dy + ky;
         CT := ct2;
@@ -1596,9 +1625,7 @@ begin
         t.dx := t.dx + kx;
         t.dy := t.dy - ky;
         CT := ct3;
-      end
-      else
-      begin
+      end else begin
         t.x := t.x + kx;
         t.dx := t.dx - kx;
         t.dy := t.dy + ky;
@@ -1610,9 +1637,7 @@ begin
         t.x := t.x + kx;
         t.dx := t.dx - kx;
         CT := ct5;
-      end
-      else
-      begin
+      end else begin
         t.dx := t.dx + kx;
         CT := ct6;
       end;
@@ -1622,9 +1647,7 @@ begin
         t.y := t.y + ky;
         t.dy := t.dy - ky;
         CT := ct7;
-      end
-      else
-      begin
+      end else begin
         t.dy := t.dy + ky;
         CT := ct8;
       end;
@@ -1648,13 +1671,13 @@ begin
   begin
     FDesigner.PgB3Click(nil);
     DFlag := True;
-  end
-  else if SelNum = 1 then
+  end else if SelNum = 1 then
   begin
     DFlag := True;
     FDesigner.ShowEditor;
   end
-  else Exit;
+  else
+    Exit;
 end;
 
 procedure TfrDesignerPage.CMMouseLeave(var Message: TMessage);
@@ -1662,23 +1685,23 @@ begin
   if (Mode = mdInsert) and not Down then
   begin
     DrawFocusRect(OldRect);
-    OffsetRect(OldRect, -10000, -10000);
+    OffsetRect(OldRect, - 10000, - 10000);
   end;
 end;
 
-{-----------------------------------------------------------------------------}
-procedure BDown(SB: TfrSpeedButton);
+{ ----------------------------------------------------------------------------- }
+procedure BDown(sb: TfrSpeedButton);
 begin
-  SB.Down := True;
+  sb.Down := True;
 end;
 
-procedure BUp(SB: TfrSpeedButton);
+procedure BUp(sb: TfrSpeedButton);
 begin
-  SB.Down := False;
+  sb.Down := False;
 end;
 
-function EnumFontsProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
-  FontType: Integer; Data: Pointer): Integer; stdcall;
+function EnumFontsProc(var LogFont: TLogFont; var TextMetric: TTextMetric; FontType: Integer; Data: Pointer)
+  : Integer; stdcall;
 begin
   TfrDesignerForm(frDesigner).C2.Items.AddObject(StrPas(LogFont.lfFaceName), TObject(FontType));
   Result := 1;
@@ -1693,10 +1716,11 @@ begin
   EnumFonts(DC, nil, @EnumFontsProc, nil);
   ReleaseDC(0, DC);
   LastFontName := C2.Items[0];
-  if C2.Items.IndexOf('Arial') <> -1 then
+  if C2.Items.IndexOf('Arial') <> - 1 then
     LastFontName := 'Arial'
-  else if C2.Items.IndexOf('Arial Cyr') <> -1 then
-    LastFontName := 'Arial Cyr';
+  else
+    if C2.Items.IndexOf('Arial Cyr') <> - 1 then
+      LastFontName := 'Arial Cyr';
   LastFontSize := 10;
 end;
 
@@ -1711,12 +1735,16 @@ begin
   // 0..Preview.Width+10 and 0..Preview.Height+10
   BPanel := TPanel.Create(ScrollBox1);
   BPanel.Parent := ScrollBox1;
-  BPanel.Height := 1; BPanel.Left := 0; BPanel.Top := ScrollBox1.Height;
+  BPanel.Height := 1;
+  BPanel.Left := 0;
+  BPanel.Top := ScrollBox1.Height;
   BPanel.Color := ScrollBox1.Color;
 
   RPanel := TPanel.Create(ScrollBox1);
   RPanel.Parent := ScrollBox1;
-  RPanel.Width := 1; RPanel.Left := ScrollBox1.Width; RPanel.Top := 0;
+  RPanel.Width := 1;
+  RPanel.Left := ScrollBox1.Width;
+  RPanel.Top := 0;
   RPanel.Color := ScrollBox1.Color;
 
   PageView := TfrDesignerPage.Create(ScrollBox1);
@@ -1728,19 +1756,21 @@ begin
   ColorSelector.OnColorSelected := ColorSelected;
 
   for i := 0 to frAddInsCount - 1 do
-  with frAddIns[i] do
-    RegisterObject(ButtonBmp, ButtonHint, Integer(gtAddIn) + i);
+    with frAddIns[i] do
+      RegisterObject(ButtonBmp, ButtonHint, Integer(gtAddIn) + i);
 
   if FirstInstance then
   begin
     frRegisterTool(LoadStr(SInsertFields), Image2.Picture.Bitmap, InsFieldsClick);
     for i := 0 to frToolsCount - 1 do
-    with frTools[i] do
-      RegisterTool(Caption, ButtonBmp, OnClick);
+      with frTools[i] do
+        RegisterTool(Caption, ButtonBmp, OnClick);
   end;
 
   InspForm := TfrInspForm.Create(nil);
+  InspForm.PopUpParent := Self;
   EditorForm := TfrEditorForm.Create(nil);
+  EditorForm.PopUpParent := Self;
   with InspForm do
   begin
     ClearItems;
@@ -1755,14 +1785,12 @@ begin
   end;
 
   MenuItems := TList.Create;
-  ItemWidths := TStringlist.Create;
+  ItemWidths := TStringList.Create;
   if FirstInstance then
   begin
     Application.OnActivate := OnActivateApp;
     Application.OnDeactivate := OnDeactivateApp;
-  end
-  else
-  begin
+  end else begin
     PgB1.Enabled := False;
     PgB2.Enabled := False;
     N41.Enabled := False;
@@ -1772,128 +1800,128 @@ begin
   end;
   FirstInst := False;
 
-  FCaption :=         LoadStr(frRes + 080);
-  Panel1.Caption :=   LoadStr(frRes + 081);
-  Panel2.Caption :=   LoadStr(frRes + 082);
-  Panel3.Caption :=   LoadStr(frRes + 083);
-  Panel4.Caption :=   LoadStr(frRes + 084);
-  Panel5.Caption :=   LoadStr(frRes + 085);
-  Panel6.Caption :=   LoadStr(frRes + 086);
-  FileBtn1.Hint :=    LoadStr(frRes + 087);
-  FileBtn2.Hint :=    LoadStr(frRes + 088);
-  FileBtn3.Hint :=    LoadStr(frRes + 089);
-  FileBtn4.Hint :=    LoadStr(frRes + 090);
-  CutB.Hint :=        LoadStr(frRes + 091);
-  CopyB.Hint :=       LoadStr(frRes + 092);
-  PstB.Hint :=        LoadStr(frRes + 093);
-  UndoB.Hint :=       LoadStr(frRes + 094);
-  RedoB.Hint :=       LoadStr(frRes + 095);
-  ZB1.Hint :=         LoadStr(frRes + 096);
-  ZB2.Hint :=         LoadStr(frRes + 097);
-  SelAllB.Hint :=     LoadStr(frRes + 098);
-  PgB1.Hint :=        LoadStr(frRes + 099);
-  PgB2.Hint :=        LoadStr(frRes + 100);
-  PgB3.Hint :=        LoadStr(frRes + 101);
-  GB1.Hint :=         LoadStr(frRes + 102);
-  GB2.Hint :=         LoadStr(frRes + 103);
-  GB3.Hint :=         LoadStr(frRes + 104);
-  HelpBtn.Hint :=     LoadStr(frRes + 032);
-  ExitB.Caption :=    LoadStr(frRes + 105);
-  ExitB.Hint :=       LoadStr(frRes + 106);
-  AlB1.Hint :=        LoadStr(frRes + 107);
-  AlB2.Hint :=        LoadStr(frRes + 108);
-  AlB3.Hint :=        LoadStr(frRes + 109);
-  AlB4.Hint :=        LoadStr(frRes + 110);
-  AlB5.Hint :=        LoadStr(frRes + 111);
-  AlB6.Hint :=        LoadStr(frRes + 112);
-  AlB7.Hint :=        LoadStr(frRes + 113);
-  AlB8.Hint :=        LoadStr(frRes + 114);
-  FnB1.Hint :=        LoadStr(frRes + 115);
-  FnB2.Hint :=        LoadStr(frRes + 116);
-  FnB3.Hint :=        LoadStr(frRes + 117);
-  ClB2.Hint :=        LoadStr(frRes + 118);
-  HlB1.Hint :=        LoadStr(frRes + 119);
-  C3.Hint :=          LoadStr(frRes + 120);
-  C2.Hint :=          LoadStr(frRes + 121);
-  FrB1.Hint :=        LoadStr(frRes + 122);
-  FrB2.Hint :=        LoadStr(frRes + 123);
-  FrB3.Hint :=        LoadStr(frRes + 124);
-  FrB4.Hint :=        LoadStr(frRes + 125);
-  FrB5.Hint :=        LoadStr(frRes + 126);
-  FrB6.Hint :=        LoadStr(frRes + 127);
-  ClB1.Hint :=        LoadStr(frRes + 128);
-  ClB3.Hint :=        LoadStr(frRes + 129);
-  E1.Hint :=          LoadStr(frRes + 130);
-  OB1.Hint :=         LoadStr(frRes + 132);
-  OB2.Hint :=         LoadStr(frRes + 133);
-  OB3.Hint :=         LoadStr(frRes + 134);
-  OB4.Hint :=         LoadStr(frRes + 135);
-  OB5.Hint :=         LoadStr(frRes + 136);
-  OB6.Hint :=         LoadStr(frRes + 137);
-  Align1.Hint :=      LoadStr(frRes + 138);
-  Align2.Hint :=      LoadStr(frRes + 139);
-  Align3.Hint :=      LoadStr(frRes + 140);
-  Align4.Hint :=      LoadStr(frRes + 141);
-  Align5.Hint :=      LoadStr(frRes + 142);
-  Align6.Hint :=      LoadStr(frRes + 143);
-  Align7.Hint :=      LoadStr(frRes + 144);
-  Align8.Hint :=      LoadStr(frRes + 145);
-  Align9.Hint :=      LoadStr(frRes + 146);
-  Align10.Hint :=     LoadStr(frRes + 147);
-  N2.Caption :=       LoadStr(frRes + 148);
-  N1.Caption :=       LoadStr(frRes + 149);
-  N3.Caption :=       LoadStr(frRes + 150);
-  N5.Caption :=       LoadStr(frRes + 151);
-  N16.Caption :=      LoadStr(frRes + 152);
-  N6.Caption :=       LoadStr(frRes + 153);
+  FCaption := LoadStr(frRes + 080);
+  Panel1.Caption := LoadStr(frRes + 081);
+  Panel2.Caption := LoadStr(frRes + 082);
+  Panel3.Caption := LoadStr(frRes + 083);
+  Panel4.Caption := LoadStr(frRes + 084);
+  Panel5.Caption := LoadStr(frRes + 085);
+  Panel6.Caption := LoadStr(frRes + 086);
+  FileBtn1.Hint := LoadStr(frRes + 087);
+  FileBtn2.Hint := LoadStr(frRes + 088);
+  FileBtn3.Hint := LoadStr(frRes + 089);
+  FileBtn4.Hint := LoadStr(frRes + 090);
+  CutB.Hint := LoadStr(frRes + 091);
+  CopyB.Hint := LoadStr(frRes + 092);
+  PstB.Hint := LoadStr(frRes + 093);
+  UndoB.Hint := LoadStr(frRes + 094);
+  RedoB.Hint := LoadStr(frRes + 095);
+  ZB1.Hint := LoadStr(frRes + 096);
+  ZB2.Hint := LoadStr(frRes + 097);
+  SelAllB.Hint := LoadStr(frRes + 098);
+  PgB1.Hint := LoadStr(frRes + 099);
+  PgB2.Hint := LoadStr(frRes + 100);
+  PgB3.Hint := LoadStr(frRes + 101);
+  GB1.Hint := LoadStr(frRes + 102);
+  GB2.Hint := LoadStr(frRes + 103);
+  GB3.Hint := LoadStr(frRes + 104);
+  HelpBtn.Hint := LoadStr(frRes + 032);
+  ExitB.Caption := LoadStr(frRes + 105);
+  ExitB.Hint := LoadStr(frRes + 106);
+  AlB1.Hint := LoadStr(frRes + 107);
+  AlB2.Hint := LoadStr(frRes + 108);
+  AlB3.Hint := LoadStr(frRes + 109);
+  AlB4.Hint := LoadStr(frRes + 110);
+  AlB5.Hint := LoadStr(frRes + 111);
+  AlB6.Hint := LoadStr(frRes + 112);
+  AlB7.Hint := LoadStr(frRes + 113);
+  AlB8.Hint := LoadStr(frRes + 114);
+  FnB1.Hint := LoadStr(frRes + 115);
+  FnB2.Hint := LoadStr(frRes + 116);
+  FnB3.Hint := LoadStr(frRes + 117);
+  ClB2.Hint := LoadStr(frRes + 118);
+  HlB1.Hint := LoadStr(frRes + 119);
+  C3.Hint := LoadStr(frRes + 120);
+  C2.Hint := LoadStr(frRes + 121);
+  FrB1.Hint := LoadStr(frRes + 122);
+  FrB2.Hint := LoadStr(frRes + 123);
+  FrB3.Hint := LoadStr(frRes + 124);
+  FrB4.Hint := LoadStr(frRes + 125);
+  FrB5.Hint := LoadStr(frRes + 126);
+  FrB6.Hint := LoadStr(frRes + 127);
+  ClB1.Hint := LoadStr(frRes + 128);
+  ClB3.Hint := LoadStr(frRes + 129);
+  E1.Hint := LoadStr(frRes + 130);
+  OB1.Hint := LoadStr(frRes + 132);
+  OB2.Hint := LoadStr(frRes + 133);
+  OB3.Hint := LoadStr(frRes + 134);
+  OB4.Hint := LoadStr(frRes + 135);
+  OB5.Hint := LoadStr(frRes + 136);
+  OB6.Hint := LoadStr(frRes + 137);
+  Align1.Hint := LoadStr(frRes + 138);
+  Align2.Hint := LoadStr(frRes + 139);
+  Align3.Hint := LoadStr(frRes + 140);
+  Align4.Hint := LoadStr(frRes + 141);
+  Align5.Hint := LoadStr(frRes + 142);
+  Align6.Hint := LoadStr(frRes + 143);
+  Align7.Hint := LoadStr(frRes + 144);
+  Align8.Hint := LoadStr(frRes + 145);
+  Align9.Hint := LoadStr(frRes + 146);
+  Align10.Hint := LoadStr(frRes + 147);
+  N2.Caption := LoadStr(frRes + 148);
+  N1.Caption := LoadStr(frRes + 149);
+  N3.Caption := LoadStr(frRes + 150);
+  N5.Caption := LoadStr(frRes + 151);
+  N16.Caption := LoadStr(frRes + 152);
+  N6.Caption := LoadStr(frRes + 153);
   FileMenu.Caption := LoadStr(frRes + 154);
-  N23.Caption :=      LoadStr(frRes + 155);
-  N19.Caption :=      LoadStr(frRes + 156);
-  N20.Caption :=      LoadStr(frRes + 157);
-  N42.Caption :=      LoadStr(frRes + 158);
-  N8.Caption :=       LoadStr(frRes + 159);
-  N25.Caption :=      LoadStr(frRes + 160);
-  N39.Caption :=      LoadStr(frRes + 161);
-  N10.Caption :=      LoadStr(frRes + 162);
+  N23.Caption := LoadStr(frRes + 155);
+  N19.Caption := LoadStr(frRes + 156);
+  N20.Caption := LoadStr(frRes + 157);
+  N42.Caption := LoadStr(frRes + 158);
+  N8.Caption := LoadStr(frRes + 159);
+  N25.Caption := LoadStr(frRes + 160);
+  N39.Caption := LoadStr(frRes + 161);
+  N10.Caption := LoadStr(frRes + 162);
   EditMenu.Caption := LoadStr(frRes + 163);
-  N46.Caption :=      LoadStr(frRes + 164);
-  N48.Caption :=      LoadStr(frRes + 165);
-  N11.Caption :=      LoadStr(frRes + 166);
-  N12.Caption :=      LoadStr(frRes + 167);
-  N13.Caption :=      LoadStr(frRes + 168);
-  N27.Caption :=      LoadStr(frRes + 169);
-  N28.Caption :=      LoadStr(frRes + 170);
-  N36.Caption :=      LoadStr(frRes + 171);
-  N29.Caption :=      LoadStr(frRes + 172);
-  N30.Caption :=      LoadStr(frRes + 173);
-  N32.Caption :=      LoadStr(frRes + 174);
-  N33.Caption :=      LoadStr(frRes + 175);
+  N46.Caption := LoadStr(frRes + 164);
+  N48.Caption := LoadStr(frRes + 165);
+  N11.Caption := LoadStr(frRes + 166);
+  N12.Caption := LoadStr(frRes + 167);
+  N13.Caption := LoadStr(frRes + 168);
+  N27.Caption := LoadStr(frRes + 169);
+  N28.Caption := LoadStr(frRes + 170);
+  N36.Caption := LoadStr(frRes + 171);
+  N29.Caption := LoadStr(frRes + 172);
+  N30.Caption := LoadStr(frRes + 173);
+  N32.Caption := LoadStr(frRes + 174);
+  N33.Caption := LoadStr(frRes + 175);
   ToolMenu.Caption := LoadStr(frRes + 176);
-  N37.Caption :=      LoadStr(frRes + 177);
+  N37.Caption := LoadStr(frRes + 177);
   MastMenu.Caption := LoadStr(frRes + 178);
-  N14.Caption :=      LoadStr(frRes + 179);
-  Pan1.Caption :=     LoadStr(frRes + 180);
-  Pan2.Caption :=     LoadStr(frRes + 181);
-  Pan3.Caption :=     LoadStr(frRes + 182);
-  Pan4.Caption :=     LoadStr(frRes + 183);
-  Pan5.Caption :=     LoadStr(frRes + 184);
-  Pan6.Caption :=     LoadStr(frRes + 185);
-  Pan7.Caption :=     LoadStr(frRes + 186);
-  N34.Caption :=      LoadStr(frRes + 187);
-  N17.Caption :=      LoadStr(frRes + 188);
-  N22.Caption :=      LoadStr(frRes + 189);
-  N35.Caption :=      LoadStr(frRes + 190);
-  StB1.Hint   :=      LoadStr(frRes + 191);
+  N14.Caption := LoadStr(frRes + 179);
+  Pan1.Caption := LoadStr(frRes + 180);
+  Pan2.Caption := LoadStr(frRes + 181);
+  Pan3.Caption := LoadStr(frRes + 182);
+  Pan4.Caption := LoadStr(frRes + 183);
+  Pan5.Caption := LoadStr(frRes + 184);
+  Pan6.Caption := LoadStr(frRes + 185);
+  Pan7.Caption := LoadStr(frRes + 186);
+  N34.Caption := LoadStr(frRes + 187);
+  N17.Caption := LoadStr(frRes + 188);
+  N22.Caption := LoadStr(frRes + 189);
+  N35.Caption := LoadStr(frRes + 190);
+  StB1.Hint := LoadStr(frRes + 191);
   FnB1.Glyph.Handle := LoadBitmap(hInstance, 'FR_BOLD');
   FnB2.Glyph.Handle := LoadBitmap(hInstance, 'FR_ITALIC');
   FnB3.Glyph.Handle := LoadBitmap(hInstance, 'FR_UNDRLINE');
 
-  N41.Caption :=      N29.Caption;
-  N41.OnClick :=      N29.OnClick;
-  N43.Caption :=      N30.Caption;
-  N43.OnClick :=      N30.OnClick;
-  N44.Caption :=      N25.Caption;
-  N44.OnClick :=      N25.OnClick;
+  N41.Caption := N29.Caption;
+  N41.OnClick := N29.OnClick;
+  N43.Caption := N30.Caption;
+  N43.OnClick := N30.OnClick;
+  N44.Caption := N25.Caption;
+  N44.OnClick := N25.OnClick;
 end;
 
 procedure TfrDesignerForm.FormShow(Sender: TObject);
@@ -1924,7 +1952,9 @@ begin
   PageView.Init;
   EnableControls;
   BDown(OB1);
-  frSetGlyph(0, ClB1, 1); frSetGlyph(0, ClB2, 0); frSetGlyph(0, ClB3, 2);
+  frSetGlyph(0, ClB1, 1);
+  frSetGlyph(0, ClB2, 0);
+  frSetGlyph(0, ClB3, 2);
   ColorSelector.Hide;
   LinePanel.Hide;
   ShowPosition;
@@ -1958,7 +1988,8 @@ end;
 
 procedure TfrDesignerForm.FormResize(Sender: TObject);
 begin
-  if csDestroying in ComponentState then Exit;
+  if csDestroying in ComponentState then
+    Exit;
   with ScrollBox1 do
   begin
     HorzScrollBar.Position := 0;
@@ -1996,14 +2027,16 @@ end;
 
 procedure TfrDesignerForm.SetGridSize(Value: Integer);
 begin
-  if FGridSize = Value then Exit;
+  if FGridSize = Value then
+    Exit;
   FGridSize := Value;
   RedrawPage;
 end;
 
 procedure TfrDesignerForm.SetGridShow(Value: Boolean);
 begin
-  if FGridShow = Value then Exit;
+  if FGridShow = Value then
+    Exit;
   FGridShow := Value;
   GB1.Down := Value;
   RedrawPage;
@@ -2011,7 +2044,8 @@ end;
 
 procedure TfrDesignerForm.SetGridAlign(Value: Boolean);
 begin
-  if FGridAlign = Value then Exit;
+  if FGridAlign = Value then
+    Exit;
   GB2.Down := Value;
   FGridAlign := Value;
 end;
@@ -2022,9 +2056,12 @@ var
 begin
   FUnits := Value;
   case Value of
-    ruPixels: s := LoadStr(SPixels);
-    ruMM:     s := LoadStr(SMM);
-    ruInches: s := LoadStr(SInches);
+    ruPixels:
+      s := LoadStr(SPixels);
+    ruMM:
+      s := LoadStr(SMM);
+    ruInches:
+      s := LoadStr(SInches);
   end;
   StatusBar1.Panels[0].Text := s;
   ShowPosition;
@@ -2048,6 +2085,7 @@ procedure TfrDesignerForm.SetGrayedButtons(Value: Boolean);
       end;
     end;
   end;
+
 begin
   FGrayedButtons := Value;
   DoButtons([Panel1, Panel2, Panel3, Panel4, Panel5, Panel6]);
@@ -2057,12 +2095,12 @@ procedure TfrDesignerForm.SetCurDocName(Value: String);
 begin
   FCurDocName := Value;
   if FirstInstance then
-    Caption := FCaption + ' - ' + ExtractFileName(Value) else
+    Caption := FCaption + ' - ' + ExtractFileName(Value)
+  else
     Caption := FCaption;
 end;
 
-procedure TfrDesignerForm.RegisterObject(ButtonBmp: TBitmap;
-  const ButtonHint: String; ButtonTag: Integer);
+procedure TfrDesignerForm.RegisterObject(ButtonBmp: TBitmap; const ButtonHint: String; ButtonTag: Integer);
 var
   b: TfrTBButton;
 begin
@@ -2080,8 +2118,7 @@ begin
   end;
 end;
 
-procedure TfrDesignerForm.RegisterTool(MenuCaption: String; ButtonBmp: TBitmap;
-  OnClick: TNotifyEvent);
+procedure TfrDesignerForm.RegisterTool(MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
 var
   m: TMenuItem;
   b: TfrTBButton;
@@ -2091,7 +2128,8 @@ begin
   m.OnClick := OnClick;
   MastMenu.Enabled := True;
   MastMenu.Add(m);
-  Panel6.Height := 26; Panel6.Width := 26;
+  Panel6.Height := 26;
+  Panel6.Width := 26;
   b := TfrTBButton.Create(Self);
   with b do
   begin
@@ -2116,15 +2154,13 @@ begin
     Modified := True;
     FileModified := True;
     CurPage := CurReport.Pages.Count - 1
-  end
-  else
-  begin
+  end else begin
     CurReport.Pages.Delete(CurReport.Pages.Count - 1);
     CurPage := CurPage;
   end;
 end;
 
-procedure TfrDesignerForm.RemovePage(n: Integer);
+procedure TfrDesignerForm.RemovePage(N: Integer);
   procedure AdjustSubReports;
   var
     i, j: Integer;
@@ -2138,27 +2174,28 @@ procedure TfrDesignerForm.RemovePage(n: Integer);
         begin
           t := Pages[i].Objects[j];
           if t.Typ = gtSubReport then
-            if TfrSubReportView(t).SubPage = n then
+            if TfrSubReportView(t).SubPage = N then
             begin
               Pages[i].Delete(j);
               Dec(j);
-            end
-            else if TfrSubReportView(t).SubPage > n then
+            end else if TfrSubReportView(t).SubPage > N then
               Dec(TfrSubReportView(t).SubPage);
           Inc(j);
         end;
       end;
   end;
+
 begin
   Modified := True;
   FileModified := True;
   with CurReport do
-    if (n >= 0) and (n < Pages.Count) then
+    if (N >= 0) and (N < Pages.Count) then
       if Pages.Count = 1 then
-        Pages[n].Clear else
+        Pages[N].Clear
+      else
       begin
-        CurReport.Pages.Delete(n);
-        Tab1.Tabs.Delete(n);
+        CurReport.Pages.Delete(N);
+        Tab1.Tabs.Delete(N);
         Tab1.TabIndex := 0;
         AdjustSubReports;
         CurPage := 0;
@@ -2191,6 +2228,7 @@ var
             end;
         end;
   end;
+
 begin
   if Tab1.Tabs.Count = CurReport.Pages.Count then
     for i := 0 to Tab1.Tabs.Count - 1 do
@@ -2200,8 +2238,7 @@ begin
       if Tab1.Tabs[i] <> s then
         Tab1.Tabs[i] := s;
     end
-  else
-  begin
+  else begin
     Tab1.Tabs.Clear;
     for i := 0 to CurReport.Pages.Count - 1 do
     begin
@@ -2230,7 +2267,8 @@ begin
   for i := Objects.Count - 1 downto 0 do
   begin
     t := Objects[i];
-    if t.Selected then Page.Delete(i);
+    if t.Selected then
+      Page.Delete(i);
   end;
   SelNum := 0;
 end;
@@ -2284,8 +2322,10 @@ function TfrDesignerForm.PointsToUnits(x: Integer): Double;
 begin
   Result := x;
   case FUnits of
-    ruMM: Result := x / 18 * 5;
-    ruInches: Result := x / 18 * 5 / 25.4;
+    ruMM:
+      Result := x / 18 * 5;
+    ruInches:
+      Result := x / 18 * 5 / 25.4;
   end;
 end;
 
@@ -2293,8 +2333,10 @@ function TfrDesignerForm.UnitsToPoints(x: Double): Integer;
 begin
   Result := Round(x);
   case FUnits of
-    ruMM: Result := Round(x / 5 * 18);
-    ruInches: Result := Round(x * 25.4 / 5 * 18);
+    ruMM:
+      Result := Round(x / 5 * 18);
+    ruInches:
+      Result := Round(x * 25.4 / 5 * 18);
   end;
 end;
 
@@ -2303,14 +2345,14 @@ begin
   PageView.Draw(10000, 0);
 end;
 
-procedure TfrDesignerForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TfrDesignerForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   StepX, StepY: Integer;
   i, tx, ty, tx1, ty1, d, d1: Integer;
   t, t1: TfrView;
 begin
-  StepX := 0; StepY := 0;
+  StepX := 0;
+  StepY := 0;
   if (Key = vk_Return) and (ActiveControl = C3) then
   begin
     Key := 0;
@@ -2329,10 +2371,11 @@ begin
   if (Key = vk_Return) and EditEnabled then
   begin
     if ssCtrl in Shift then
-      ShowMemoEditor else
+      ShowMemoEditor
+    else
       ShowEditor;
   end;
-  if (Chr(Key) in ['1'..'9']) and (ssCtrl in Shift) and DelEnabled then
+  if CharInset(Chr(Key), ['1' .. '9']) and (ssCtrl in Shift) and DelEnabled then
   begin
     E1.Text := Chr(Key);
     DoClick(E1);
@@ -2359,11 +2402,14 @@ begin
     Key := 0;
   end;
   if CutEnabled then
-    if (Key = vk_Delete) and (ssShift in Shift) then CutBClick(Self);
+    if (Key = vk_Delete) and (ssShift in Shift) then
+      CutBClick(Self);
   if CopyEnabled then
-    if (Key = vk_Insert) and (ssCtrl in Shift) then CopyBClick(Self);
+    if (Key = vk_Insert) and (ssCtrl in Shift) then
+      CopyBClick(Self);
   if PasteEnabled then
-    if (Key = vk_Insert) and (ssShift in Shift) then PstBClick(Self);
+    if (Key = vk_Insert) and (ssShift in Shift) then
+      PstBClick(Self);
   if Key = vk_Prior then
     with ScrollBox1.VertScrollBar do
     begin
@@ -2378,102 +2424,123 @@ begin
     end;
   if SelNum > 0 then
   begin
-    if Key = vk_Up then StepY := -1
-    else if Key = vk_Down then StepY := 1
-    else if Key = vk_Left then StepX := -1
-    else if Key = vk_Right then StepX := 1;
+    if Key = vk_Up then
+      StepY := - 1
+    else
+      if Key = vk_Down then
+        StepY := 1
+      else
+        if Key = vk_Left then
+          StepX := - 1
+        else
+          if Key = vk_Right then
+            StepX := 1;
     if (StepX <> 0) or (StepY <> 0) then
     begin
       if ssCtrl in Shift then
         MoveObjects(StepX, StepY, False)
-      else if ssShift in Shift then
-        MoveObjects(StepX, StepY, True)
-      else if SelNum = 1 then
-      begin
-        t := Objects[TopSelected];
-        tx := t.x; ty := t.y; tx1 := t.x + t.dx; ty1 := t.y + t.dy;
-        d := 10000; t1 := nil;
-        for i := 0 to Objects.Count-1 do
-        begin
-          t := Objects[i];
-          if not t.Selected and (t.Typ <> gtBand) then
+      else
+        if ssShift in Shift then
+          MoveObjects(StepX, StepY, True)
+        else
+          if SelNum = 1 then
           begin
-            d1 := 10000;
-            if StepX <> 0 then
+            t := Objects[TopSelected];
+            tx := t.x;
+            ty := t.y;
+            tx1 := t.x + t.dx;
+            ty1 := t.y + t.dy;
+            d := 10000;
+            t1 := nil;
+            for i := 0 to Objects.Count - 1 do
             begin
-              if t.y + t.dy < ty then
-                d1 := ty - (t.y + t.dy)
-              else if t.y > ty1 then
-                d1 := t.y - ty1
-              else if (t.y <= ty) and (t.y + t.dy >= ty1) then
-                d1 := 0
-              else
-                d1 := t.y - ty;
-              if ((t.x <= tx) and (StepX = 1)) or
-                 ((t.x + t.dx >= tx1) and (StepX = -1)) then
+              t := Objects[i];
+              if not t.Selected and (t.Typ <> gtBand) then
+              begin
                 d1 := 10000;
-              if StepX = 1 then
-                if t.x >= tx1 then
-                  d1 := d1 + t.x - tx1 else
-                  d1 := d1 + t.x - tx
-              else if t.x + t.dx <= tx then
-                  d1 := d1 + tx - (t.x + t.dx) else
-                  d1 := d1 + tx1 - (t.x + t.dx);
-            end
-            else if StepY <> 0 then
-            begin
-              if t.x + t.dx < tx then
-                d1 := tx - (t.x + t.dx)
-              else if t.x > tx1 then
-                d1 := t.x - tx1
-              else if (t.x <= tx) and (t.x + t.dx >= tx1) then
-                d1 := 0
-              else
-                d1 := t.x - tx;
-              if ((t.y <= ty) and (StepY = 1)) or
-                 ((t.y + t.dy >= ty1) and (StepY = -1)) then
-                d1 := 10000;
-              if StepY = 1 then
-                if t.y >= ty1 then
-                  d1 := d1 + t.y - ty1 else
-                  d1 := d1 + t.y - ty
-              else if t.y + t.dy <= ty then
-                  d1 := d1 + ty - (t.y + t.dy) else
-                  d1 := d1 + ty1 - (t.y + t.dy);
+                if StepX <> 0 then
+                begin
+                  if t.y + t.dy < ty then
+                    d1 := ty - (t.y + t.dy)
+                  else
+                    if t.y > ty1 then
+                      d1 := t.y - ty1
+                    else
+                      if (t.y <= ty) and (t.y + t.dy >= ty1) then
+                        d1 := 0
+                      else
+                        d1 := t.y - ty;
+                  if ((t.x <= tx) and (StepX = 1)) or ((t.x + t.dx >= tx1) and (StepX = - 1)) then
+                    d1 := 10000;
+                  if StepX = 1 then
+                    if t.x >= tx1 then
+                      d1 := d1 + t.x - tx1
+                    else
+                      d1 := d1 + t.x - tx
+                  else
+                    if t.x + t.dx <= tx then
+                      d1 := d1 + tx - (t.x + t.dx)
+                    else
+                      d1 := d1 + tx1 - (t.x + t.dx);
+                end else if StepY <> 0 then
+                begin
+                  if t.x + t.dx < tx then
+                    d1 := tx - (t.x + t.dx)
+                  else
+                    if t.x > tx1 then
+                      d1 := t.x - tx1
+                    else
+                      if (t.x <= tx) and (t.x + t.dx >= tx1) then
+                        d1 := 0
+                      else
+                        d1 := t.x - tx;
+                  if ((t.y <= ty) and (StepY = 1)) or ((t.y + t.dy >= ty1) and (StepY = - 1)) then
+                    d1 := 10000;
+                  if StepY = 1 then
+                    if t.y >= ty1 then
+                      d1 := d1 + t.y - ty1
+                    else
+                      d1 := d1 + t.y - ty
+                  else
+                    if t.y + t.dy <= ty then
+                      d1 := d1 + ty - (t.y + t.dy)
+                    else
+                      d1 := d1 + ty1 - (t.y + t.dy);
+                end;
+                if d1 < d then
+                begin
+                  d := d1;
+                  t1 := t;
+                end;
+              end;
             end;
-            if d1 < d then
+            if t1 <> nil then
             begin
-              d := d1;
-              t1 := t;
+              t := Objects[TopSelected];
+              if not (ssAlt in Shift) then
+              begin
+                PageView.DrawPage(dmSelection);
+                Unselect;
+                SelNum := 1;
+                t1.Selected := True;
+                PageView.DrawPage(dmSelection);
+              end else begin
+                if (t1.x >= t.x + t.dx) and (Key = vk_Right) then
+                  t.x := t1.x - t.dx
+                else
+                  if (t1.y > t.y + t.dy) and (Key = vk_Down) then
+                    t.y := t1.y - t.dy
+                  else
+                    if (t1.x + t1.dx <= t.x) and (Key = vk_Left) then
+                      t.x := t1.x + t1.dx
+                    else
+                      if (t1.y + t1.dy <= t.y) and (Key = vk_Up) then
+                        t.y := t1.y + t1.dy;
+                RedrawPage;
+              end;
+              SelectionChanged;
             end;
           end;
-        end;
-        if t1 <> nil then
-        begin
-          t := Objects[TopSelected];
-          if not (ssAlt in Shift) then
-          begin
-            PageView.DrawPage(dmSelection);
-            Unselect;
-            SelNum := 1;
-            t1.Selected := True;
-            PageView.DrawPage(dmSelection);
-          end
-          else
-          begin
-            if (t1.x >= t.x + t.dx) and (Key = vk_Right) then
-              t.x := t1.x - t.dx
-            else if (t1.y > t.y + t.dy) and (Key = vk_Down) then
-              t.y := t1.y - t.dy
-            else if (t1.x + t1.dx <= t.x) and (Key = vk_Left) then
-              t.x := t1.x + t1.dx
-            else if (t1.y + t1.dy <= t.y) and (Key = vk_Up) then
-              t.y := t1.y + t1.dy;
-            RedrawPage;
-          end;
-          SelectionChanged;
-        end;
-      end;
     end;
   end;
 end;
@@ -2492,11 +2559,11 @@ begin
     if t.Selected then
       if Resize then
       begin
-        Inc(t.dx, dx); Inc(t.dy, dy);
-      end
-      else
-      begin
-        Inc(t.x, dx); Inc(t.y, dy);
+        Inc(t.dx, dx);
+        Inc(t.dy, dy);
+      end else begin
+        Inc(t.x, dx);
+        Inc(t.y, dy);
       end;
   end;
   ShowPosition;
@@ -2515,7 +2582,8 @@ begin
   for i := Objects.Count - 1 downto 0 do
   begin
     t := Objects[i];
-    if t.Selected then Page.Delete(i);
+    if t.Selected then
+      Page.Delete(i);
   end;
   SetPageTitles;
   ResetSelection;
@@ -2533,11 +2601,12 @@ begin
     t := Objects[TopSelected];
     if t.Typ = gtBand then
       Result := [ssBand]
-    else if t is TfrMemoView then
-      Result := [ssMemo] else
-      Result := [ssOther];
-  end
-  else if SelNum > 1 then
+    else
+      if t is TfrMemoView then
+        Result := [ssMemo]
+      else
+        Result := [ssOther];
+  end else if SelNum > 1 then
     Result := [ssMultiple];
   if ClipBd.Count > 0 then
     Result := Result + [ssClipboardFull];
@@ -2591,14 +2660,14 @@ procedure TfrDesignerForm.EnableControls;
     for i := Low(Ar) to High(Ar) do
       if Ar[i] is TControl then
         (Ar[i] as TControl).Enabled := en
-      else if Ar[i] is TMenuItem then
-        (Ar[i] as TMenuItem).Enabled := en;
+      else
+        if Ar[i] is TMenuItem then
+          (Ar[i] as TMenuItem).Enabled := en;
   end;
+
 begin
-  SetEnabled([FrB1, FrB2, FrB3, FrB4, FrB5, FrB6, ClB1, ClB3, E1, SB1, SB2, StB1],
-    RectTypEnabled);
-  SetEnabled([ClB2, C2, C3, FnB1, FnB2, FnB3, AlB1, AlB2, AlB3, AlB4, AlB5, AlB6, AlB7, AlB8, HlB1],
-    FontTypEnabled);
+  SetEnabled([FrB1, FrB2, FrB3, FrB4, FrB5, FrB6, ClB1, ClB3, E1, SB1, SB2, StB1], RectTypEnabled);
+  SetEnabled([ClB2, C2, C3, FnB1, FnB2, FnB3, AlB1, AlB2, AlB3, AlB4, AlB5, AlB6, AlB7, AlB8, HlB1], FontTypEnabled);
   SetEnabled([ZB1, ZB2, N32, N33, GB3], ZEnabled);
   SetEnabled([CutB, N11, N2], CutEnabled);
   SetEnabled([CopyB, N12, N1], CopyEnabled);
@@ -2607,8 +2676,8 @@ begin
   SetEnabled([N36, N6], EditEnabled);
   if not C2.Enabled then
   begin
-    C2.ItemIndex := -1;
-    C3.Text := '';
+    C2.ItemIndex := - 1;
+    C3.Text := EmptyStr;
   end;
   InspForm.EnableItem(6, EditEnabled);
   StatusBar1.Repaint;
@@ -2627,45 +2696,58 @@ begin
   begin
     t := Objects[TopSelected];
     if t.Typ <> gtBand then
-    with t do
-    begin
-      FrB1.Down := (FrameTyp and $8) <> 0;
-      FrB2.Down := (FrameTyp and $4) <> 0;
-      FrB3.Down := (FrameTyp and $2) <> 0;
-      FrB4.Down := (FrameTyp and $1) <> 0;
-      E1.Text := FloatToStrF(FrameWidth, ffGeneral, 2, 2);
-      frSetGlyph(FillColor, ClB1, 1);
-      frSetGlyph(FrameColor, ClB3, 2);
-      if t is TfrMemoView then
-      with t as TfrMemoView do
+      with t do
       begin
-        frSetGlyph(Font.Color, ClB2, 0);
-        if C2.ItemIndex <> C2.Items.IndexOf(Font.Name) then
-          C2.ItemIndex := C2.Items.IndexOf(Font.Name);
-        if C3.Text <> IntToStr(Font.Size) then
-          C3.Text := IntToStr(Font.Size);
-        FnB1.Down := fsBold in Font.Style;
-        FnB2.Down := fsItalic in Font.Style;
-        FnB3.Down := fsUnderline in Font.Style;
-        AlB4.Down := (Adjust and $4) <> 0;
-        AlB5.Down := (Adjust and $18) = $8;
-        AlB6.Down := (Adjust and $18) = 0;
-        AlB7.Down := (Adjust and $18) = $10;
-        case (Adjust and $3) of
-          0: BDown(AlB1);
-          1: BDown(AlB2);
-          2: BDown(AlB3);
-          3: BDown(AlB8);
-        end;
+        FrB1.Down := (FrameTyp and $8) <> 0;
+        FrB2.Down := (FrameTyp and $4) <> 0;
+        FrB3.Down := (FrameTyp and $2) <> 0;
+        FrB4.Down := (FrameTyp and $1) <> 0;
+        E1.Text := FloatToStrF(FrameWidth, ffGeneral, 2, 2);
+        frSetGlyph(FillColor, ClB1, 1);
+        frSetGlyph(FrameColor, ClB3, 2);
+        if t is TfrMemoView then
+          with t as TfrMemoView do
+          begin
+            frSetGlyph(Font.Color, ClB2, 0);
+            if C2.ItemIndex <> C2.Items.IndexOf(Font.Name) then
+              C2.ItemIndex := C2.Items.IndexOf(Font.Name);
+            if C3.Text <> IntToStr(Font.Size) then
+              C3.Text := IntToStr(Font.Size);
+            FnB1.Down := fsBold in Font.Style;
+            FnB2.Down := fsItalic in Font.Style;
+            FnB3.Down := fsUnderline in Font.Style;
+            AlB4.Down := (Adjust and $4) <> 0;
+            AlB5.Down := (Adjust and $18) = $8;
+            AlB6.Down := (Adjust and $18) = 0;
+            AlB7.Down := (Adjust and $18) = $10;
+            case (Adjust and $3) of
+              0:
+                BDown(AlB1);
+              1:
+                BDown(AlB2);
+              2:
+                BDown(AlB3);
+              3:
+                BDown(AlB8);
+            end;
+          end;
       end;
-    end;
-  end
-  else if SelNum > 1 then
+  end else if SelNum > 1 then
   begin
-    BUp(FrB1); BUp(FrB2); BUp(FrB3); BUp(FrB4);
-    frSetGlyph(0, ClB1, 1); E1.Text := '1'; C2.ItemIndex := -1; C3.Text := '';
-    BUp(FnB1); BUp(FnB2); BUp(FnB3);
-    BDown(AlB1); BUp(AlB4); BUp(AlB5);
+    BUp(FrB1);
+    BUp(FrB2);
+    BUp(FrB3);
+    BUp(FrB4);
+    frSetGlyph(0, ClB1, 1);
+    E1.Text := '1';
+    C2.ItemIndex := - 1;
+    C3.Text := EmptyStr;
+    BUp(FnB1);
+    BUp(FnB2);
+    BUp(FnB3);
+    BDown(AlB1);
+    BUp(AlB4);
+    BUp(AlB5);
   end;
   Busy := False;
   ShowPosition;
@@ -2686,23 +2768,26 @@ var
   t: TfrView;
   s: String;
 begin
-  s := '';
+  s := EmptyStr;
   if SelNum = 1 then
   begin
     t := Objects[TopSelected];
     s := t.Name;
     if t is TfrBandView then
       s := s + ': ' + frBandNames[Integer(TfrBandView(t).BandType)]
-    else if t.Memo.Count > 0 then
-      s := s + ': ' + t.Memo[0];
+    else
+      if t.Memo.Count > 0 then
+        s := s + ': ' + t.Memo[0];
   end;
   StatusBar1.Panels[2].Text := s;
 end;
 
 procedure SetBit(var w: Word; e: Boolean; m: Integer);
 begin
-  if e then w := w or m
-  else w := w and not m;
+  if e then
+    w := w or m
+  else
+    w := w and not m;
 end;
 
 procedure TfrDesignerForm.DoClick(Sender: TObject);
@@ -2712,7 +2797,8 @@ var
   DRect: TRect;
   t: TfrView;
 begin
-  if Busy then Exit;
+  if Busy then
+    Exit;
   AddUndoAction(acEdit);
   PageView.DrawPage(dmSelection);
   GetRegion;
@@ -2721,117 +2807,128 @@ begin
   begin
     t := Objects[i];
     if t.Selected and ((t.Typ <> gtBand) or (b = 16)) then
-    with t do
-    begin
-      if t is TfrMemoView then
-      with t as TfrMemoView do
+      with t do
+      begin
+        if t is TfrMemoView then
+          with t as TfrMemoView do
+            case b of
+              7:
+                if C2.ItemIndex <> 0 then
+                begin
+                  Font.Name := C2.Text;
+                  LastFontName := Font.Name;
+                end;
+              8:
+                begin
+                  Font.Size := StrToInt(C3.Text);
+                  LastFontSize := Font.Size;
+                end;
+              9:
+                begin
+                  LastFontStyle := frGetFontStyle(Font.Style);
+                  SetBit(LastFontStyle, FnB1.Down, 2);
+                  Font.Style := frSetFontStyle(LastFontStyle);
+                end;
+              10:
+                begin
+                  LastFontStyle := frGetFontStyle(Font.Style);
+                  SetBit(LastFontStyle, FnB2.Down, 1);
+                  Font.Style := frSetFontStyle(LastFontStyle);
+                end;
+              11 .. 13:
+                begin
+                  Adjust := (Adjust and $FC) + (b - 11);
+                  LastAdjust := Adjust;
+                end;
+              14:
+                begin
+                  Adjust := (Adjust and $FB) + Word(AlB4.Down) * 4;
+                  LastAdjust := Adjust;
+                end;
+              15:
+                begin
+                  Adjust := (Adjust and $E7) + Word(AlB5.Down) * 8 + Word(AlB7.Down) * $10;
+                  LastAdjust := Adjust;
+                end;
+              17:
+                begin
+                  Font.Color := ColorSelector.Color;
+                  LastFontColor := Font.Color;
+                end;
+              18:
+                begin
+                  LastFontStyle := frGetFontStyle(Font.Style);
+                  SetBit(LastFontStyle, FnB3.Down, 4);
+                  Font.Style := frSetFontStyle(LastFontStyle);
+                end;
+              22:
+                begin
+                  Adjust := (Adjust and $FC) + 3;
+                  LastAdjust := Adjust;
+                end;
+            end;
         case b of
-          7: if C2.ItemIndex <> 0 then
-             begin
-               Font.Name := C2.Text;
-               LastFontName := Font.Name;
-             end;
-          8: begin
-               Font.Size := StrToInt(C3.Text);
-               LastFontSize := Font.Size;
-             end;
-          9: begin
-               LastFontStyle := frGetFontStyle(Font.Style);
-               SetBit(LastFontStyle, FnB1.Down, 2);
-               Font.Style := frSetFontStyle(LastFontStyle);
-             end;
-         10: begin
-               LastFontStyle := frGetFontStyle(Font.Style);
-               SetBit(LastFontStyle, FnB2.Down, 1);
-               Font.Style := frSetFontStyle(LastFontStyle);
-             end;
-         11..13:
-             begin
-               Adjust := (Adjust and $FC) + (b - 11);
-               LastAdjust := Adjust;
-             end;
-         14: begin
-               Adjust := (Adjust and $FB) + Word(AlB4.Down) * 4;
-               LastAdjust := Adjust;
-             end;
-         15: begin
-               Adjust := (Adjust and $E7) + Word(AlB5.Down) * 8 + Word(AlB7.Down) * $10;
-               LastAdjust := Adjust;
-             end;
-         17: begin
-               Font.Color := ColorSelector.Color;
-               LastFontColor := Font.Color;
-             end;
-         18: begin
-               LastFontStyle := frGetFontStyle(Font.Style);
-               SetBit(LastFontStyle, FnB3.Down, 4);
-               Font.Style := frSetFontStyle(LastFontStyle);
-             end;
-         22: begin
-               Adjust := (Adjust and $FC) + 3;
-               LastAdjust := Adjust;
-             end;
+          1:
+            begin
+              SetBit(FrameTyp, FrB1.Down, 8);
+              DRect := Rect(t.x - 10, t.y - 10, t.x + t.dx + 10, t.y + 10)
+            end;
+          2:
+            begin
+              SetBit(FrameTyp, FrB2.Down, 4);
+              DRect := Rect(t.x - 10, t.y - 10, t.x + 10, t.y + t.dy + 10)
+            end;
+          3:
+            begin
+              SetBit(FrameTyp, FrB3.Down, 2);
+              DRect := Rect(t.x - 10, t.y + t.dy - 10, t.x + t.dx + 10, t.y + t.dy + 10)
+            end;
+          4:
+            begin
+              SetBit(FrameTyp, FrB4.Down, 1);
+              DRect := Rect(t.x + t.dx - 10, t.y - 10, t.x + t.dx + 10, t.y + t.dy + 10)
+            end;
+          20:
+            begin
+              FrameTyp := FrameTyp or $F;
+              LastFrameTyp := $F;
+            end;
+          21:
+            begin
+              FrameTyp := FrameTyp and not $F;
+              LastFrameTyp := 0;
+            end;
+          5:
+            begin
+              FillColor := ColorSelector.Color;
+              LastFillColor := FillColor;
+            end;
+          6:
+            begin
+              s := E1.Text;
+              for j := 1 to Length(s) do
+                if CharInset(s[j], ['.', ',']) then
+                  s[j] := FormatSettings.DecimalSeparator;
+              FrameWidth := StrToFloat(s);
+              if t is TfrLineView then
+                LastLineWidth := FrameWidth
+              else
+                LastFrameWidth := FrameWidth;
+            end;
+          19:
+            begin
+              FrameColor := ColorSelector.Color;
+              LastFrameColor := FrameColor;
+            end;
+          25 .. 30:
+            FrameStyle := b - 25;
         end;
-      case b of
-        1:
-         begin
-           SetBit(FrameTyp, FrB1.Down, 8);
-           DRect := Rect(t.x - 10, t.y - 10, t.x + t.dx + 10, t.y + 10)
-         end;
-        2:
-         begin
-           SetBit(FrameTyp, FrB2.Down, 4);
-           DRect := Rect(t.x - 10, t.y - 10, t.x + 10, t.y + t.dy + 10)
-         end;
-        3:
-         begin
-           SetBit(FrameTyp, FrB3.Down, 2);
-           DRect := Rect(t.x - 10, t.y + t.dy - 10, t.x + t.dx + 10, t.y + t.dy + 10)
-         end;
-        4:
-         begin
-           SetBit(FrameTyp, FrB4.Down, 1);
-           DRect := Rect(t.x + t.dx - 10, t.y - 10, t.x + t.dx + 10, t.y + t.dy + 10)
-         end;
-        20:
-         begin
-           FrameTyp := FrameTyp or $F;
-           LastFrameTyp := $F;
-         end;
-        21:
-         begin
-           FrameTyp := FrameTyp and not $F;
-           LastFrameTyp := 0;
-         end;
-        5:
-         begin
-           FillColor := ColorSelector.Color;
-           LastFillColor := FillColor;
-         end;
-        6:
-         begin
-           s := E1.Text;
-           for j := 1 to Length(s) do
-             if s[j] in ['.', ','] then
-               s[j] := DecimalSeparator;
-           FrameWidth := StrToFloat(s);
-           if t is TfrLineView then
-             LastLineWidth := FrameWidth else
-             LastFrameWidth := FrameWidth;
-         end;
-        19:
-         begin
-           FrameColor := ColorSelector.Color;
-           LastFrameColor := FrameColor;
-         end;
-        25..30:
-          FrameStyle := b - 25;
       end;
-    end;
   end;
   PageView.Draw(TopSelected, ClipRgn);
   ActiveControl := nil;
-  if b in [20, 21] then SelectionChanged;
+  if b in [20, 21] then
+    SelectionChanged;
 end;
 
 procedure TfrDesignerForm.frSpeedButton1Click(Sender: TObject);
@@ -2846,6 +2943,7 @@ var
 begin
   t := Objects[TopSelected];
   frHilightForm := TfrHilightForm.Create(nil);
+  frHilightForm.PopUpParent := Self;
   with frHilightForm do
   begin
     FontColor := t.Highlight.FontColor;
@@ -2876,49 +2974,70 @@ var
   begin
     if FUnits = ruPixels then
     begin
-      if x <> -10000 then fld[1] := IntToStr(x);
-      if y <> -10000 then fld[2] := IntToStr(y);
-      if dx <> -10000 then fld[3] := IntToStr(dx);
-      if dy <> -10000 then fld[4] := IntToStr(dy);
-    end
-    else
-    begin
-      if x <> -10000 then fld[1] := FloatToStrF(PointsToUnits(x), ffFixed, 4, 2);
-      if y <> -10000 then fld[2] := FloatToStrF(PointsToUnits(y), ffFixed, 4, 2);
-      if dx <> -10000 then fld[3] := FloatToStrF(PointsToUnits(dx), ffFixed, 4, 2);
-      if dy <> -10000 then fld[4] := FloatToStrF(PointsToUnits(dy), ffFixed, 4, 2);
+      if x <> - 10000 then
+        fld[1] := ShortString(IntToStr(x));
+      if y <> - 10000 then
+        fld[2] := ShortString(IntToStr(y));
+      if dx <> - 10000 then
+        fld[3] := ShortString(IntToStr(dx));
+      if dy <> - 10000 then
+        fld[4] := ShortString(IntToStr(dy));
+    end else begin
+      if x <> - 10000 then
+        fld[1] := ShortString(FloatToStrF(PointsToUnits(x), ffFixed, 4, 2));
+      if y <> - 10000 then
+        fld[2] := ShortString(FloatToStrF(PointsToUnits(y), ffFixed, 4, 2));
+      if dx <> - 10000 then
+        fld[3] := ShortString(FloatToStrF(PointsToUnits(dx), ffFixed, 4, 2));
+      if dy <> - 10000 then
+        fld[4] := ShortString(FloatToStrF(PointsToUnits(dy), ffFixed, 4, 2));
     end;
-    if v <> -10000 then
+    if v <> - 10000 then
     begin
-      if v <> 0 then v := 1;
-      fld[5] := IntToStr(v);
+      if v <> 0 then
+        v := 1;
+      fld[5] := ShortString(IntToStr(v));
     end;
   end;
+
 begin
-  fld[0] := ''; fld[1] := ''; fld[2] := '';
-  fld[3] := ''; fld[4] := ''; fld[5] := ''; fld[6] := '';
-  InspForm.V := nil;
+  fld[0] := EmptyAnsiStr;
+  fld[1] := EmptyAnsiStr;
+  fld[2] := EmptyAnsiStr;
+  fld[3] := EmptyAnsiStr;
+  fld[4] := EmptyAnsiStr;
+  fld[5] := EmptyAnsiStr;
+  fld[6] := EmptyAnsiStr;
+  InspForm.v := nil;
   if SelNum = 1 then
   begin
     t := Objects[TopSelected];
-    InspForm.V := t;
-    fld[0] := t.Name;
+    InspForm.v := t;
+    fld[0] := ShortString(t.Name);
     FillFields(t.x, t.y, t.dx, t.dy, Integer(t.Visible));
-  end
-  else if SelNum > 1 then
+  end else if SelNum > 1 then
   begin
     t := Objects[TopSelected];
-    x := t.x; y := t.y; dx := t.dx; dy := t.dy; v := Integer(t.Visible);
+    x := t.x;
+    y := t.y;
+    dx := t.dx;
+    dy := t.dy;
+    v := Integer(t.Visible);
     for i := 0 to Objects.Count - 1 do
     begin
       t := Objects[i];
       if t.Selected then
       begin
-        if t.x <> x then x := -10000;
-        if t.y <> y then y := -10000;
-        if t.dx <> dx then dx := -10000;
-        if t.dy <> dy then dy := -10000;
-        if Integer(t.Visible) <> v then v := -10000;
+        if t.x <> x then
+          x := - 10000;
+        if t.y <> y then
+          y := - 10000;
+        if t.dx <> dx then
+          dx := - 10000;
+        if t.dy <> dy then
+          dy := - 10000;
+        if Integer(t.Visible) <> v then
+          v := - 10000;
       end;
     end;
     FillFields(x, y, dx, dy, v);
@@ -2935,38 +3054,44 @@ begin
   if (Item = 0) and (SelNum = 1) then
   begin
     t := Objects[TopSelected];
-    if CurReport.FindObject(fld[0]) = nil then
-      t.Name := fld[0] else
-      EditText := t.Name;
+    if CurReport.FindObject(String(fld[0])) = nil then
+      t.Name := String(fld[0])
+    else
+      EditText := String(t.Name);
     SetPageTitles;
-  end
-  else if Item in [1..5] then
+  end else if Item in [1 .. 5] then
   begin
-    EditText := frParser.Calc(fld[Item]);
+    EditText := frParser.Calc(String(fld[Item]));
     if Item <> 6 then
-      k := UnitsToPoints(StrToFloat(EditText)) else
+      k := UnitsToPoints(StrToFloat(EditText))
+    else
       k := StrToInt(EditText);
-    for i := 0 to Objects.Count-1 do
+    for i := 0 to Objects.Count - 1 do
     begin
       t := Objects[i];
       if t.Selected then
-      with t do
-        case Item of
-          1: if (k > 0) and (k < Page.PrnInfo.Pgw) then
-               x := k;
-          2: if (k > 0) and (k < Page.PrnInfo.Pgh) then
-             y := k;
-          3: if (k > 0) and (k < Page.PrnInfo.Pgw) then
-             dx := k;
-          4: if (k > 0) and (k < Page.PrnInfo.Pgh) then
-             dy := k;
-          5: Visible := Boolean(k);
-        end;
+        with t do
+          case Item of
+            1:
+              if (k > 0) and (k < Page.PrnInfo.Pgw) then
+                x := k;
+            2:
+              if (k > 0) and (k < Page.PrnInfo.Pgh) then
+                y := k;
+            3:
+              if (k > 0) and (k < Page.PrnInfo.Pgw) then
+                dx := k;
+            4:
+              if (k > 0) and (k < Page.PrnInfo.Pgh) then
+                dy := k;
+            5:
+              Visible := Boolean(k);
+          end;
     end;
   end;
   FillInspFields;
-  if Item in [1..5] then
-    EditText := fld[Item];
+  if Item in [1 .. 5] then
+    EditText := String(fld[Item]);
   RedrawPage;
   StatusBar1.Repaint;
   PBox1Paint(nil);
@@ -2981,8 +3106,8 @@ begin
     LinePanel.Parent := Self;
     with (Sender as TControl) do
       p := Self.ScreenToClient(Parent.ClientToScreen(Point(Left, Top)));
-    LinePanel.Left := p.X;
-    LinePanel.Top := p.Y + 26;
+    LinePanel.Left := p.x;
+    LinePanel.Top := p.y + 26;
   end;
   LinePanel.Visible := not LinePanel.Visible;
 end;
@@ -2993,31 +3118,33 @@ var
 begin
   with (Sender as TControl) do
     p := Self.ScreenToClient(Parent.ClientToScreen(Point(Left, Top)));
-  if ColorSelector.Left = p.X then
+  if ColorSelector.Left = p.x then
     ColorSelector.Visible := not ColorSelector.Visible
   else
   begin
-    ColorSelector.Left := p.X;
-    ColorSelector.Top := p.Y + 26;
+    ColorSelector.Left := p.x;
+    ColorSelector.Top := p.y + 26;
     ColorSelector.Visible := True;
   end;
   ClrButton := Sender as TfrSpeedButton;
   with ClrButton.Glyph.Canvas do
     if Pixels[2, 14] <> Pixels[1, 13] then
-      ColorSelector.Color := clNone else
+      ColorSelector.Color := clNone
+    else
       ColorSelector.Color := Pixels[2, 14];
 end;
 
 procedure TfrDesignerForm.ColorSelected(Sender: TObject);
 var
-  n: Integer;
+  N: Integer;
 begin
-  n := 0;
+  N := 0;
   if ClrButton = ClB1 then
-    n := 1
-  else if ClrButton = ClB3 then
-    n := 2;
-  frSetGlyph(ColorSelector.Color, ClrButton, n);
+    N := 1
+  else
+    if ClrButton = ClB3 then
+      N := 2;
+  frSetGlyph(ColorSelector.Color, ClrButton, N);
   DoClick(ClrButton);
 end;
 
@@ -3038,36 +3165,38 @@ begin
       t := nil;
       if ShowSizes then
       begin
-        x := OldRect.Left; y := OldRect.Top;
-        dx := OldRect.Right - x; dy := OldRect.Bottom - y;
-      end
-      else
-      begin
+        x := OldRect.Left;
+        y := OldRect.Top;
+        dx := OldRect.Right - x;
+        dy := OldRect.Bottom - y;
+      end else begin
         t := Objects[TopSelected];
-        x := t.x; y := t.y; dx := t.dx; dy := t.dy;
+        x := t.x;
+        y := t.y;
+        dx := t.dx;
+        dy := t.dy;
       end;
       if FUnits = ruPixels then
-        s := IntToStr(x) + ';' + IntToStr(y) else
-        s := FloatToStrF(PointsToUnits(x), ffFixed, 4, 2) + '; ' +
-          FloatToStrF(PointsToUnits(y), ffFixed, 4, 2);
+        s := IntToStr(x) + ';' + IntToStr(y)
+      else
+        s := FloatToStrF(PointsToUnits(x), ffFixed, 4, 2) + '; ' + FloatToStrF(PointsToUnits(y), ffFixed, 4, 2);
       TextOut(20, 1, s);
       if FUnits = ruPixels then
-        s := IntToStr(dx) + ';' + IntToStr(dy) else
-        s := FloatToStrF(PointsToUnits(dx), ffFixed, 4, 2) + '; ' +
-          FloatToStrF(PointsToUnits(dy), ffFixed, 4, 2);
+        s := IntToStr(dx) + ';' + IntToStr(dy)
+      else
+        s := FloatToStrF(PointsToUnits(dx), ffFixed, 4, 2) + '; ' + FloatToStrF(PointsToUnits(dy), ffFixed, 4, 2);
       TextOut(110, 1, s);
       if not ShowSizes and (t.Typ = gtPicture) then
         with t as TfrPictureView do
-        if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
-        begin
-          s := IntToStr(dx * 100 div Picture.Width) + ',' +
-               IntToStr(dy * 100 div Picture.Height);
-          TextOut(170, 1, '% ' + s);
-        end;
-    end
-    else if (SelNum > 0) and MRFlag then
+          if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
+          begin
+            s := IntToStr(dx * 100 div Picture.Width) + ',' + IntToStr(dy * 100 div Picture.Height);
+            TextOut(170, 1, '% ' + s);
+          end;
+    end else if (SelNum > 0) and MRFlag then
     begin
-      nx := 0; ny := 0;
+      nx := 0;
+      ny := 0;
       if OldRect1.Right - OldRect1.Left <> 0 then
         nx := (OldRect.Right - OldRect.Left) / (OldRect1.Right - OldRect1.Left);
       if OldRect1.Bottom - OldRect1.Top <> 0 then
@@ -3078,8 +3207,7 @@ begin
   end;
 end;
 
-procedure TfrDesignerForm.C2DrawItem(Control: TWinControl; Index: Integer;
-  Rect: TRect; State: TOwnerDrawState);
+procedure TfrDesignerForm.C2DrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
   with C2.Canvas do
   begin
@@ -3113,66 +3241,68 @@ begin
   t := Objects[TopSelected];
   if t.Typ = gtMemo then
     ShowMemoEditor
-  else if t.Typ = gtPicture then
-  begin
-    frGEditorForm := TfrGEditorForm.Create(nil);
-    with frGEditorForm do
+  else
+    if t.Typ = gtPicture then
     begin
-      Image1.Picture.Assign((t as TfrPictureView).Picture);
-      if ShowModal = mrOk then
+      frGEditorForm := TfrGEditorForm.Create(nil);
+      frGEditorForm.PopUpParent := Self;
+      with frGEditorForm do
       begin
-        AddUndoAction(acEdit);
-        PageView.DrawPage(dmSelection);
-        (t as TfrPictureView).Picture.Assign(Image1.Picture);
-        PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
-      end;
-    end;
-    frGEditorForm.Free;
-  end
-  else if t.Typ = gtBand then
-  begin
-    PageView.DrawPage(dmSelection);
-    bt := (t as TfrBandView).BandType;
-    if bt in [btMasterData, btDetailData, btSubDetailData] then
-    begin
-      frBandEditorForm := TfrBandEditorForm.Create(nil);
-      frBandEditorForm.ShowEditor(t);
-      frBandEditorForm.Free;
-    end
-    else if bt = btGroupHeader then
-    begin
-      frGroupEditorForm := TfrGroupEditorForm.Create(nil);
-      frGroupEditorForm.ShowEditor(t);
-      frGroupEditorForm.Free;
-    end
-    else if bt = btCrossData then
-    begin
-      frVBandEditorForm := TfrVBandEditorForm.Create(nil);
-      frVBandEditorForm.ShowEditor(t);
-      frVBandEditorForm.Free;
-    end
-    else
-      PageView.DFlag := False;
-    PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
-  end
-  else if t.Typ = gtSubReport then
-    CurPage := (t as TfrSubReportView).SubPage
-  else if t.Typ = gtAddIn then
-  begin
-    for i := 0 to frAddInsCount - 1 do
-      if frAddIns[i].ClassRef.ClassName = t.ClassName then
-      begin
-        if frAddIns[i].EditorForm <> nil then
+        Image1.Picture.Assign((t as TfrPictureView).Picture);
+        if ShowModal = mrOk then
         begin
+          AddUndoAction(acEdit);
           PageView.DrawPage(dmSelection);
-          frAddIns[i].EditorForm.ShowEditor(t);
+          (t as TfrPictureView).Picture.Assign(Image1.Picture);
           PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
-        end
-        else
-          ShowMemoEditor;
-        break;
+        end;
       end;
-  end;
+      frGEditorForm.Free;
+    end else if t.Typ = gtBand then
+    begin
+      PageView.DrawPage(dmSelection);
+      bt := (t as TfrBandView).BandType;
+      if bt in [btMasterData, btDetailData, btSubDetailData] then
+      begin
+        frBandEditorForm := TfrBandEditorForm.Create(nil);
+        frBandEditorForm.PopUpParent := Self;
+        frBandEditorForm.ShowEditor(t);
+        frBandEditorForm.Free;
+      end else if bt = btGroupHeader then
+      begin
+        frGroupEditorForm := TfrGroupEditorForm.Create(nil);
+        frGroupEditorForm.PopUpParent := Self;
+        frGroupEditorForm.ShowEditor(t);
+        frGroupEditorForm.Free;
+      end else if bt = btCrossData then
+      begin
+        frVBandEditorForm := TfrVBandEditorForm.Create(nil);
+        frVBandEditorForm.PopUpParent := Self;
+        frVBandEditorForm.ShowEditor(t);
+        frVBandEditorForm.Free;
+      end
+      else
+        PageView.DFlag := False;
+      PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
+    end else if t.Typ = gtSubReport then
+      CurPage := (t as TfrSubReportView).SubPage
+    else
+      if t.Typ = gtAddIn then
+      begin
+        for i := 0 to frAddInsCount - 1 do
+          if frAddIns[i].ClassRef.ClassName = t.ClassName then
+          begin
+            if frAddIns[i].EditorForm <> nil then
+            begin
+              PageView.DrawPage(dmSelection);
+              frAddIns[i].EditorForm.ShowEditor(t);
+              PageView.Draw(TopSelected, t.GetClipRgn(rtExtended));
+            end
+            else
+              ShowMemoEditor;
+            break;
+          end;
+      end;
   ShowContent;
   ShowPosition;
   ActiveControl := nil;
@@ -3225,10 +3355,12 @@ var
   a: TfrUndoAction;
 begin
   if Buffer = @FUndoBuffer then
-    BufferLength := FUndoBufferLength else
+    BufferLength := FUndoBufferLength
+  else
     BufferLength := FRedoBufferLength;
 
-  if Buffer[BufferLength - 1].Page <> CurPage then Exit;
+  if Buffer[BufferLength - 1].Page <> CurPage then
+    Exit;
   List := TList.Create;
   a := Buffer[BufferLength - 1].Action;
   p := Buffer[BufferLength - 1].Objects;
@@ -3245,8 +3377,10 @@ begin
           r^.ObjPtr := Objects[r^.Int];
           a := acDelete;
         end;
-      acDelete: a := acInsert;
-      acEdit:   r^.ObjPtr := Objects[p^.Int];
+      acDelete:
+        a := acInsert;
+      acEdit:
+        r^.ObjPtr := Objects[p^.Int];
       acZOrder:
         begin
           r^.Int := Page.FindObjectByID(p^.ObjID);
@@ -3257,7 +3391,8 @@ begin
     p := p^.Next;
   end;
   if Buffer = @FUndoBuffer then
-    AddAction(@FRedoBuffer, a, List) else
+    AddAction(@FRedoBuffer, a, List)
+  else
     AddAction(@FUndoBuffer, a, List);
   List.Free;
 
@@ -3265,14 +3400,17 @@ begin
   while p <> nil do
   begin
     case Buffer[BufferLength - 1].Action of
-      acInsert: Page.Delete(Page.FindObjectByID(p^.ObjID));
-      acDelete: Objects.Insert(p^.Int, p^.ObjPtr);
+      acInsert:
+        Page.Delete(Page.FindObjectByID(p^.ObjID));
+      acDelete:
+        Objects.Insert(p^.Int, p^.ObjPtr);
       acEdit:
         begin
           TfrView(Objects[p^.Int]).Assign(p^.ObjPtr);
           p^.ObjPtr.Free;
         end;
-      acZOrder: Objects[p^.Int] := p^.ObjPtr;
+      acZOrder:
+        Objects[p^.Int] := p^.ObjPtr;
     end;
     p1 := p;
     p := p^.Next;
@@ -3280,7 +3418,8 @@ begin
   end;
 
   if Buffer = @FUndoBuffer then
-    Dec(FUndoBufferLength) else
+    Dec(FUndoBufferLength)
+  else
     Dec(FRedoBufferLength);
 
   ResetSelection;
@@ -3300,7 +3439,8 @@ var
   BufferLength: Integer;
 begin
   if Buffer = @FUndoBuffer then
-    BufferLength := FUndoBufferLength else
+    BufferLength := FUndoBufferLength
+  else
     BufferLength := FRedoBufferLength;
   if BufferLength >= MaxUndoBuffer then
   begin
@@ -3320,11 +3460,13 @@ begin
     GetMem(p1, SizeOf(TfrUndoObj));
     p1^.Next := nil;
     if Buffer[BufferLength].Objects = nil then
-      Buffer[BufferLength].Objects := p1 else
+      Buffer[BufferLength].Objects := p1
+    else
       p^.Next := p1;
     p := p1;
     case a of
-      acInsert: p^.ObjID := t.ID;
+      acInsert:
+        p^.ObjID := t.ID;
       acDelete, acEdit:
         begin
           t1 := frCreateObject(t.Typ, t.ClassName);
@@ -3347,9 +3489,7 @@ begin
     FUndoBufferLength := BufferLength + 1;
     N46.Enabled := True;
     UndoB.Enabled := True;
-  end
-  else
-  begin
+  end else begin
     FRedoBufferLength := BufferLength + 1;
     N48.Enabled := True;
     RedoB.Enabled := True;
@@ -3393,42 +3533,50 @@ begin
   PageView.Draw(TopSelected, 0);
 end;
 
-procedure TfrDesignerForm.ZB1Click(Sender: TObject);   // go up
+procedure TfrDesignerForm.ZB1Click(Sender: TObject); // go up
 var
-  i, j, n: Integer;
+  i, j, N: Integer;
   t: TfrView;
 begin
   AddUndoAction(acZOrder);
-  n := Objects.Count; i := 0; j := 0;
-  while j < n do
+  N := Objects.Count;
+  i := 0;
+  j := 0;
+  while j < N do
   begin
     t := Objects[i];
     if t.Selected then
     begin
       Objects.Delete(i);
       Objects.Add(t);
-    end else Inc(i);
+    end
+    else
+      Inc(i);
     Inc(j);
   end;
   SendBandsToDown;
   RedrawPage;
 end;
 
-procedure TfrDesignerForm.ZB2Click(Sender: TObject);    // go down
+procedure TfrDesignerForm.ZB2Click(Sender: TObject); // go down
 var
   t: TfrView;
-  i, j, n: Integer;
+  i, j, N: Integer;
 begin
   AddUndoAction(acZOrder);
-  n := Objects.Count; j := 0; i := n - 1;
-  while j < n do
+  N := Objects.Count;
+  j := 0;
+  i := N - 1;
+  while j < N do
   begin
     t := Objects[i];
     if t.Selected then
     begin
       Objects.Delete(i);
       Objects.Insert(0, t);
-    end else Dec(i);
+    end
+    else
+      Dec(i);
     Inc(j);
   end;
   SendBandsToDown;
@@ -3443,8 +3591,7 @@ end;
 
 procedure TfrDesignerForm.PgB2Click(Sender: TObject); // remove page
 begin
-  if MessageBox(0, PChar(LoadStr(SRemovePg)),
-    PChar(LoadStr(SConfirm)), mb_IconQuestion + mb_YesNo) = mrYes then
+  if MessageBox(0, PChar(LoadStr(SRemovePg)), PChar(LoadStr(SConfirm)), mb_IconQuestion + mb_YesNo) = mrYes then
     RemovePage(CurPage);
 end;
 
@@ -3453,14 +3600,13 @@ begin
   ObjRepeat := False;
 end;
 
-procedure TfrDesignerForm.OB2MouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TfrDesignerForm.OB2MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
 begin
   ObjRepeat := ssShift in Shift;
   PageView.Cursor := crDefault;
 end;
 
-procedure TfrDesignerForm.CutBClick(Sender: TObject); //cut
+procedure TfrDesignerForm.CutBClick(Sender: TObject); // cut
 begin
   AddUndoAction(acDelete);
   CutToClipboard;
@@ -3470,40 +3616,44 @@ begin
   RedrawPage;
 end;
 
-procedure TfrDesignerForm.CopyBClick(Sender: TObject); //copy
+procedure TfrDesignerForm.CopyBClick(Sender: TObject); // copy
 begin
   CopyToClipboard;
   EnableControls;
 end;
 
-procedure TfrDesignerForm.PstBClick(Sender: TObject); //paste
+procedure TfrDesignerForm.PstBClick(Sender: TObject); // paste
 var
   i, minx, miny: Integer;
   t, t1: TfrView;
 begin
   Unselect;
   SelNum := 0;
-  minx := 32767; miny := 32767;
+  minx := 32767;
+  miny := 32767;
   with ClipBd do
-  for i := 0 to Count-1 do
-  begin
-    t := Items[i];
-    if t.x < minx then minx := t.x;
-    if t.y < miny then miny := t.y;
-  end;
+    for i := 0 to Count - 1 do
+    begin
+      t := Items[i];
+      if t.x < minx then
+        minx := t.x;
+      if t.y < miny then
+        miny := t.y;
+    end;
   for i := 0 to ClipBd.Count - 1 do
   begin
     t := ClipBd.Items[i];
     if t.Typ = gtBand then
-      if not (TfrBandType(t.FrameTyp) in [btMasterHeader..btSubDetailFooter,
-                                          btGroupHeader, btGroupFooter]) and
+      if not (TfrBandType(t.FrameTyp) in [btMasterHeader .. btSubDetailFooter, btGroupHeader, btGroupFooter]) and
         frCheckBand(TfrBandType(t.FrameTyp)) then
         continue;
     if PageView.Left < 0 then
-      t.x := t.x - minx + ((-PageView.Left) div GridSize * GridSize) else
+      t.x := t.x - minx + (( - PageView.Left) div GridSize * GridSize)
+    else
       t.x := t.x - minx;
     if PageView.Top < 0 then
-      t.y := t.y - miny + ((-PageView.Top) div GridSize * GridSize) else
+      t.y := t.y - miny + (( - PageView.Top) div GridSize * GridSize)
+    else
       t.y := t.y - miny;
     Inc(SelNum);
     t1 := frCreateObject(t.Typ, t.ClassName);
@@ -3543,7 +3693,6 @@ begin
   ModalResult := mrOk;
 end;
 
-
 procedure TfrDesignerForm.N5Click(Sender: TObject); // popup delete command
 begin
   DeleteObjects;
@@ -3560,14 +3709,15 @@ var
 begin
   if FileModified then
   begin
-    w := MessageBox(0, PChar(LoadStr(SSaveChanges) + ' ' + LoadStr(STo) + ' ' +
-      ExtractFileName(CurDocName) + '?'),
+    w := MessageBox(0, PChar(LoadStr(SSaveChanges) + ' ' + LoadStr(STo) + ' ' + ExtractFileName(CurDocName) + '?'),
       PChar(LoadStr(SConfirm)), mb_IconQuestion + mb_YesNoCancel);
-    if w = mrCancel then Exit;
+    if w = mrCancel then
+      Exit;
     if w = mrYes then
     begin
       FileBtn3Click(nil);
-      if not WasOk then Exit;
+      if not WasOk then
+        Exit;
     end;
   end;
   ClearUndoBuffer;
@@ -3581,14 +3731,15 @@ end;
 procedure TfrDesignerForm.N23Click(Sender: TObject); // create new from template
 begin
   frTemplForm := TfrTemplForm.Create(nil);
+  frTemplForm.PopUpParent := Self;
   with frTemplForm do
-  if ShowModal = mrOk then
-  begin
-    ClearUndoBuffer;
-    CurReport.LoadTemplate(TemplName, nil, nil, True);
-    CurDocName := LoadStr(SUntitled);
-    CurPage := 0; // do all
-  end;
+    if ShowModal = mrOk then
+    begin
+      ClearUndoBuffer;
+      CurReport.LoadTemplate(TemplName, nil, nil, True);
+      CurDocName := LoadStr(SUntitled);
+      CurPage := 0; // do all
+    end;
   frTemplForm.Free;
 end;
 
@@ -3598,14 +3749,15 @@ var
 begin
   w := mrNo;
   if FileModified then
-    w := MessageBox(0, PChar(LoadStr(SSaveChanges) + ' ' + LoadStr(STo) + ' ' +
-      ExtractFileName(CurDocName) + '?'),
+    w := MessageBox(0, PChar(LoadStr(SSaveChanges) + ' ' + LoadStr(STo) + ' ' + ExtractFileName(CurDocName) + '?'),
       PChar(LoadStr(SConfirm)), mb_IconQuestion + mb_YesNoCancel);
-  if w = mrCancel then Exit;
+  if w = mrCancel then
+    Exit;
   if w = mrYes then
   begin
     FileBtn3Click(nil);
-    if not WasOk then Exit;
+    if not WasOk then
+      Exit;
   end;
   OpenDialog1.Filter := LoadStr(SFormFile) + ' (*.frf)|*.frf';
   if OpenDialog1.Execute then
@@ -3625,9 +3777,8 @@ begin
   WasOk := False;
   with SaveDialog1 do
   begin
-    Filter := LoadStr(SFormFile) + ' (*.frf)|*.frf|' +
-              LoadStr(SForm3File) + ' (*.fr3)|*.fr3|' +    
-              LoadStr(STemplFile) + ' (*.frt)|*.frt';
+    Filter := LoadStr(SFormFile) + ' (*.frf)|*.frf|' + LoadStr(SForm3File) + ' (*.fr3)|*.fr3|' + LoadStr(STemplFile) +
+      ' (*.frt)|*.frt';
     FileName := CurDocName;
     FilterIndex := 1;
     if Execute then
@@ -3637,26 +3788,24 @@ begin
         CurReport.SaveToFile(s);
         CurDocName := s;
         WasOk := True;
-      end
-      else if FilterIndex = 2 then
+      end else if FilterIndex = 2 then
       begin
         s := ChangeFileExt(FileName, '.fr3');
         CurReport.SaveToFR3File(s);
         CurDocName := s;
         WasOk := True;
-      end
-      else
-      begin
+      end else begin
         s := ExtractFileName(ChangeFileExt(FileName, '.frt'));
-        if frTemplateDir <> '' then
+        if frTemplateDir <> EmptyStr then
           s := frTemplateDir + '\' + s;
         frTemplNewForm := TfrTemplNewForm.Create(nil);
+        frTemplNewForm.PopUpParent := Self;
         with frTemplNewForm do
-        if ShowModal = mrOk then
-        begin
-          CurReport.SaveTemplate(s, Memo1.Lines, Image1.Picture.Bitmap);
-          WasOk := True;
-        end;
+          if ShowModal = mrOk then
+          begin
+            CurReport.SaveTemplate(s, Memo1.Lines, Image1.Picture.Bitmap);
+            WasOk := True;
+          end;
         frTemplNewForm.Free;
       end;
   end;
@@ -3677,7 +3826,8 @@ procedure TfrDesignerForm.FileBtn4Click(Sender: TObject); // preview
 var
   v1, v2: Boolean;
 begin
-  if CurReport is TfrCompositeReport then Exit;
+  if CurReport is TfrCompositeReport then
+    Exit;
   v1 := InspForm.Visible;
   v2 := CurReport.ModalPreview;
   InspForm.Hide;
@@ -3708,16 +3858,19 @@ var
   w, h, p: Integer;
 begin
   frPgoptForm := TfrPgoptForm.Create(nil);
+  frPgoptForm.PopUpParent := Self;
   with frPgoptForm, Page do
   begin
     CB1.Checked := PrintToPrevPage;
     CB5.Checked := not UseMargins;
     if pgOr = poPortrait then
-      RB1.Checked := True else
+      RB1.Checked := True
+    else
       RB2.Checked := True;
     ComB1.Items := Prn.PaperNames;
     ComB1.ItemIndex := Prn.GetArrayPos(pgSize);
-    E1.Text := ''; E2.Text := '';
+    E1.Text := EmptyStr;
+    E2.Text := EmptyStr;
     if pgSize = $100 then
     begin
       E1.Text := IntToStr(pgWidth div 10);
@@ -3735,24 +3888,26 @@ begin
       Modified := True;
       FileModified := True;
       WasOk := True;
-      PrintToPrevPage :=  CB1.Checked;
+      PrintToPrevPage := CB1.Checked;
       UseMargins := not CB5.Checked;
       if RB1.Checked then
-        pgOr := poPortrait else
+        pgOr := poPortrait
+      else
         pgOr := poLandscape;
       p := Prn.PaperSizes[ComB1.ItemIndex];
-      w := 0; h := 0;
+      w := 0;
+      h := 0;
       if p = $100 then
         try
-          w := StrToInt(E1.Text) * 10; h := StrToInt(E2.Text) * 10;
+          w := StrToInt(E1.Text) * 10;
+          h := StrToInt(E2.Text) * 10;
         except
-          on exception do p := 9; // A4
+          on exception do
+            p := 9; // A4
         end;
       try
-        pgMargins := Rect(StrToInt(E3.Text) * 18 div 5,
-                          StrToInt(E4.Text) * 18 div 5,
-                          StrToInt(E5.Text) * 18 div 5,
-                          StrToInt(E6.Text) * 18 div 5);
+        pgMargins := Rect(StrToInt(E3.Text) * 18 div 5, StrToInt(E4.Text) * 18 div 5, StrToInt(E5.Text) * 18 div 5,
+          StrToInt(E6.Text) * 18 div 5);
         ColGap := StrToInt(E7.Text) * 18 div 5;
       except
         on exception do
@@ -3772,6 +3927,7 @@ end;
 procedure TfrDesignerForm.N8Click(Sender: TObject); // report setup
 begin
   frDocOptForm := TfrDocOptForm.Create(nil);
+  frDocOptForm.PopUpParent := Self;
   with frDocOptForm do
   begin
     CB1.Checked := not CurReport.PrintToDefault;
@@ -3794,22 +3950,30 @@ var
   DesOptionsForm: TfrDesOptionsForm;
 begin
   DesOptionsForm := TfrDesOptionsForm.Create(nil);
+  DesOptionsForm.PopUpParent := Self;
   with DesOptionsForm do
   begin
     CB1.Checked := ShowGrid;
     CB2.Checked := GridAlign;
     case GridSize of
-      4: RB1.Checked := True;
-      8: RB2.Checked := True;
-      18: RB3.Checked := True;
+      4:
+        RB1.Checked := True;
+      8:
+        RB2.Checked := True;
+      18:
+        RB3.Checked := True;
     end;
     if ShapeMode = smFrame then
-      RB4.Checked := True else
+      RB4.Checked := True
+    else
       RB5.Checked := True;
     case Units of
-      ruPixels: RB6.Checked := True;
-      ruMM:     RB7.Checked := True;
-      ruInches: RB8.Checked := True;
+      ruPixels:
+        RB6.Checked := True;
+      ruMM:
+        RB7.Checked := True;
+      ruInches:
+        RB8.Checked := True;
     end;
     CB3.Checked := not GrayedButtons;
     CB4.Checked := EditAfterInsert;
@@ -3820,19 +3984,22 @@ begin
       GridAlign := CB2.Checked;
       if RB1.Checked then
         GridSize := 4
-      else if RB2.Checked then
-        GridSize := 8
       else
-        GridSize := 18;
+        if RB2.Checked then
+          GridSize := 8
+        else
+          GridSize := 18;
       if RB4.Checked then
-        ShapeMode := smFrame else
+        ShapeMode := smFrame
+      else
         ShapeMode := smAll;
       if RB6.Checked then
         Units := ruPixels
-      else if RB7.Checked then
-        Units := ruMM
       else
-        Units := ruInches;
+        if RB7.Checked then
+          Units := ruMM
+        else
+          Units := ruInches;
       GrayedButtons := not CB3.Checked;
       EditAfterInsert := CB4.Checked;
       ShowBandTitles := CB5.Checked;
@@ -3867,8 +4034,10 @@ begin
       t.y := Round(t.y / GridSize) * GridSize;
       t.dx := Round(t.dx / GridSize) * GridSize;
       t.dy := Round(t.dy / GridSize) * GridSize;
-      if t.dx = 0 then t.dx := GridSize;
-      if t.dy = 0 then t.dy := GridSize;
+      if t.dx = 0 then
+        t.dx := GridSize;
+      if t.dy = 0 then
+        t.dy := GridSize;
     end;
   end;
   RedrawPage;
@@ -3893,24 +4062,25 @@ begin
     Popup1.Items.Delete(7);
   if SelNum = 1 then
     TfrView(Objects[TopSelected]).DefinePopupMenu(Popup1)
-  else if SelNum > 1 then
-  begin
-    t := Objects[TopSelected];
-    fl := True;
-    for i := 0 to Objects.Count - 1 do
+  else
+    if SelNum > 1 then
     begin
-      t1 := Objects[i];
-      if t1.Selected then
-        if not (((t is TfrMemoView) and (t1 is TfrMemoView)) or
-           ((t.Typ <> gtAddIn) and (t.Typ = t1.Typ)) or
-           ((t.Typ = gtAddIn) and (t.ClassName = t1.ClassName))) then
-        begin
-          fl := False;
-          break;
-        end;
+      t := Objects[TopSelected];
+      fl := True;
+      for i := 0 to Objects.Count - 1 do
+      begin
+        t1 := Objects[i];
+        if t1.Selected then
+          if not (((t is TfrMemoView) and (t1 is TfrMemoView)) or ((t.Typ <> gtAddIn) and (t.Typ = t1.Typ)) or
+            ((t.Typ = gtAddIn) and (t.ClassName = t1.ClassName))) then
+          begin
+            fl := False;
+            break;
+          end;
+      end;
+      if fl and not (t.Typ = gtBand) then
+        t.DefinePopupMenu(Popup1);
     end;
-    if fl and not (t.Typ = gtBand) then t.DefinePopupMenu(Popup1);
-  end;
 
   FillMenuItems(N2.Parent);
   SetMenuItemBitmap(N2, CutB);
@@ -3934,21 +4104,22 @@ procedure TfrDesignerForm.Pan2Click(Sender: TObject);
   procedure SetShow(c: Array of TWinControl; i: Integer; b: Boolean);
   begin
     if c[i] is TfrToolBar then
-    with c[i] as TfrToolBar do
-    begin
-      if IsFloat then
-        FloatWindow.Visible := b
-      else
+      with c[i] as TfrToolBar do
       begin
-        if b then
-          AddToDock(Parent as TfrDock);
-        Visible := b;
-        (Parent as TfrDock).AdjustBounds;
-      end;
-    end
+        if IsFloat then
+          FloatWindow.Visible := b
+        else
+        begin
+          if b then
+            AddToDock(Parent as TfrDock);
+          Visible := b;
+          (Parent as TfrDock).AdjustBounds;
+        end;
+      end
     else
       (c[i] as TForm).Visible := b;
   end;
+
 begin // each toolbar
   with Sender as TMenuItem do
   begin
@@ -3960,11 +4131,13 @@ end;
 procedure TfrDesignerForm.N34Click(Sender: TObject);
 begin // about box
   frAboutForm := TfrAboutForm.Create(nil);
+  frAboutForm.PopUpParent := Self;
   frAboutForm.ShowModal;
   frAboutForm.Free;
 end;
 
 {$HINTS OFF}
+
 procedure TfrDesignerForm.InsFieldsClick(Sender: TObject);
 var
   i, x, y, dx, dy, pdx, adx: Integer;
@@ -3987,7 +4160,7 @@ var
       c: TComponent;
       d: TfrDBDataSet;
     begin
-      Result := '';
+      Result := EmptyStr;
       for i := 0 to f.ComponentCount - 1 do
       begin
         c := f.Components[i];
@@ -3997,24 +4170,28 @@ var
           if d.GetDataSet = DataSet then
           begin
             if d.Owner = CurReport.Owner then
-              Result := d.Name else
+              Result := d.Name
+            else
               Result := d.Owner.Name + '.' + d.Name;
             break;
           end;
         end;
       end;
     end;
+
   begin
-    Result := '';
+    Result := EmptyStr;
     for i := 0 to Screen.FormCount - 1 do
     begin
       Result := EnumComponents(Screen.Forms[i]);
-      if Result <> '' then Exit;
+      if Result <> EmptyStr then
+        Exit;
     end;
     for i := 0 to Screen.DataModuleCount - 1 do
     begin
       Result := EnumComponents(Screen.DataModules[i]);
-      if Result <> '' then Exit;
+      if Result <> EmptyStr then
+        Exit;
     end;
   end;
 
@@ -4022,12 +4199,13 @@ begin
   HeaderL := TList.Create;
   DataL := TList.Create;
   frInsertFieldsForm := TfrInsertFieldsForm.Create(nil);
+  frInsertFieldsForm.PopUpParent := Self;
   with frInsertFieldsForm do
   begin
-    if (ShowModal = mrOk) and (DataSet <> nil) and
-      (FieldsL.Items.Count > 0) and (FieldsL.SelCount > 0) then
+    if (ShowModal = mrOk) and (DataSet <> nil) and (FieldsL.Items.Count > 0) and (FieldsL.SelCount > 0) then
     begin
-      x := Page.LeftMargin; y := Page.TopMargin;
+      x := Page.LeftMargin;
+      y := Page.TopMargin;
       Unselect;
       SelNum := 0;
       for i := 0 to FieldsL.Items.Count - 1 do
@@ -4051,7 +4229,7 @@ begin
           if (fSize = 0) or (fSize > 255) then
             fSize := 6;
 
-          t := frCreateObject(gtMemo, '');
+          t := frCreateObject(gtMemo, EmptyStr);
           t.CreateUniqueName;
           t.x := x;
           t.y := y;
@@ -4070,27 +4248,26 @@ begin
           begin
             t.Memo.Add(fName);
             t.dx := PageView.Canvas.TextWidth(fName + '   ') div GridSize * GridSize;
-          end
-          else
-          begin
-            t.Memo.Add('[' + DatasetCB.Items[DatasetCB.ItemIndex] +
-              '."' + FieldsL.Items[i] + '"]');
+          end else begin
+            t.Memo.Add('[' + DatasetCB.Items[DatasetCB.ItemIndex] + '."' + FieldsL.Items[i] + '"]');
             t.dx := (fSize * PageView.Canvas.TextWidth('=')) div GridSize * GridSize;
           end;
           dx := t.dx;
           Page.Objects.Add(t);
           if HeaderCB.Checked then
-            HeaderL.Add(t) else
+            HeaderL.Add(t)
+          else
             DataL.Add(t);
           if HeaderCB.Checked then
           begin
-            t := frCreateObject(gtMemo, '');
+            t := frCreateObject(gtMemo, EmptyStr);
             t.CreateUniqueName;
             t.x := x;
             t.y := y;
             GetDefaultSize(t.dx, t.dy);
             if HorzRB.Checked then
-              Inc(t.y, 72) else
+              Inc(t.y, 72)
+            else
               Inc(t.x, dx + GridSize * 2);
             with t as TfrMemoView do
             begin
@@ -4099,14 +4276,14 @@ begin
             end;
             t.Selected := True;
             Inc(SelNum);
-            t.Memo.Add('[' + DatasetCB.Items[DatasetCB.ItemIndex] +
-              '."' + FieldsL.Items[i] + '"]');
+            t.Memo.Add('[' + DatasetCB.Items[DatasetCB.ItemIndex] + '."' + FieldsL.Items[i] + '"]');
             t.dx := (fSize * PageView.Canvas.TextWidth('=')) div GridSize * GridSize;
             Page.Objects.Add(t);
             DataL.Add(t);
           end;
           if HorzRB.Checked then
-            Inc(x, t.dx + GridSize) else
+            Inc(x, t.dx + GridSize)
+          else
             Inc(y, t.dy + GridSize);
         end;
 
@@ -4139,10 +4316,11 @@ begin
       if BandCB.Checked then
       begin
         if HeaderCB.Checked then
-          t := HeaderL[DataL.Count - 1] else
+          t := HeaderL[DataL.Count - 1]
+        else
           t := DataL[DataL.Count - 1];
         dy := t.y + t.dy - Page.TopMargin;
-        b := frCreateObject(gtBand, '') as TfrBandView;
+        b := frCreateObject(gtBand, EmptyStr) as TfrBandView;
         b.CreateUniqueName;
         b.y := Page.TopMargin;
         b.dy := dy;
@@ -4153,20 +4331,16 @@ begin
           Page.Objects.Add(b);
           b.BandType := btMasterData;
           b.DataSet := FindDataset(DataSet);
-        end
-        else
-        begin
+        end else begin
           if frCheckBand(btPageHeader) then
           begin
             Dec(SelNum);
             b.Free;
-          end
-          else
-          begin
+          end else begin
             b.BandType := btPageHeader;
             Page.Objects.Add(b);
           end;
-          b := frCreateObject(gtBand, '') as TfrBandView;
+          b := frCreateObject(gtBand, EmptyStr) as TfrBandView;
           b.BandType := btMasterData;
           b.DataSet := FindDataset(DataSet);
           b.CreateUniqueName;
@@ -4190,18 +4364,16 @@ begin
 end;
 {$HINTS ON}
 
-procedure TfrDesignerForm.Tab1MouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TfrDesignerForm.Tab1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
 var
   p: TPoint;
 begin
   GetCursorPos(p);
   if Button = mbRight then
-    TrackPopupMenu(Popup2.Handle,
-      TPM_LEFTALIGN or TPM_RIGHTBUTTON, p.X, p.Y, 0, Handle, nil);
+    TrackPopupMenu(Popup2.Handle, TPM_LEFTALIGN or TPM_RIGHTBUTTON, p.x, p.y, 0, Handle, nil);
 end;
 
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 // state storing/retrieving
 const
   rsGridShow = 'GridShow';
@@ -4211,7 +4383,6 @@ const
   rsButtons = 'GrayButtons';
   rsEdit = 'EditAfterInsert';
   rsSelection = 'Selection';
-
 
 procedure TfrDesignerForm.SaveState;
 var
@@ -4283,14 +4454,14 @@ begin
   InspForm.Panel1.Show;
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 // menu bitmaps
 procedure TfrDesignerForm.SetMenuBitmaps;
 var
   i: Integer;
 begin
-  MaxItemWidth := 0; MaxShortCutWidth := 0;
+  MaxItemWidth := 0;
+  MaxShortCutWidth := 0;
   FillMenuItems(FileMenu);
   FillMenuItems(EditMenu);
   FillMenuItems(ToolMenu);
@@ -4346,8 +4517,7 @@ begin
     MenuItems.Add(m);
   end;
   m.Btn := ABtn;
-  ModifyMenu(AMenuItem.Parent.Handle, AMenuItem.MenuIndex,
-    MF_BYPOSITION + MF_OWNERDRAW, AMenuItem.Command, nil);
+  ModifyMenu(AMenuItem.Parent.Handle, AMenuItem.MenuIndex, MF_BYPOSITION + MF_OWNERDRAW, AMenuItem.Command, nil);
 end;
 
 procedure TfrDesignerForm.FillMenuItems(MenuItem: TMenuItem);
@@ -4359,7 +4529,8 @@ begin
   begin
     m := MenuItem.Items[i];
     SetMenuItemBitmap(m, nil);
-    if m.Count > 0 then FillMenuItems(m);
+    if m.Count > 0 then
+      FillMenuItems(m);
   end;
 end;
 
@@ -4372,17 +4543,17 @@ begin
   begin
     m := MenuItem.Items[i];
     for j := 0 to MenuItems.Count - 1 do
-    if TfrMenuItemInfo(MenuItems[j]).MenuItem = m then
-    begin
-      TfrMenuItemInfo(MenuItems[j]).Free;
-      MenuItems.Delete(j);
-      break;
-    end;
+      if TfrMenuItemInfo(MenuItems[j]).MenuItem = m then
+      begin
+        TfrMenuItemInfo(MenuItems[j]).Free;
+        MenuItems.Delete(j);
+        break;
+      end;
   end;
 end;
 
-procedure TfrDesignerForm.DoDrawText(Canvas: TCanvas; Caption: string;
-  Rect: TRect; Selected, Enabled: Boolean; Flags: Longint);
+procedure TfrDesignerForm.DoDrawText(Canvas: TCanvas; Caption: String; Rect: TRect; Selected, Enabled: Boolean;
+  Flags: Longint);
 begin
   with Canvas do
   begin
@@ -4394,7 +4565,7 @@ begin
         OffsetRect(Rect, 1, 1);
         Font.Color := clBtnHighlight;
         DrawText(Handle, PChar(Caption), Length(Caption), Rect, Flags);
-        OffsetRect(Rect, -1, -1);
+        OffsetRect(Rect, - 1, - 1);
       end;
       Font.Color := clBtnShadow;
     end;
@@ -4402,8 +4573,7 @@ begin
   end;
 end;
 
-procedure TfrDesignerForm.DrawItem(AMenuItem: TMenuItem; ACanvas: TCanvas;
-  ARect: TRect; Selected: Boolean);
+procedure TfrDesignerForm.DrawItem(AMenuItem: TMenuItem; ACanvas: TCanvas; ARect: TRect; Selected: Boolean);
 var
   GlyphRect: TRect;
   Btn: TfrSpeedButton;
@@ -4417,9 +4587,7 @@ begin
     begin
       Brush.Color := clHighlight;
       Font.Color := clHighlightText
-    end
-    else
-    begin
+    end else begin
       Brush.Color := clMenu;
       Font.Color := clMenuText;
     end;
@@ -4436,18 +4604,16 @@ begin
         begin
           Glyph.Handle := LoadBitmap(hInstance, 'FR_RADIO');
           BrushCopy(GlyphRect, Glyph, Rect(0, 0, 16, 16), Glyph.TransparentColor);
-        end
-        else
-        begin
+        end else begin
           Glyph.Handle := LoadBitmap(hInstance, 'FR_CHECK');
           Draw(GlyphRect.Left, GlyphRect.Top, Glyph);
         end;
         Glyph.Free;
-      end
-      else if Btn <> nil then
+      end else if Btn <> nil then
       begin
         Glyph := TBitmap.Create;
-        Glyph.Width := 16; Glyph.Height := 16;
+        Glyph.Width := 16;
+        Glyph.Height := 16;
         Btn.DrawGlyph(Glyph.Canvas, 0, 0, AMenuItem.Enabled);
         BrushCopy(GlyphRect, Glyph, Rect(0, 0, 16, 16), Glyph.TransparentColor);
         Glyph.Free;
@@ -4462,20 +4628,16 @@ begin
       if AMenuItem.ShortCut <> 0 then
       begin
         ARect.Left := StrToInt(ItemWidths.Values[AMenuItem.Parent.Name]) + 6;
-        DoDrawText(ACanvas, ShortCutToText(AMenuItem.ShortCut), ARect,
-          Selected, AMenuItem.Enabled, DT_LEFT);
+        DoDrawText(ACanvas, ShortCutToText(AMenuItem.ShortCut), ARect, Selected, AMenuItem.Enabled, DT_LEFT);
       end;
-    end
-    else
-    begin
+    end else begin
       Inc(ARect.Top, 4);
       DrawEdge(Handle, ARect, EDGE_ETCHED, BF_TOP);
     end;
   end;
 end;
 
-procedure TfrDesignerForm.MeasureItem(AMenuItem: TMenuItem; ACanvas: TCanvas;
-  var AWidth, AHeight: Integer);
+procedure TfrDesignerForm.MeasureItem(AMenuItem: TMenuItem; ACanvas: TCanvas; var AWidth, AHeight: Integer);
 var
   w: Integer;
 begin
@@ -4492,10 +4654,12 @@ begin
   end;
 
   if frGetWindowsVersion = '98' then
-    AWidth := MaxItemWidth else
+    AWidth := MaxItemWidth
+  else
     AWidth := MaxItemWidth + MaxShortCutWidth;
   if AMenuItem.Caption <> '-' then
-    AHeight := 19 else
+    AHeight := 19
+  else
     AHeight := 10;
 end;
 
@@ -4506,26 +4670,26 @@ var
 
   function FindItem(ItemId: Integer): TMenuItem;
   begin
-    Result := MainMenu1.FindItem(ItemID, fkCommand);
+    Result := MainMenu1.FindItem(ItemId, fkCommand);
     if Result = nil then
-      Result := Popup1.FindItem(ItemID, fkCommand);
+      Result := Popup1.FindItem(ItemId, fkCommand);
     if Result = nil then
-      Result := Popup2.FindItem(ItemID, fkCommand);
+      Result := Popup2.FindItem(ItemId, fkCommand);
   end;
 
 begin
   case Message.Msg of
     WM_COMMAND:
-      if Popup1.DispatchCommand(Message.wParam) or
-         Popup2.DispatchCommand(Message.wParam) then Exit;
+      if Popup1.DispatchCommand(Message.wParam) or Popup2.DispatchCommand(Message.wParam) then
+        Exit;
     WM_INITMENUPOPUP:
       with TWMInitMenuPopup(Message) do
-        if Popup1.DispatchPopup(MenuPopup) or
-           Popup2.DispatchPopup(MenuPopup) then Exit;
+        if Popup1.DispatchPopup(MenuPopup) or Popup2.DispatchPopup(MenuPopup) then
+          Exit;
     WM_DRAWITEM:
       with PDrawItemStruct(Message.LParam)^ do
       begin
-        if (CtlType = ODT_MENU) and (Message.WParam = 0) then
+        if (CtlType = ODT_MENU) and (Message.wParam = 0) then
         begin
           MenuItem := FindItem(ItemId);
           if MenuItem <> nil then
@@ -4533,7 +4697,7 @@ begin
             CCanvas := TControlCanvas.Create;
             with CCanvas do
             begin
-              Handle := hDC;
+              Handle := HDC;
               DrawItem(MenuItem, CCanvas, rcItem, ItemState and ODS_SELECTED <> 0);
               Free;
             end;
@@ -4544,7 +4708,7 @@ begin
     WM_MEASUREITEM:
       with PMeasureItemStruct(Message.LParam)^ do
       begin
-        if (CtlType = ODT_MENU) and (Message.WParam = 0) then
+        if (CtlType = ODT_MENU) and (Message.wParam = 0) then
         begin
           MenuItem := FindItem(ItemId);
           if MenuItem <> nil then
@@ -4558,13 +4722,13 @@ begin
   inherited WndProc(Message);
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 // alignment palette
 function GetFirstSelected: TfrView;
 begin
   if FirstSelected <> nil then
-    Result := FirstSelected else
+    Result := FirstSelected
+  else
     Result := Objects[TopSelected];
 end;
 
@@ -4658,7 +4822,8 @@ var
   t: TfrView;
   x: Integer;
 begin
-  if SelNum < 2 then Exit;
+  if SelNum < 2 then
+    Exit;
   BeforeChange;
   t := GetFirstSelected;
   x := t.x;
@@ -4678,7 +4843,8 @@ var
   t: TfrView;
   y: Integer;
 begin
-  if SelNum < 2 then Exit;
+  if SelNum < 2 then
+    Exit;
   BeforeChange;
   t := GetFirstSelected;
   y := t.y;
@@ -4698,10 +4864,11 @@ var
   t: TfrView;
   x: Integer;
 begin
-  if SelNum < 2 then Exit;
+  if SelNum < 2 then
+    Exit;
   BeforeChange;
   t := GetFirstSelected;
-  x := t.x+t.dx;
+  x := t.x + t.dx;
   for i := 0 to Objects.Count - 1 do
   begin
     t := Objects[i];
@@ -4718,7 +4885,8 @@ var
   t: TfrView;
   y: Integer;
 begin
-  if SelNum < 2 then Exit;
+  if SelNum < 2 then
+    Exit;
   BeforeChange;
   t := GetFirstSelected;
   y := t.y + t.dy;
@@ -4738,7 +4906,8 @@ var
   t: TfrView;
   x: Integer;
 begin
-  if SelNum < 2 then Exit;
+  if SelNum < 2 then
+    Exit;
   BeforeChange;
   t := GetFirstSelected;
   x := t.x + t.dx div 2;
@@ -4758,7 +4927,8 @@ var
   t: TfrView;
   y: Integer;
 begin
-  if SelNum < 2 then Exit;
+  if SelNum < 2 then
+    Exit;
   BeforeChange;
   t := GetFirstSelected;
   y := t.y + t.dy div 2;
@@ -4778,7 +4948,8 @@ var
   t: TfrView;
   x: Integer;
 begin
-  if SelNum = 0 then Exit;
+  if SelNum = 0 then
+    Exit;
   BeforeChange;
   t := Objects[GetLeftObject];
   x := t.x;
@@ -4787,7 +4958,8 @@ begin
   for i := 0 to Objects.Count - 1 do
   begin
     t := Objects[i];
-    if t.Selected then Dec(t.x, x);
+    if t.Selected then
+      Dec(t.x, x);
   end;
   PageView.GetMultipleSelected;
   RedrawPage;
@@ -4799,7 +4971,8 @@ var
   t: TfrView;
   y: Integer;
 begin
-  if SelNum = 0 then Exit;
+  if SelNum = 0 then
+    Exit;
   BeforeChange;
   t := Objects[GetTopObject];
   y := t.y;
@@ -4808,7 +4981,8 @@ begin
   for i := 0 to Objects.Count - 1 do
   begin
     t := Objects[i];
-    if t.Selected then Dec(t.y, y);
+    if t.Selected then
+      Dec(t.y, y);
   end;
   PageView.GetMultipleSelected;
   RedrawPage;
@@ -4820,7 +4994,8 @@ var
   i, dx: Integer;
   t: TfrView;
 begin
-  if SelNum < 3 then Exit;
+  if SelNum < 3 then
+    Exit;
   BeforeChange;
   s := TStringList.Create;
   s.Sorted := True;
@@ -4828,11 +5003,12 @@ begin
   for i := 0 to Objects.Count - 1 do
   begin
     t := Objects[i];
-    if t.Selected then s.AddObject(Format('%4.4d', [t.x]), t);
+    if t.Selected then
+      s.AddObject(Format('%4.4d', [t.x]), t);
   end;
   dx := (TfrView(s.Objects[s.Count - 1]).x - TfrView(s.Objects[0]).x) div (s.Count - 1);
   for i := 1 to s.Count - 2 do
-    TfrView(s.Objects[i]).x := TfrView(s.Objects[i-1]).x + dx;
+    TfrView(s.Objects[i]).x := TfrView(s.Objects[i - 1]).x + dx;
   s.Free;
   PageView.GetMultipleSelected;
   RedrawPage;
@@ -4844,7 +5020,8 @@ var
   i, dy: Integer;
   t: TfrView;
 begin
-  if SelNum < 3 then Exit;
+  if SelNum < 3 then
+    Exit;
   BeforeChange;
   s := TStringList.Create;
   s.Sorted := True;
@@ -4852,7 +5029,8 @@ begin
   for i := 0 to Objects.Count - 1 do
   begin
     t := Objects[i];
-    if t.Selected then s.AddObject(Format('%4.4d', [t.y]), t);
+    if t.Selected then
+      s.AddObject(Format('%4.4d', [t.y]), t);
   end;
   dy := (TfrView(s.Objects[s.Count - 1]).y - TfrView(s.Objects[0]).y) div (s.Count - 1);
   for i := 1 to s.Count - 2 do
@@ -4862,15 +5040,14 @@ begin
   RedrawPage;
 end;
 
-
-{----------------------------------------------------------------------------}
+{ ---------------------------------------------------------------------------- }
 // miscellaneous
 function Objects: TList;
 begin
   Result := frDesigner.Page.Objects;
 end;
 
-procedure frSetGlyph(Color: TColor; sb: TfrSpeedButton; n: Integer);
+procedure frSetGlyph(Color: TColor; sb: TfrSpeedButton; N: Integer);
 var
   b: TBitmap;
   r: TRect;
@@ -4881,7 +5058,7 @@ begin
   b.Height := 16;
   with b.Canvas do
   begin
-    r := Rect(n * 32, 0, n * 32 + 32, 16);
+    r := Rect(N * 32, 0, N * 32 + 32, 16);
     CopyRect(Rect(0, 0, 32, 16), TfrDesignerForm(frDesigner).Image1.Picture.Bitmap.Canvas, r);
     for i := 0 to 32 do
       for j := 0 to 16 do
@@ -4938,17 +5115,20 @@ begin
       Result := b;
       break;
     end;
-  if Result = btNone then Result := btMasterData;
+  if Result = btNone then
+    Result := btMasterData;
 end;
 
 procedure SendBandsToDown;
 var
-  i, j, n, k: Integer;
+  i, j, N, k: Integer;
   t: TfrView;
 begin
-  n := Objects.Count; j := 0; i := n - 1;
+  N := Objects.Count;
+  j := 0;
+  i := N - 1;
   k := 0;
-  while j < n do
+  while j < N do
   begin
     t := Objects[i];
     if t.Typ = gtBand then
@@ -4956,10 +5136,12 @@ begin
       Objects.Delete(i);
       Objects.Insert(0, t);
       Inc(k);
-    end else Dec(i);
+    end
+    else
+      Dec(i);
     Inc(j);
   end;
-  for i := 0 to n - 1 do // sends btOverlay to back
+  for i := 0 to N - 1 do // sends btOverlay to back
   begin
     t := Objects[i];
     if (t.Typ = gtBand) and (t.FrameTyp = Integer(btOverlay)) then
@@ -4969,17 +5151,18 @@ begin
       break;
     end;
   end;
-  i := 0; j := 0;
-  while j < n do // sends btCrossXXX to front
+  i := 0;
+  j := 0;
+  while j < N do // sends btCrossXXX to front
   begin
     t := Objects[i];
-    if (t.Typ = gtBand) and
-       (TfrBandType(t.FrameTyp) in [btCrossHeader..btCrossFooter]) then
+    if (t.Typ = gtBand) and (TfrBandType(t.FrameTyp) in [btCrossHeader .. btCrossFooter]) then
     begin
       Objects.Delete(i);
       Objects.Insert(k - 1, t);
     end
-    else Inc(i);
+    else
+      Inc(i);
     Inc(j);
   end;
 end;
@@ -4990,19 +5173,19 @@ var
 begin
   if Assigned(ClipBd) then
     with ClipBd do
-    while Count > 0 do
-    begin
-      t := Items[0];
-      t.Free;
-      Delete(0);
-    end;
+      while Count > 0 do
+      begin
+        t := Items[0];
+        t.Free;
+        Delete(0);
+      end;
 end;
 
 procedure GetRegion;
 var
   i: Integer;
   t: TfrView;
-  R: HRGN;
+  r: HRGN;
 begin
   ClipRgn := CreateRectRgn(0, 0, 0, 0);
   for i := 0 to Objects.Count - 1 do
@@ -5010,9 +5193,9 @@ begin
     t := Objects[i];
     if t.Selected then
     begin
-      R := t.GetClipRgn(rtExtended);
-      CombineRgn(ClipRgn, ClipRgn, R, RGN_OR);
-      DeleteObject(R);
+      r := t.GetClipRgn(rtExtended);
+      CombineRgn(ClipRgn, ClipRgn, r, RGN_OR);
+      DeleteObject(r);
     end;
   end;
   FirstChange := False;
@@ -5021,13 +5204,16 @@ end;
 procedure TfrDesignerForm.GetDefaultSize(var dx, dy: Integer);
 begin
   dx := 96;
-  if GridSize = 18 then dx := 18 * 6;
+  if GridSize = 18 then
+    dx := 18 * 6;
   dy := 18;
-  if GridSize = 18 then dy := 18;
-  if LastFontSize in [12, 13] then dy := 20;
-  if LastFontSize in [14..16] then dy := 24;
+  if GridSize = 18 then
+    dy := 18;
+  if LastFontSize in [12, 13] then
+    dy := 20;
+  if LastFontSize in [14 .. 16] then
+    dy := 24;
 end;
-
 
 procedure TfrDesignerForm.SB1Click(Sender: TObject);
 var
@@ -5045,7 +5231,8 @@ var
 begin
   d := StrToFloat(E1.Text);
   d := d - 1;
-  if d <= 0 then d := 1;
+  if d <= 0 then
+    d := 1;
   E1.Text := FloatToStrF(d, ffGeneral, 2, 2);
   DoClick(E1);
 end;
@@ -5063,22 +5250,22 @@ begin
   HelpBtn.Invalidate;
 end;
 
-procedure TfrDesignerForm.FormMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TfrDesignerForm.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; x, y: Integer);
 var
   c: TControl;
   t: Integer;
 begin
   HelpBtn.Down := False;
   Screen.Cursor := crDefault;
-  c := frControlAtPos(Self, Point(X, Y));
+  c := frControlAtPos(Self, Point(x, y));
   if (c <> nil) and (c <> HelpBtn) then
   begin
     t := c.Tag;
     if (c.Parent = Panel4) and (t > 4) then
       t := 5;
     if c.Parent = Panel4 then
-      Inc(t, 430) else
+      Inc(t, 430)
+    else
       Inc(t, 400);
     Application.HelpCommand(HELP_CONTEXTPOPUP, t);
   end;
@@ -5092,34 +5279,47 @@ end;
 procedure TfrDesignerForm.OnActivateApp(Sender: TObject);
   procedure SetZOrder(Form: TForm);
   begin
-    SetWindowPos(Form.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or
-      SWP_NOSIZE or SWP_NOACTIVATE);
+    SetWindowPos(Form.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
   end;
+
 begin
   SetZOrder(InspForm);
-  if Panel1.IsFloat then SetZOrder(Panel1.FloatWindow);
-  if Panel2.IsFloat then SetZOrder(Panel2.FloatWindow);
-  if Panel3.IsFloat then SetZOrder(Panel3.FloatWindow);
-  if Panel4.IsFloat then SetZOrder(Panel4.FloatWindow);
-  if Panel5.IsFloat then SetZOrder(Panel5.FloatWindow);
-  if Panel6.IsFloat then SetZOrder(Panel6.FloatWindow);
+  if Panel1.IsFloat then
+    SetZOrder(Panel1.FloatWindow);
+  if Panel2.IsFloat then
+    SetZOrder(Panel2.FloatWindow);
+  if Panel3.IsFloat then
+    SetZOrder(Panel3.FloatWindow);
+  if Panel4.IsFloat then
+    SetZOrder(Panel4.FloatWindow);
+  if Panel5.IsFloat then
+    SetZOrder(Panel5.FloatWindow);
+  if Panel6.IsFloat then
+    SetZOrder(Panel6.FloatWindow);
 end;
 
 procedure TfrDesignerForm.OnDeactivateApp(Sender: TObject);
   procedure SetZOrder(Form: TForm);
   begin
-    SetWindowPos(Form.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or
-      SWP_NOSIZE or SWP_NOACTIVATE);
+    SetWindowPos(Form.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
   end;
+
 begin
-  if not Visible then Exit;
+  if not Visible then
+    Exit;
   SetZOrder(InspForm);
-  if Panel1.IsFloat then SetZOrder(Panel1.FloatWindow);
-  if Panel2.IsFloat then SetZOrder(Panel2.FloatWindow);
-  if Panel3.IsFloat then SetZOrder(Panel3.FloatWindow);
-  if Panel4.IsFloat then SetZOrder(Panel4.FloatWindow);
-  if Panel5.IsFloat then SetZOrder(Panel5.FloatWindow);
-  if Panel6.IsFloat then SetZOrder(Panel6.FloatWindow);
+  if Panel1.IsFloat then
+    SetZOrder(Panel1.FloatWindow);
+  if Panel2.IsFloat then
+    SetZOrder(Panel2.FloatWindow);
+  if Panel3.IsFloat then
+    SetZOrder(Panel3.FloatWindow);
+  if Panel4.IsFloat then
+    SetZOrder(Panel4.FloatWindow);
+  if Panel5.IsFloat then
+    SetZOrder(Panel5.FloatWindow);
+  if Panel6.IsFloat then
+    SetZOrder(Panel6.FloatWindow);
 end;
 
 procedure TfrDesignerForm.wwwfastreportcom1Click(Sender: TObject);
@@ -5128,28 +5328,30 @@ begin
 end;
 
 initialization
-  frDesigner := TfrDesignerForm.Create(nil);
-  ClipBd := TList.Create;
-  GridBitmap := TBitmap.Create;
-  with GridBitmap do
-  begin
-    Width := 8; Height := 8;
-  end;
-  LastFrameTyp := 0;
-  LastFrameWidth := 1;
-  LastLineWidth := 2;
-  LastFillColor := clNone;
-  LastFrameColor := clBlack;
-  LastFontColor := clBlack;
-  LastFontStyle := 0;
-  LastAdjust := 0;
-  RegRootKey := 'Software\FastReport\' + Application.Title;
+
+frDesigner := TfrDesignerForm.Create(nil);
+ClipBd := TList.Create;
+GridBitmap := TBitmap.Create;
+with GridBitmap do
+begin
+  Width := 8;
+  Height := 8;
+end;
+LastFrameTyp := 0;
+LastFrameWidth := 1;
+LastLineWidth := 2;
+LastFillColor := clNone;
+LastFrameColor := clBlack;
+LastFontColor := clBlack;
+LastFontStyle := 0;
+LastAdjust := 0;
+RegRootKey := 'Software\FastReport\' + Application.Title;
 
 finalization
-  frDesigner.Free;
-  ClearClipBoard;
-  ClipBd.Free;
-  GridBitmap.Free;
+
+frDesigner.Free;
+ClearClipBoard;
+ClipBd.Free;
+GridBitmap.Free;
 
 end.
-

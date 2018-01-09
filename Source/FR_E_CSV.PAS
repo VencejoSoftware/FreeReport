@@ -1,12 +1,8 @@
-
-{*****************************************}
-{                                         }
-{             FastReport v2.3             }
-{            CSV export filter            }
-{                                         }
-{  Copyright (c) 1998-99 by Tzyganenko A. }
-{                                         }
-{*****************************************}
+{ ***************************************** }
+{ FastReport v2.3 }
+{ CSV export filter }
+{ Copyright (c) 1998-99 by Tzyganenko A. }
+{ ***************************************** }
 
 unit FR_E_CSV;
 
@@ -15,11 +11,11 @@ interface
 {$I FR.inc}
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Forms, StdCtrls,
-  FR_Class, FR_E_TXT;
+  SysUtils, Classes, Graphics,
+  FR_Class, FR_E_TXT, FR_Const;
 
 type
-  TfrCSVExport = class(TComponent) // fake component
+  TfrCSVExport = class(TComponent)// fake component
   end;
 
   TfrCSVExportFilter = class(TfrTextExportFilter)
@@ -27,46 +23,45 @@ type
     procedure OnEndPage; override;
   end;
 
-
 implementation
 
-uses FR_Const;
-
-
 procedure TfrCSVExportFilter.OnEndPage;
+const
+  FIELD_SEPARATOR = ';';
 var
   i, j, n, tc1, tc2: Integer;
   p: PfrTextRec;
-  s: String;
+  s: AnsiString;
 begin
-  n := Lines.Count - 1;
+  n := Pred(Lines.Count);
   while n >= 0 do
   begin
-    if Lines[n] <> nil then break;
+    if Lines[n] <> nil then
+      break;
     Dec(n);
   end;
 
   for i := 0 to n do
   begin
-    s := '';
+    s := EmptyAnsiStr;
     tc1 := 0;
     p := PfrTextRec(Lines[i]);
     while p <> nil do
     begin
       tc2 := p^.X div 64;
       for j := 0 to tc2 - tc1 - 1 do
-        s := s + ';';
-      s := s + p^.Text;
+        s := s + FIELD_SEPARATOR;
+      s := s + AnsiString(p^.Text);
       tc1 := tc2;
       p := p^.Next;
     end;
-    s := s + #13#10;
+    s := s + sLineBreak;
     Stream.Write(s[1], Length(s));
   end;
 end;
 
-
 initialization
-  frRegisterExportFilter(TfrCSVExportFilter, LoadStr(SCSVFile) + ' (*.csv)', '*.csv');
+
+frRegisterExportFilter(TfrCSVExportFilter, LoadStr(SCSVFile) + ' (*.csv)', '*.csv');
 
 end.
